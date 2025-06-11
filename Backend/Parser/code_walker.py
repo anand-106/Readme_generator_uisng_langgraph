@@ -4,14 +4,7 @@ from pprint import pprint
 
 # Supported language extensions
 SUPPORTED_EXTENSIONS = {
-    ".py": "python",
-    ".js": "javascript",
-    ".ts": "typescript",
-    ".tsx": "tsx",
-    ".java": "java",
-    ".go": "go",
-    ".cpp": "cpp",
-    ".c": "c"
+    ".py": "python"
 }
 
 # Directories to exclude
@@ -41,5 +34,3 @@ def walk_codebase(root_dir):
                 })
 
     return code_files
-
-pprint(walk_codebase("C:/Users/gamin/Documents/projects/Langchain-new/"))

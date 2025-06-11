@@ -5,7 +5,7 @@ import pprint
 #parses a code file to return a parse tree
 def parse_code_file(file_path: str,language: str):
 
-    build_language_library()
+    
 
     parser = get_parser(language)
 
