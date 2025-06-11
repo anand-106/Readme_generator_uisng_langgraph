@@ -1,1 +1,3 @@
 .venv
+Backend/Parser/parsers/
+Backend/build/
