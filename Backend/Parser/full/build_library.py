@@ -16,6 +16,8 @@ LANGUAGE_REPOS = {
 
 language_paths = [os.path.join(LANGUAGE_DIR, repo) for repo in LANGUAGE_REPOS.values()]
 
+Language()
+
 # Make sure tree-sitter CLI isn't too new (optional, if you built this manually)
 Language.build_library(
     BUILD_PATH,

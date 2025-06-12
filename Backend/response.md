@@ -1,0 +1,211 @@
+```markdown
+# Ticket Classifier using LangGraph
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-34A853?style=for-the-badge&logo=langchain&logoColor=white)
+![Auth0](https://img.shields.io/badge/Auth0-E22307?style=for-the-badge&logo=auth0&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Contribution](#contribution)
+- [License](#license)
+- [Support & Contact](#support--contact)
+
+## Introduction
+
+This project is a ticket classification and management system designed to streamline the handling of technical support requests. It leverages the power of LangChain for intelligent ticket analysis and classification, FastAPI for building a robust API, and MongoDB for data storage. Auth0 is integrated for secure authentication and authorization. The frontend is built with React and Tailwind CSS.
+
+## Key Features
+
+- **Intelligent Ticket Classification:** Automatically classifies incoming tickets into categories (React, Java, Python, SQL) using LangChain and LLMs.
+- **Agent-Based Processing:** Employs specialized agents (React, Java, Python, SQL) to analyze tickets and generate summaries, technical analyses, priority assessments, and suggested approaches.
+- **Secure Authentication and Authorization:** Uses Auth0 to ensure secure access to the system and its data based on user roles.
+- **RESTful API:** Provides a comprehensive set of API endpoints for managing tickets, retrieving information, and updating ticket statuses.
+- **Modern Frontend:** A responsive and intuitive user interface built with React and styled with Tailwind CSS.
+- **Database Storage:** Stores ticket data in a MongoDB database for persistence and scalability.
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone <repository_url>
+   cd Ticket_classifier_using_LangGraph
+   ```
+
+2.  **Backend Setup:**
+   Navigate to the backend directory:
+   ```bash
+   cd Backend
+   ```
+
+3. **Create a virtual environment (recommended):**
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Linux/macOS
+   venv\Scripts\activate  # On Windows
+   ```
+
+4. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5.  **Frontend Setup:**
+   Navigate to the frontend directory:
+   ```bash
+   cd ../frontend
+   ```
+6. **Install frontend dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+## Usage
+
+### Backend
+1.  **Set up environment variables:**
+    Create a `.env` file in the `Backend` directory and configure the following variables:
+
+    ```
+    AUTH0_DOMAIN=<your_auth0_domain>
+    AUTH0_CLIENT_ID=<your_auth0_client_id>
+    AUTH0_CLIENT_SECRET=<your_auth0_client_secret>
+    AUTH0_AUDIENCE=<your_auth0_audience>
+    MONGODB_URI=<your_mongodb_connection_string>
+    ```
+
+2. **Run the FastAPI server:**
+
+   ```bash
+   cd Backend
+   uvicorn main:app --reload
+   ```
+
+   The server will start at `http://localhost:8000`.
+
+### Frontend
+
+1.  **Set up environment variables:**
+    Create a `.env` file in the `frontend` directory and configure the Auth0 variables:
+
+    ```
+   REACT_APP_AUTH0_DOMAIN=<your_auth0_domain>
+   REACT_APP_AUTH0_CLIENT_ID=<your_auth0_client_id>
+   REACT_APP_AUTH0_AUDIENCE=<your_auth0_audience>
+   REACT_APP_AUTH0_SCOPE=openid profile email
+    ```
+
+2. **Start the React development server:**
+
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+   The frontend will be accessible at `http://localhost:3000`.
+
+## API Endpoints
+
+The FastAPI backend provides the following endpoints:
+
+-   `POST /tickets`: Creates a new ticket. Requires authentication.
+-   `GET /tickets`: Retrieves all tickets (accessible to admins and developers). Requires authentication and appropriate roles.
+-   `GET /tickets/{ticket_number}`: Retrieves a specific ticket by its ticket number. Requires authentication.
+-   `GET /my_tickets`: Retrieves tickets associated with the logged-in user. Requires authentication.
+-   `PUT /tickets/{ticket_number}/close`: Closes a ticket. Requires authentication and appropriate roles.
+
+Refer to the API documentation (generated by FastAPI at `http://localhost:8000/docs` after running the server) for detailed information on request parameters and response formats.
+
+## Environment Variables
+
+The following environment variables are required for the backend:
+
+-   `AUTH0_DOMAIN`: The domain of your Auth0 tenant.
+-   `AUTH0_CLIENT_ID`: The client ID of your Auth0 application.
+-   `AUTH0_CLIENT_SECRET`: The client secret of your Auth0 application.
+-   `AUTH0_AUDIENCE`: The API identifier for your Auth0 application.
+-   `MONGODB_URI`: The connection string for your MongoDB database.
+
+The following environment variables are required for the frontend:
+-   `REACT_APP_AUTH0_DOMAIN`: The domain of your Auth0 tenant.
+-   `REACT_APP_AUTH0_CLIENT_ID`: The client ID of your Auth0 application.
+   `REACT_APP_AUTH0_AUDIENCE`: The API identifier for your Auth0 application.
+   `REACT_APP_AUTH0_SCOPE`: Scopes needed to get user information.
+
+## Project Structure
+
+```
+Ticket_classifier_using_LangGraph/
+├── Backend/
+│   ├── main.py              # Main application entry point
+│   ├── ticket_agent.py      # LangChain agent for ticket processing
+│   ├── Auth/
+│   │   └── auth.py          # Authentication and authorization logic
+│   ├── Database/
+│   │   ├── config/
+│   │   │   └── database.py  # Database configuration
+│   │   ├── models/
+│   │   │   └── model.py     # Data models (Pydantic)
+│   │   ├── routes/
+│   │   │   └── route.py     # API endpoint definitions
+│   │   └── schema/
+│   │       └── schemas.py   # Data serialization schemas
+│   └── requirements.txt     # Backend dependencies
+├── frontend/
+│   ├── public/              # Public assets
+│   ├── src/                 # React source code
+│   │   ├── api.js           # API calls
+│   │   ├── App.js           # Main app component
+│   │   ├── index.js         # Entry point
+│   │   ├── Auth/            # Auth0 components
+│   │   │   ├── authWrapper.js  # Authentication wrapper
+│   │   │   ├── config.js       # Auth0 configuration
+│   │   │   ├── Login.js        # Login component
+│   │   │   ├── roleBasedRedirect.js # Redirects user after login based on role
+│   │   │   ├── roleRequirer.js  # Component to require specific role
+│   │   │   └── API/
+│   │   │       └── useApi.js # Custom hook for API interactions
+│   │   ├── Tickets.js       # List of tickets
+│   │   ├── ticketDetails.js  # Ticket details component
+│   ├── package.json         # Frontend dependencies
+│   ├── postcss.config.js    # PostCSS configuration
+│   ├── tailwind.config.js   # Tailwind CSS configuration
+│   └── ...
+├── .gitignore             # Git ignore file
+└── README.md              # This file
+```
+
+## Contribution
+
+We welcome contributions to this project! Please follow these guidelines:
+
+1.  Fork the repository.
+2.  Create a new branch for your feature or bug fix.
+3.  Make your changes and commit them with clear, concise messages.
+4.  Submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support & Contact
+
+For any questions or issues, please contact us at [your_email@example.com](mailto:your_email@example.com).
+```
