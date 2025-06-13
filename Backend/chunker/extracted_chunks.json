@@ -1,0 +1,1350 @@
+[
+  [
+    {
+      "type": "function",
+      "name": "TicketDetails",
+      "start_line": 7,
+      "end_line": 234,
+      "lines": 228,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useParams",
+        "useState",
+        "useState",
+        "useState",
+        "useAuth0",
+        "useEffect",
+        "getAccessTokenSilently",
+        "axios.get",
+        "setTicket",
+        "setisOpen",
+        "console.log",
+        "fetchTicket",
+        "priority?.toLowerCase",
+        "setisClosing",
+        "axios.patch",
+        "console.log",
+        "console.log",
+        "setisClosing",
+        "setisOpen",
+        "tPriorityColor(\n"
+      ],
+      "complexity": 5,
+      "docstring": null,
+      "raw_code": "function TicketDetails() {\n  const { ticketNo } = useParams();\n  const [Ticket, setTicket] = useState(null);\n  const [isClosing, setisClosing] = useState(false);\n  const [isOpen, setisOpen] = useState(null);\n  const { getAccessTokenSilently } = useAuth0();\n\n  useEffect(() => {\n    const fetchTicket = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    };\n    fetchTicket();\n  }, [ticketNo]);\n\n  if (!Ticket)\n    return (\n      <div className=\"min-h-screen bg-slate-900 flex items-center justify-center\">\n        <h1 className=\"text-white text-2xl\">Loading...</h1>\n      </div>\n    );\n\n  const getPriorityColor = (priority) => {\n    switch (priority?.toLowerCase()) {\n      case \"high\":\n        return \"bg-red-500\";\n      case \"medium\":\n        return \"bg-yellow-500\";\n      case \"low\":\n        return \"bg-green-500\";\n      default:\n        return \"bg-gray-500\";\n    }\n  };\n\n  const closeTicket = async () => {\n    setisClosing(true);\n    try {\n      const response = await axios.patch(\n        `http://127.0.0.1:8001/ticket/${ticketNo}`,\n        { isOpen: false }\n      );\n      console.log(response);\n    } catch (e) {\n      console.log(e);\n    } finally {\n      setisClosing(false);\n      setisOpen(false);\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-slate-900 text-white p-6\">\n      <div className=\"max-w-6xl mx-auto\">\n        {/* Header */}\n        <div className=\"mb-8\">\n          <div className=\"flex items-center justify-between mb-4\">\n            <h1 className=\"text-4xl font-bold\">Ticket Details</h1>\n            <Link to={\"/\"}>\n              <button className=\"text-blue-400 hover:text-blue-300 text-lg\">\n                ← Back to Tickets\n              </button>\n            </Link>\n          </div>\n\n          {/* Ticket Header Info */}\n          <div className=\"bg-slate-800 rounded-lg p-6 mb-6\">\n            <div className=\"flex items-center justify-between mb-4\">\n              <div className=\"flex items-center gap-4\">\n                <h2 className=\"text-2xl font-semibold text-blue-400\">\n                  Ticket # {Ticket.ticket_no}\n                </h2>\n                <span\n                  className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(\n                    Ticket.priority\n                  )}`}\n                >\n                  {Ticket.priority}\n                </span>\n                <span\n                  className={`px-3 py-1 rounded-full text-sm font-medium ${\n                    isOpen ? \"bg-green-600\" : \"bg-gray-600\"\n                  }`}\n                >\n                  {isOpen ? \"Open\" : \"Closed\"}\n                </span>\n              </div>\n              <div className=\"text-right text-gray-400\">\n                <div>\n                  Team: <span className=\"text-white\">{Ticket.team}</span>\n                </div>\n                <div>Submitted: {Ticket.time}</div>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        {/* Single Rounded Box for All Ticket Details */}\n        <div className=\"bg-slate-800 rounded-lg p-8\">\n          {/* Ticket Metadata Section */}\n          <div className=\"mb-8 pb-6 border-b border-slate-700\">\n            <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\">\n              <div>\n                <span className=\"text-gray-400 text-sm\">Ticket ID:</span>\n                <p className=\"text-white font-mono text-sm\">{Ticket.id}</p>\n              </div>\n              <div>\n                <span className=\"text-gray-400 text-sm\">Team:</span>\n                <p className=\"text-white\">{Ticket.team}</p>\n              </div>\n              <div>\n                <span className=\"text-gray-400 text-sm\">Created:</span>\n                <p className=\"text-white\">{Ticket.time}</p>\n              </div>\n            </div>\n          </div>\n\n          {/* Original Request */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Original Request\n            </h3>\n            <div className=\"bg-slate-700 rounded-lg p-4\">\n              <p className=\"text-gray-300\">{Ticket.message}</p>\n            </div>\n          </div>\n\n          {/* Summary */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Summary\n            </h3>\n            <p className=\"text-gray-300 leading-relaxed\">{Ticket.summary}</p>\n          </div>\n\n          {/* Technical Analysis */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Technical Analysis\n            </h3>\n            <p className=\"text-gray-300 leading-relaxed\">\n              {Ticket.technical_analysis}\n            </p>\n          </div>\n\n          {/* Suggested Approach */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Suggested Approach\n            </h3>\n            <div className=\"text-gray-300 leading-relaxed whitespace-pre-line\">\n              {Ticket.suggested_approach}\n            </div>\n          </div>\n\n          {/* Additional Notes */}\n          {Ticket.additional_notes && (\n            <div className=\"mb-8\">\n              <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n                Additional Notes\n              </h3>\n              <p className=\"text-gray-300 leading-relaxed\">\n                {Ticket.additional_notes}\n              </p>\n            </div>\n          )}\n\n          {/* Actions */}\n          <div className=\"pt-6 border-t border-slate-700\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Actions\n            </h3>\n            <div className=\"grid grid-cols-2 md:grid-cols-4 gap-3\">\n              <RequireRole role={\"admin\"}>\n                <button\n                  className=\"bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors\"\n                  onClick={closeTicket}\n                  disabled={isClosing}\n                >\n                  {isClosing ? (\n                    <>\n                      <svg\n                        className=\"animate-spin -ml-1 mr-3 h-5 w-5 text-white\"\n                        xmlns=\"http://www.w3.org/2000/svg\"\n                        fill=\"none\"\n                        viewBox=\"0 0 24 24\"\n                      >\n                        <circle\n                          className=\"opacity-25\"\n                          cx=\"12\"\n                          cy=\"12\"\n                          r=\"10\"\n                          stroke=\"currentColor\"\n                          strokeWidth=\"4\"\n                        ></circle>\n                        <path\n                          className=\"opacity-75\"\n                          fill=\"currentColor\"\n                          d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"\n                        ></path>\n                      </svg>\n                      Closing...\n                    </>\n                  ) : (\n                    \"Close Ticket\"\n                  )}\n                </button>\n              </RequireRole>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n",
+      "chunk_id": "ticketDetails.js::TicketDetails",
+      "decorators": [],
+      "file": "ticketDetails.js"
+    },
+    {
+      "type": "function",
+      "name": "TicketInput",
+      "start_line": 121,
+      "end_line": 233,
+      "lines": 113,
+      "parameters": [
+        "(",
+        "{ getTickets }"
+      ],
+      "calls": [
+        "useState",
+        "useState",
+        "useAuth0",
+        "setInputValue",
+        "e.preventDefault",
+        "inputValue.trim",
+        "alert",
+        "setIsSubmitting",
+        "getAccessTokenSilently",
+        "fetch",
+        "JSON.stringify",
+        "response.json",
+        "console.log",
+        "alert",
+        "setInputValue",
+        "getTickets",
+        "console.error",
+        "alert",
+        "setIsSubmitting"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "function TicketInput({ getTickets }) {\n  const [inputValue, setInputValue] = useState(\"\");\n  const [isSubmitting, setIsSubmitting] = useState(false);\n  const { getAccessTokenSilently } = useAuth0();\n\n  const handleChange = (event) => {\n    setInputValue(event.target.value);\n  };\n\n  const handleSubmit = async (e) => {\n    e.preventDefault();\n\n    if (inputValue.trim() === \"\") {\n      alert(\"Please enter ticket details!\");\n      return;\n    }\n\n    setIsSubmitting(true);\n\n    try {\n      // Simulate API call - replace with your actual endpoint\n\n      const token = await getAccessTokenSilently();\n      const response = await fetch(\"http://localhost:8001/add-ticket\", {\n        method: \"POST\",\n        headers: {\n          \"Content-Type\": \"application/json\",\n          Authorization: `Bearer ${token}`,\n        },\n        body: JSON.stringify({\n          message: inputValue,\n        }),\n      });\n\n      if (response.ok) {\n        const data = await response.json();\n        console.log(\"Success:\", data);\n        alert(\"Ticket submitted successfully!\");\n        setInputValue(\"\");\n        getTickets(); // Clear form after successful submission\n      } else {\n        throw new Error(\"Failed to submit ticket\");\n      }\n    } catch (error) {\n      console.error(\"Error:\", error);\n      alert(\"Error submitting ticket. Please try again.\");\n    } finally {\n      setIsSubmitting(false);\n    }\n  };\n\n  return (\n    <div className=\"bg-gray-800 p-6 rounded-xl shadow-2xl\">\n      <div className=\"space-y-6\">\n        <div>\n          <label\n            className=\"block text-sm font-medium text-gray-300 mb-3\"\n            htmlFor=\"ticket-details\"\n          >\n            Ticket Details\n          </label>\n\n          <textarea\n            id=\"ticket-details\"\n            value={inputValue}\n            onChange={handleChange}\n            placeholder=\"Describe your issue or request in detail...\"\n            className=\"w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition duration-200\"\n            rows=\"4\"\n            disabled={isSubmitting}\n          />\n        </div>\n\n        <div className=\"pt-4\">\n          <button\n            type=\"button\"\n            onClick={handleSubmit}\n            disabled={isSubmitting}\n            className=\"w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out\"\n          >\n            {isSubmitting ? (\n              <>\n                <svg\n                  className=\"animate-spin -ml-1 mr-3 h-5 w-5 text-white\"\n                  xmlns=\"http://www.w3.org/2000/svg\"\n                  fill=\"none\"\n                  viewBox=\"0 0 24 24\"\n                >\n                  <circle\n                    className=\"opacity-25\"\n                    cx=\"12\"\n                    cy=\"12\"\n                    r=\"10\"\n                    stroke=\"currentColor\"\n                    strokeWidth=\"4\"\n                  ></circle>\n                  <path\n                    className=\"opacity-75\"\n                    fill=\"currentColor\"\n                    d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"\n                  ></path>\n                </svg>\n                Submitting...\n              </>\n            ) : (\n              \"Submit Ticket\"\n            )}\n          </button>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "App.js::TicketInput",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "run_chatbot",
+      "start_line": 173,
+      "end_line": 230,
+      "lines": 58,
+      "docstring": null,
+      "raw_code": "def run_chatbot(user_input,user_id):\n   graph_builder = StateGraph(State)\n   graph_builder.add_node(\"classifier\",classify_message)\n   graph_builder.add_node(\"router\",router)\n   graph_builder.add_node(\"react_agent\",react_agent)\n   graph_builder.add_node(\"java_agent\",java_agent)\n   graph_builder.add_node(\"python_agent\",python_agent)\n   graph_builder.add_node(\"sql_agent\",sql_agent)\n\n   graph_builder.add_edge(START,\"classifier\")\n   graph_builder.add_edge(\"classifier\",\"router\")\n   graph_builder.add_conditional_edges(\n      \"router\",\n      lambda state: state.get(\"next\"),\n      {\n         \"react_agent\":\"react_agent\",\n         \"java_agent\":\"java_agent\",\n         \"python_agent\":\"python_agent\",\n         \"sql_agent\":\"sql_agent\"\n      }\n   )\n\n   graph_builder.add_edge(\"react_agent\",END)\n   graph_builder.add_edge(\"java_agent\",END)\n   graph_builder.add_edge(\"python_agent\",END)\n   graph_builder.add_edge(\"sql_agent\",END)\n\n   graph = graph_builder.compile()\n\n   user_input = user_input.strip()\n   if not user_input:\n      print(\"Error: Please provide a message\")\n      return\n      \n   print(f\"\\nProcessing message: {user_input}\\n\")\n   \n   initial_state = {\n      \"messages\": [{\"role\": \"user\", \"content\": user_input}],\n      \"message_type\": None\n   }\n   \n   result = graph.invoke(initial_state)\n   # print(f'The ticket is sent to the {result[\"message_type\"]} team.')\n   # print(f'Response: {result[\"messages\"][-1].content}')\n\n   content = result[\"messages\"][-1].content\n   cleaned = re.search(r\"\\{.*\\}\", content, re.DOTALL)\n\n   print(cleaned)\n\n   if cleaned:\n      team_dict = {\"message\":user_input,\"team\": result[\"message_type\"],\"user_id\": user_id }\n      result_format = team_dict | (json.loads(cleaned.group(0)))\n   else:\n      raise ValueError(\"No valid JSON found in LLM response.\")\n\n   print(result_format)\n   return result_format",
+      "chunk_id": "ticket_agent.py::run_chatbot",
+      "decorators": [],
+      "calls": [
+        "StateGraph",
+        "graph_builder.add_node",
+        "graph_builder.add_node",
+        "graph_builder.add_node",
+        "graph_builder.add_node",
+        "graph_builder.add_node",
+        "graph_builder.add_node",
+        "graph_builder.add_edge",
+        "graph_builder.add_edge",
+        "graph_builder.add_conditional_edges",
+        "state.get",
+        "graph_builder.add_edge",
+        "graph_builder.add_edge",
+        "graph_builder.add_edge",
+        "graph_builder.add_edge",
+        "graph_builder.compile",
+        "user_input.strip",
+        "print",
+        "print",
+        "graph.invoke",
+        "re.search",
+        "print",
+        "json.loads",
+        "cleaned.group",
+        "ValueError",
+        "print"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "user_input",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "user_id",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "TicketList",
+      "start_line": 3,
+      "end_line": 52,
+      "lines": 50,
+      "parameters": [
+        "(",
+        "{ tickets }"
+      ],
+      "calls": [
+        "tickets.map"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function TicketList({ tickets }) {\n  return (\n    <div>\n      <div className=\"text-center mt-4 \">\n        <h1 className=\"text-white text-2xl font-bold\">Tickets</h1>\n        <hr />\n      </div>\n      <div className=\"space-y-6\">\n        <div className=\"space-y-6\">\n          <ul className=\"list-disc pl-5 mt-3 mb-3 list-none\">\n            {tickets.map((ticket) => (\n              <li>\n                <Link to={`/ticket/${ticket.ticket_no}`}>\n                  <div className=\"bg-gray-700 p-6 rounded-lg shadow-md mb-3\">\n                    <div className=\"flex justify-between items-start mb-2\">\n                      <h3 className=\"text-xl font-semibold text-indigo-400\">\n                        Ticket # {ticket.ticket_no}\n                      </h3>\n                      <span\n                        className={`text-xs font-medium px-3 py-1 rounded-full ${\n                          ticket.isOpen\n                            ? \"bg-green-600 text-green-100\"\n                            : \"bg-red-600 text-red-100\"\n                        } `}\n                      >\n                        {ticket.isOpen ? \"Open\" : \"Closed\"}\n                      </span>\n                    </div>\n                    <p className=\"text-gray-300 leading-relaxed mb-3\">\n                      {ticket.message}\n                    </p>\n                    <div className=\"text-sm text-gray-500 flex justify-between items-center\">\n                      <span>Submitted: {ticket.time}</span>\n                      <span className=\"flex items-center\">\n                        <span className=\"material-icons text-base mr-1\">\n                          Team:\n                        </span>\n                        {ticket.team}\n                      </span>\n                    </div>\n                  </div>\n                </Link>\n              </li>\n            ))}\n          </ul>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "Tickets.js::TicketList",
+      "decorators": [],
+      "file": "Tickets.js"
+    },
+    {
+      "type": "function",
+      "name": "Header",
+      "start_line": 78,
+      "end_line": 119,
+      "lines": 42,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useAuth0",
+        "useAuth0",
+        "logout",
+        "roles.includes",
+        "roles.includes",
+        "roles.includes"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function Header() {\n  const namespace = \"https://myapp.local\";\n  const { user } = useAuth0();\n  const LogoutButton = () => {\n    const { logout } = useAuth0();\n\n    return (\n      <button\n        onClick={() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })\n        }\n      >\n        <h2 className=\"text-white\">Log Out</h2>\n      </button>\n    );\n  };\n  const roles = user?.[`${namespace}/roles`] || [];\n  return (\n    <div className=\"text-center mb-8\">\n      <div className=\"\">\n        <h1 className=\"text-3xl font-bold text-white mb-2\">\n          Ticket Submission Portal\n        </h1>\n        <div className=\"flex justify-end\">\n          <LogoutButton />\n        </div>\n      </div>\n      {roles.includes(\"user\") && (\n        <p className=\"text-gray-400 text-sm\">Hello User....</p>\n      )}\n      {roles.includes(\"admin\") && (\n        <p className=\"text-gray-400 text-sm\">Hello Admin....</p>\n      )}\n      {roles.includes(\"developer\") && (\n        <p className=\"text-gray-400 text-sm\">Hello Admin....</p>\n      )}\n      <p className=\"text-gray-400 text-sm\">\n        Submit your support requests below\n      </p>\n    </div>\n  );\n}",
+      "chunk_id": "App.js::Header",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "handleSubmit",
+      "start_line": 130,
+      "end_line": 170,
+      "lines": 41,
+      "parameters": [
+        "(",
+        "e"
+      ],
+      "calls": [
+        "e.preventDefault",
+        "inputValue.trim",
+        "alert",
+        "setIsSubmitting",
+        "getAccessTokenSilently",
+        "fetch",
+        "JSON.stringify",
+        "response.json",
+        "console.log",
+        "alert",
+        "setInputValue",
+        "getTickets",
+        "console.error",
+        "alert",
+        "setIsSubmitting"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "async (e) => {\n    e.preventDefault();\n\n    if (inputValue.trim() === \"\") {\n      alert(\"Please enter ticket details!\");\n      return;\n    }\n\n    setIsSubmitting(true);\n\n    try {\n      // Simulate API call - replace with your actual endpoint\n\n      const token = await getAccessTokenSilently();\n      const response = await fetch(\"http://localhost:8001/add-ticket\", {\n        method: \"POST\",\n        headers: {\n          \"Content-Type\": \"application/json\",\n          Authorization: `Bearer ${token}`,\n        },\n        body: JSON.stringify({\n          message: inputValue,\n        }),\n      });\n\n      if (response.ok) {\n        const data = await response.json();\n        console.log(\"Success:\", data);\n        alert(\"Ticket submitted successfully!\");\n        setInputValue(\"\");\n        getTickets(); // Clear form after successful submission\n      } else {\n        throw new Error(\"Failed to submit ticket\");\n      }\n    } catch (error) {\n      console.error(\"Error:\", error);\n      alert(\"Error submitting ticket. Please try again.\");\n    } finally {\n      setIsSubmitting(false);\n    }\n  }",
+      "chunk_id": "App.js::handleSubmit",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "token_verify",
+      "start_line": 17,
+      "end_line": 56,
+      "lines": 40,
+      "docstring": null,
+      "raw_code": "def token_verify(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):\n\n    token = credentials.credentials\n\n    jwks_url = f\"https://{AUTH0_DOMAIN}/.well-known/jwks.json\"\n    jwks = requests.get(jwks_url).json()\n\n    unverified_token = jwt.get_unverified_header(token)\n    print(unverified_token)  \n\n    rsa_key = next(\n        (\n            {\n                \"kty\": key[\"kty\"],\n                \"kid\": key[\"kid\"],\n                \"use\": key[\"use\"],\n                \"n\": key[\"n\"],\n                \"e\": key[\"e\"],\n            }\n            for key in jwks[\"keys\"]\n            if key[\"kid\"] == unverified_token[\"kid\"]\n        ),\n        None,\n    )\n\n    if rsa_key is None:\n        raise HTTPException(status_code=401, detail=\"Invalid token\")\n    \n\n    try:\n        payload= jwt.decode(\n            token,\n            rsa_key,\n            algorithms=ALGORITHMS,\n            audience=API_AUDIENCE,\n            issuer=f'https://{AUTH0_DOMAIN}/'\n        )\n        return payload\n    except Exception as e:\n        raise HTTPException(status_code=401, detail=\"token validation failed\")",
+      "chunk_id": "auth.py::token_verify",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "requests.get(jwks_url).json",
+        "requests.get",
+        "jwt.get_unverified_header",
+        "print",
+        "next",
+        "HTTPException",
+        "jwt.decode",
+        "HTTPException"
+      ],
+      "complexity": 3,
+      "parameters": [],
+      "file": "auth.py"
+    },
+    {
+      "type": "function",
+      "name": "AuthWrapper",
+      "start_line": 5,
+      "end_line": 43,
+      "lines": 39,
+      "parameters": [
+        "(",
+        "{ children }"
+      ],
+      "calls": [
+        "useAuth0",
+        "useEffect",
+        "getAccessTokenSilently",
+        "console.log",
+        "fetch",
+        "console.log",
+        "console.error",
+        "response.text",
+        "console.error",
+        "callAuthAPI"
+      ],
+      "complexity": 5,
+      "docstring": null,
+      "raw_code": "function AuthWrapper({ children }) {\n  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();\n\n  useEffect(() => {\n    const callAuthAPI = async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      callAuthAPI();\n    }\n  }, [isAuthenticated, getAccessTokenSilently]);\n\n  if (isLoading) {\n    return <h1 className=\"text-white font-bold items-center\">Loading....</h1>;\n  }\n\n  return isAuthenticated ? children : <Navigate to=\"/login\" />;\n}",
+      "chunk_id": "authWrapper.js::AuthWrapper",
+      "decorators": [],
+      "file": "authWrapper.js"
+    },
+    {
+      "type": "function",
+      "name": "App",
+      "start_line": 13,
+      "end_line": 46,
+      "lines": 34,
+      "parameters": [
+        "("
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function App() {\n  return (\n    <Router>\n      <Routes>\n        <Route\n          path=\"/\"\n          element={\n            <AuthWrapper>\n              <RoleRedirect />\n            </AuthWrapper>\n          }\n        />\n        <Route\n          path=\"/admin-home\"\n          element={\n            <AuthWrapper>\n              <Home link={\"http://localhost:8001/tickets\"} />{\" \"}\n            </AuthWrapper>\n          }\n        />\n        <Route\n          path=\"/user-home\"\n          element={\n            <AuthWrapper>\n              <Home link={\"http://localhost:8001/my-tickets\"} />{\" \"}\n            </AuthWrapper>\n          }\n        />\n        <Route path=\"/login\" element={<LoginPage />} />\n        <Route path=\"/ticket/:ticketNo\" element={<TicketDetails />} />{\" \"}\n      </Routes>\n    </Router>\n  );\n}",
+      "chunk_id": "App.js::App",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 13,
+      "end_line": 46,
+      "lines": 34,
+      "parameters": [
+        "(",
+        "ticket"
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(ticket) => (\n              <li>\n                <Link to={`/ticket/${ticket.ticket_no}`}>\n                  <div className=\"bg-gray-700 p-6 rounded-lg shadow-md mb-3\">\n                    <div className=\"flex justify-between items-start mb-2\">\n                      <h3 className=\"text-xl font-semibold text-indigo-400\">\n                        Ticket # {ticket.ticket_no}\n                      </h3>\n                      <span\n                        className={`text-xs font-medium px-3 py-1 rounded-full ${\n                          ticket.isOpen\n                            ? \"bg-green-600 text-green-100\"\n                            : \"bg-red-600 text-red-100\"\n                        } `}\n                      >\n                        {ticket.isOpen ? \"Open\" : \"Closed\"}\n                      </span>\n                    </div>\n                    <p className=\"text-gray-300 leading-relaxed mb-3\">\n                      {ticket.message}\n                    </p>\n                    <div className=\"text-sm text-gray-500 flex justify-between items-center\">\n                      <span>Submitted: {ticket.time}</span>\n                      <span className=\"flex items-center\">\n                        <span className=\"material-icons text-base mr-1\">\n                          Team:\n                        </span>\n                        {ticket.team}\n                      </span>\n                    </div>\n                  </div>\n                </Link>\n              </li>\n            )",
+      "chunk_id": "Tickets.js::<anonymous>",
+      "decorators": [],
+      "file": "Tickets.js"
+    },
+    {
+      "type": "function",
+      "name": "Home",
+      "start_line": 48,
+      "end_line": 76,
+      "lines": 29,
+      "parameters": [
+        "(",
+        "{ link }"
+      ],
+      "calls": [
+        "useState",
+        "useApi",
+        "useCallback",
+        "console.log",
+        "callAPI",
+        "setTickets",
+        "console.log",
+        "useEffect",
+        "getTickets"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "function Home({ link }) {\n  const [tickets, setTickets] = useState([]);\n  const { callAPI } = useApi();\n\n  const getTickets = useCallback(async () => {\n    try {\n      console.log(\"trying to get tickets\");\n      const data = await callAPI(link, \"get\");\n      setTickets(data);\n    } catch (e) {\n      console.log(\"Failed to load Tickets \", e);\n    }\n  }, [callAPI]);\n\n  useEffect(() => {\n    getTickets();\n  }, []);\n  return (\n    <div className=\"min-h-screen bg-gray-900 flex items-center justify-center p-4\">\n      <div className=\"w-full max-w-5xl mx-auto px-4\">\n        <Header />\n        <TicketInput getTickets={getTickets} />\n        {/* <RequireRole role={\"admin\"}> */}\n        <TicketList tickets={tickets} />\n        {/* </RequireRole> */}\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "App.js::Home",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 8,
+      "end_line": 36,
+      "lines": 29,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "console.log",
+        "fetch",
+        "console.log",
+        "console.error",
+        "response.text",
+        "console.error",
+        "callAuthAPI"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "() => {\n    const callAuthAPI = async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      callAuthAPI();\n    }\n  }",
+      "chunk_id": "authWrapper.js::<anonymous>",
+      "decorators": [],
+      "file": "authWrapper.js"
+    },
+    {
+      "type": "function",
+      "name": "useApi",
+      "start_line": 4,
+      "end_line": 30,
+      "lines": 27,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useAuth0",
+        "getAccessTokenSilently",
+        "console.log",
+        "axios",
+        "console.log",
+        "console.error"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "function useApi() {\n  const { getAccessTokenSilently } = useAuth0();\n\n  const callAPI = async (url, method = \"get\", data = null, config = {}) => {\n    try {\n      const token = await getAccessTokenSilently();\n      console.log(\"token accesed\");\n      const response = await axios({\n        url,\n        method,\n        data,\n        headers: {\n          Authorization: `Bearer ${token}`,\n          \"Content-Type\": \"application/json\",\n          ...config.headers,\n        },\n        ...config,\n      });\n      console.log(response.data);\n      return response.data;\n    } catch (err) {\n      console.error(\"API call failed:\", err.response?.data || err.message);\n      throw err;\n    }\n  };\n  return { callAPI };\n}",
+      "chunk_id": "useApi.js::useApi",
+      "decorators": [],
+      "file": "useApi.js"
+    },
+    {
+      "type": "function",
+      "name": "react_agent",
+      "start_line": 65,
+      "end_line": 90,
+      "lines": 26,
+      "docstring": null,
+      "raw_code": "def react_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a React expert helping to triage and document frontend issues for the React development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the React team should take\n         5. additional_notes: Any relevant context about React version, dependencies, or browser compatibility\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
+      "chunk_id": "ticket_agent.py::react_agent",
+      "decorators": [],
+      "calls": [
+        "llm.invoke"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "java_agent",
+      "start_line": 92,
+      "end_line": 117,
+      "lines": 26,
+      "docstring": null,
+      "raw_code": "def java_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a Java expert helping to triage and document backend issues for the Java development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the Java team should take\n         5. additional_notes: Any relevant context about Java version, frameworks, or performance implications\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
+      "chunk_id": "ticket_agent.py::java_agent",
+      "decorators": [],
+      "calls": [
+        "llm.invoke"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    }
+  ],
+  [
+    {
+      "type": "function",
+      "name": "python_agent",
+      "start_line": 119,
+      "end_line": 144,
+      "lines": 26,
+      "docstring": null,
+      "raw_code": "def python_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a Python expert helping to triage and document Python-related issues for the Python development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the Python team should take\n         5. additional_notes: Any relevant context about Python version, dependencies, or environment setup\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
+      "chunk_id": "ticket_agent.py::python_agent",
+      "decorators": [],
+      "calls": [
+        "llm.invoke"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "sql_agent",
+      "start_line": 146,
+      "end_line": 171,
+      "lines": 26,
+      "docstring": null,
+      "raw_code": "def sql_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a SQL expert helping to triage and document database issues for the SQL development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the SQL team should take\n         5. additional_notes: Any relevant context about database type, schema implications, or performance considerations\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
+      "chunk_id": "ticket_agent.py::sql_agent",
+      "decorators": [],
+      "calls": [
+        "llm.invoke"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "RequireRole",
+      "start_line": 8,
+      "end_line": 33,
+      "lines": 26,
+      "parameters": [
+        "(",
+        "{ role, children }"
+      ],
+      "calls": [
+        "useAuth0",
+        "useState",
+        "useEffect",
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "console.log",
+        "Array.isArray",
+        "roles.some",
+        "allowedRoles.includes",
+        "setHasRole",
+        "console.error",
+        "checkRole"
+      ],
+      "complexity": 3,
+      "docstring": null,
+      "raw_code": "function RequireRole({ role, children }) {\n  const { getAccessTokenSilently, isAuthenticated } = useAuth0();\n  const [hasRole, setHasRole] = useState(false);\n\n  useEffect(() => {\n    const checkRole = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      checkRole();\n    }\n  }, [getAccessTokenSilently, isAuthenticated, role]);\n\n  return hasRole ? <>{children}</> : null;\n}",
+      "chunk_id": "roleRequirer.js::RequireRole",
+      "decorators": [],
+      "file": "roleRequirer.js"
+    },
+    {
+      "type": "function",
+      "name": "RoleRedirect",
+      "start_line": 8,
+      "end_line": 32,
+      "lines": 25,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useAuth0",
+        "useNavigate",
+        "useEffect",
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "roles.includes",
+        "roles.includes",
+        "navigate",
+        "roles.includes",
+        "navigate",
+        "navigate",
+        "console.error",
+        "getRoute"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "function RoleRedirect() {\n  const { getAccessTokenSilently, isAuthenticated } = useAuth0();\n  const navigate = useNavigate();\n  useEffect(() => {\n    const getRoute = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    };\n    getRoute();\n  }, [getAccessTokenSilently, navigate, isAuthenticated]);\n  return null;\n}",
+      "chunk_id": "roleBasedRedirect.js::RoleRedirect",
+      "decorators": [],
+      "file": "roleBasedRedirect.js"
+    },
+    {
+      "type": "function",
+      "name": "callAuthAPI",
+      "start_line": 9,
+      "end_line": 31,
+      "lines": 23,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "console.log",
+        "fetch",
+        "console.log",
+        "console.error",
+        "response.text",
+        "console.error"
+      ],
+      "complexity": 3,
+      "docstring": null,
+      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    }",
+      "chunk_id": "authWrapper.js::callAuthAPI",
+      "decorators": [],
+      "file": "authWrapper.js"
+    },
+    {
+      "type": "function",
+      "name": "callAPI",
+      "start_line": 7,
+      "end_line": 28,
+      "lines": 22,
+      "parameters": [
+        "(",
+        "url",
+        "method = \"get\"",
+        "data = null",
+        "config = {}"
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "console.log",
+        "axios",
+        "console.log",
+        "console.error"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async (url, method = \"get\", data = null, config = {}) => {\n    try {\n      const token = await getAccessTokenSilently();\n      console.log(\"token accesed\");\n      const response = await axios({\n        url,\n        method,\n        data,\n        headers: {\n          Authorization: `Bearer ${token}`,\n          \"Content-Type\": \"application/json\",\n          ...config.headers,\n        },\n        ...config,\n      });\n      console.log(response.data);\n      return response.data;\n    } catch (err) {\n      console.error(\"API call failed:\", err.response?.data || err.message);\n      throw err;\n    }\n  }",
+      "chunk_id": "useApi.js::callAPI",
+      "decorators": [],
+      "file": "useApi.js"
+    },
+    {
+      "type": "function",
+      "name": "classify_message",
+      "start_line": 30,
+      "end_line": 49,
+      "lines": 20,
+      "docstring": null,
+      "raw_code": "def classify_message(state:State):\n   last_message = state[\"messages\"][-1]\n   classifier_llm  = llm.with_structured_output(MessageClassifier)\n   \n   result= classifier_llm.invoke([\n      {\n         \"role\":\"system\",\n         \"content\":\"\"\"Classify the user message as either:\n            - 'React': if it requires help with React development\n            - 'Java': if it requires help with Java development\n            - 'Python': if it requires help with Python development\n            - 'SQL': if it requires help with SQL development\n            \"\"\"\n        },\n        {\n           \"role\":\"user\",\n           \"content\":last_message.content\n        }\n   ])\n   return {\"message_type\": result.message_type}",
+      "chunk_id": "ticket_agent.py::classify_message",
+      "decorators": [],
+      "calls": [
+        "llm.with_structured_output",
+        "classifier_llm.invoke"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 14,
+      "end_line": 33,
+      "lines": 20,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "axios.get",
+        "setTicket",
+        "setisOpen",
+        "console.log",
+        "fetchTicket"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "() => {\n    const fetchTicket = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    };\n    fetchTicket();\n  }",
+      "chunk_id": "ticketDetails.js::<anonymous>",
+      "decorators": [],
+      "file": "ticketDetails.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 11,
+      "end_line": 30,
+      "lines": 20,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "roles.includes",
+        "roles.includes",
+        "navigate",
+        "roles.includes",
+        "navigate",
+        "navigate",
+        "console.error",
+        "getRoute"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "() => {\n    const getRoute = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    };\n    getRoute();\n  }",
+      "chunk_id": "roleBasedRedirect.js::<anonymous>",
+      "decorators": [],
+      "file": "roleBasedRedirect.js"
+    },
+    {
+      "type": "function",
+      "name": "make_ticket",
+      "start_line": 24,
+      "end_line": 42,
+      "lines": 19,
+      "docstring": null,
+      "raw_code": "def make_ticket(ticket):\n\n    ist = pytz.timezone('Asia/Kolkata')\n    now = datetime.now(ist)\n    formatted_now = now.strftime('%Y-%m-%d %H:%M:%S')\n\n    return {\n        \"ticket_no\": 1001+collection_name.count_documents({}),\n        \"message\": ticket[\"message\"],\n        \"team\": ticket[\"team\"],\n        \"summary\": ticket[\"summary\"],\n        \"technical_analysis\" : ticket[\"technical_analysis\"],\n        \"priority\": ticket[\"priority\"],\n        \"suggested_approach\": ticket[\"suggested_approach\"],\n        \"additional_notes\": ticket[\"additional_notes\"],\n        \"time\": str(formatted_now),\n        \"isOpen\": True,\n        \"user_id\":ticket[\"user_id\"]\n    }",
+      "chunk_id": "schemas.py::make_ticket",
+      "decorators": [],
+      "calls": [
+        "pytz.timezone",
+        "datetime.now",
+        "now.strftime",
+        "collection_name.count_documents",
+        "str"
+      ],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "ticket",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "schemas.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 12,
+      "end_line": 30,
+      "lines": 19,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "console.log",
+        "Array.isArray",
+        "roles.some",
+        "allowedRoles.includes",
+        "setHasRole",
+        "console.error",
+        "checkRole"
+      ],
+      "complexity": 3,
+      "docstring": null,
+      "raw_code": "() => {\n    const checkRole = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      checkRole();\n    }\n  }",
+      "chunk_id": "roleRequirer.js::<anonymous>",
+      "decorators": [],
+      "file": "roleRequirer.js"
+    },
+    {
+      "type": "function",
+      "name": "getConfig",
+      "start_line": 3,
+      "end_line": 20,
+      "lines": 18,
+      "parameters": [
+        "("
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function getConfig() {\n  // Configure the audience here. By default, it will take whatever is in the config\n  // (specified by the `audience` key) unless it's the default value of \"{yourApiIdentifier}\" (which\n  // is what you get sometimes by using the Auth0 sample download tool from the quickstart page, if you\n  // don't have an API).\n  // If this resolves to `null`, the API page changes to show some helpful info about what to do\n  // with the audience.\n  const audience =\n    configJson.audience && configJson.audience !== \"{yourApiIdentifier}\"\n      ? configJson.audience\n      : null;\n\n  return {\n    domain: configJson.domain,\n    clientId: configJson.clientId,\n    ...(audience ? { audience } : null),\n  };\n}",
+      "chunk_id": "config.js::getConfig",
+      "decorators": [],
+      "file": "config.js"
+    },
+    {
+      "type": "function",
+      "name": "LoginPage",
+      "start_line": 4,
+      "end_line": 21,
+      "lines": 18,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useAuth0",
+        "loginWithRedirect"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function LoginPage() {\n  const { loginWithRedirect } = useAuth0();\n\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-gray-100\">\n      <div className=\"text-center\">\n        <h1 className=\"text-3xl font-bold mb-4 text-white\">Welcome!</h1>\n        <p className=\"mb-6 text-white\">Please log in or sign up to continue</p>\n        <button\n          onClick={() => loginWithRedirect()}\n          className=\"bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700\"\n        >\n          Log In / Sign Up\n        </button>\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "Login.js::LoginPage",
+      "decorators": [],
+      "file": "Login.js"
+    },
+    {
+      "type": "function",
+      "name": "fetchTicket",
+      "start_line": 15,
+      "end_line": 31,
+      "lines": 17,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "axios.get",
+        "setTicket",
+        "setisOpen",
+        "console.log"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    }",
+      "chunk_id": "ticketDetails.js::fetchTicket",
+      "decorators": [],
+      "file": "ticketDetails.js"
+    },
+    {
+      "type": "function",
+      "name": "getRoute",
+      "start_line": 12,
+      "end_line": 28,
+      "lines": 17,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "roles.includes",
+        "roles.includes",
+        "navigate",
+        "roles.includes",
+        "navigate",
+        "navigate",
+        "console.error"
+      ],
+      "complexity": 4,
+      "docstring": null,
+      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    }",
+      "chunk_id": "roleBasedRedirect.js::getRoute",
+      "decorators": [],
+      "file": "roleBasedRedirect.js"
+    },
+    {
+      "type": "function",
+      "name": "individual_serial",
+      "start_line": 5,
+      "end_line": 19,
+      "lines": 15,
+      "docstring": null,
+      "raw_code": "def individual_serial(ticket)->dict:\n    return {\n        \"id\": str(ticket[\"_id\"]),\n        \"ticket_no\": ticket[\"ticket_no\"],\n        \"message\": ticket[\"message\"],\n        \"team\": ticket[\"team\"],\n        \"summary\": ticket[\"summary\"],\n        \"technical_analysis\" : ticket[\"technical_analysis\"],\n        \"priority\": ticket[\"priority\"],\n        \"suggested_approach\": ticket[\"suggested_approach\"],\n        \"additional_notes\": ticket[\"additional_notes\"],\n        \"time\": ticket[\"time\"],\n        \"isOpen\": ticket[\"isOpen\"],\n        \"user_id\":ticket[\"user_id\"]\n    }",
+      "chunk_id": "schemas.py::individual_serial",
+      "decorators": [],
+      "calls": [
+        "str"
+      ],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "ticket",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "schemas.py"
+    },
+    {
+      "type": "function",
+      "name": "closeTicket",
+      "start_line": 55,
+      "end_line": 69,
+      "lines": 15,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "setisClosing",
+        "axios.patch",
+        "console.log",
+        "console.log",
+        "setisClosing",
+        "setisOpen"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n    setisClosing(true);\n    try {\n      const response = await axios.patch(\n        `http://127.0.0.1:8001/ticket/${ticketNo}`,\n        { isOpen: false }\n      );\n      console.log(response);\n    } catch (e) {\n      console.log(e);\n    } finally {\n      setisClosing(false);\n      setisOpen(false);\n    }\n  }",
+      "chunk_id": "ticketDetails.js::closeTicket",
+      "decorators": [],
+      "file": "ticketDetails.js"
+    },
+    {
+      "type": "function",
+      "name": "router",
+      "start_line": 51,
+      "end_line": 63,
+      "lines": 13,
+      "docstring": null,
+      "raw_code": "def router(state:State):\n   message_type = state.get(\"message_type\",\"React\")\n   \n   if message_type == \"React\":\n      return {\"next\":\"react_agent\"}\n   elif message_type == \"Java\":\n      return {\"next\":\"java_agent\"}\n   elif message_type == \"Python\":\n      return {\"next\":\"python_agent\"}\n   elif message_type == \"SQL\":\n      return {\"next\":\"sql_agent\"}\n   else:\n      return {\"next\":\"react_agent\"}",
+      "chunk_id": "ticket_agent.py::router",
+      "decorators": [],
+      "calls": [
+        "state.get"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "LogoutButton",
+      "start_line": 81,
+      "end_line": 93,
+      "lines": 13,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useAuth0",
+        "logout"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => {\n    const { logout } = useAuth0();\n\n    return (\n      <button\n        onClick={() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })\n        }\n      >\n        <h2 className=\"text-white\">Log Out</h2>\n      </button>\n    );\n  }",
+      "chunk_id": "App.js::LogoutButton",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "checkRole",
+      "start_line": 13,
+      "end_line": 25,
+      "lines": 13,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getAccessTokenSilently",
+        "jwtDecode",
+        "console.log",
+        "Array.isArray",
+        "roles.some",
+        "allowedRoles.includes",
+        "setHasRole",
+        "console.error"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    }",
+      "chunk_id": "roleRequirer.js::checkRole",
+      "decorators": [],
+      "file": "roleRequirer.js"
+    },
+    {
+      "type": "class",
+      "name": "Ticket",
+      "start_line": 3,
+      "end_line": 14,
+      "lines": 12,
+      "docstring": null,
+      "raw_code": "class Ticket(BaseModel):\n    ticket_no: int\n    message: str\n    team: str\n    summary: str\n    technical_analysis : str\n    priority: str\n    suggested_approach: str\n    additional_notes: str\n    time: str\n    isOpen: bool\n    user_id: Optional[str] = Field(default=None)",
+      "chunk_id": "model.py::Ticket",
+      "decorators": [],
+      "calls": [
+        "Field"
+      ],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "function",
+      "name": "getPriorityColor",
+      "start_line": 42,
+      "end_line": 53,
+      "lines": 12,
+      "parameters": [
+        "(",
+        "priority"
+      ],
+      "calls": [
+        "priority?.toLowerCase"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "(priority) => {\n    switch (priority?.toLowerCase()) {\n      case \"high\":\n        return \"bg-red-500\";\n      case \"medium\":\n        return \"bg-yellow-500\";\n      case \"low\":\n        return \"bg-green-500\";\n      default:\n        return \"bg-gray-500\";\n    }\n  }",
+      "chunk_id": "ticketDetails.js::getPriorityColor",
+      "decorators": [],
+      "file": "ticketDetails.js"
+    },
+    {
+      "type": "function",
+      "name": "reportWebVitals",
+      "start_line": 1,
+      "end_line": 11,
+      "lines": 11,
+      "parameters": [],
+      "calls": [
+        "import('web-vitals').then",
+        "import",
+        "getCLS",
+        "getFID",
+        "getFCP",
+        "getLCP",
+        "getTTFB"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "onPerfEntry => {\n  if (onPerfEntry && onPerfEntry instanceof Function) {\n    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {\n      getCLS(onPerfEntry);\n      getFID(onPerfEntry);\n      getFCP(onPerfEntry);\n      getLCP(onPerfEntry);\n      getTTFB(onPerfEntry);\n    });\n  }\n}",
+      "chunk_id": "reportWebVitals.js::reportWebVitals",
+      "decorators": [],
+      "file": "reportWebVitals.js"
+    },
+    {
+      "type": "function",
+      "name": "set_ticket",
+      "start_line": 22,
+      "end_line": 31,
+      "lines": 10,
+      "docstring": null,
+      "raw_code": "async def set_ticket(message: Message,payload=Depends(check_role(['user','admin','Developers']))):\n    print(\"setting ticket\")\n    try:\n        ticket = run_chatbot(message.message,user_id=payload[\"sub\"])\n        final_ticket=make_ticket(ticket)\n        print(payload)\n        collection_name.insert_one(Ticket(**final_ticket).model_dump(mode=\"alias\"))\n        return final_ticket\n    except ValidationError as e:\n        print(e)",
+      "chunk_id": "route.py::set_ticket",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "check_role",
+        "print",
+        "run_chatbot",
+        "make_ticket",
+        "print",
+        "collection_name.insert_one",
+        "Ticket(**final_ticket).model_dump",
+        "Ticket",
+        "print"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "route.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 52,
+      "end_line": 60,
+      "lines": 9,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "console.log",
+        "callAPI",
+        "setTickets",
+        "console.log"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n    try {\n      console.log(\"trying to get tickets\");\n      const data = await callAPI(link, \"get\");\n      setTickets(data);\n    } catch (e) {\n      console.log(\"Failed to load Tickets \", e);\n    }\n  }",
+      "chunk_id": "App.js::<anonymous>",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "fetchTickets",
+      "start_line": 3,
+      "end_line": 10,
+      "lines": 8,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "axios.get",
+        "console.log"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n  try {\n    const tickets = await axios.get(\"http://localhost:8001/tickets\");\n    return tickets.data;\n  } catch (e) {\n    console.log(\"error:\", e);\n  }\n}",
+      "chunk_id": "api.js::fetchTickets",
+      "decorators": [],
+      "file": "api.js"
+    },
+    {
+      "type": "function",
+      "name": "check_role",
+      "start_line": 58,
+      "end_line": 64,
+      "lines": 7,
+      "docstring": null,
+      "raw_code": "def check_role(allowed_roles: list[str]):\n    def role_checker(payload=Depends(token_verify)):\n        roles = payload.get(f\"{NAMESPACE}/roles\", [])\n        if not any(role in roles for role in allowed_roles):\n            raise HTTPException(status_code=403, detail=\"Role Not authorized\")\n        return payload\n    return role_checker",
+      "chunk_id": "auth.py::check_role",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "payload.get",
+        "any",
+        "HTTPException"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "auth.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 3,
+      "end_line": 9,
+      "lines": 7,
+      "parameters": [
+        "(",
+        "{ getCLS, getFID, getFCP, getLCP, getTTFB }"
+      ],
+      "calls": [
+        "getCLS",
+        "getFID",
+        "getFCP",
+        "getLCP",
+        "getTTFB"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {\n      getCLS(onPerfEntry);\n      getFID(onPerfEntry);\n      getFCP(onPerfEntry);\n      getLCP(onPerfEntry);\n      getTTFB(onPerfEntry);\n    }",
+      "chunk_id": "reportWebVitals.js::<anonymous>",
+      "decorators": [],
+      "file": "reportWebVitals.js"
+    },
+    {
+      "type": "function",
+      "name": "get_ticket",
+      "start_line": 35,
+      "end_line": 40,
+      "lines": 6,
+      "docstring": null,
+      "raw_code": "async def get_ticket(ticketNo:int,payload=Depends(check_role(['user','admin','Developers']))):\n    ticket = collection_name.find_one({\"ticket_no\":ticketNo})\n    if ticket:\n        return individual_serial(ticket)\n    else:\n        raise HTTPException(status_code=404, detail=\"Ticket not found\")",
+      "chunk_id": "route.py::get_ticket",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "check_role",
+        "collection_name.find_one",
+        "individual_serial",
+        "HTTPException"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "route.py"
+    },
+    {
+      "type": "class",
+      "name": "MessageClassifier",
+      "start_line": 19,
+      "end_line": 23,
+      "lines": 5,
+      "docstring": null,
+      "raw_code": "class MessageClassifier(BaseModel):\n   message_type: Literal[\"React\", \"Java\", \"Python\", \"SQL\"] = Field(\n      ...,\n      description=\"Classify if the message requires support from a React, Java, Python, or SQL expert\"\n   )",
+      "chunk_id": "ticket_agent.py::MessageClassifier",
+      "decorators": [],
+      "calls": [
+        "Field"
+      ],
+      "complexity": 1,
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "role_checker",
+      "start_line": 59,
+      "end_line": 63,
+      "lines": 5,
+      "docstring": null,
+      "raw_code": "def role_checker(payload=Depends(token_verify)):\n        roles = payload.get(f\"{NAMESPACE}/roles\", [])\n        if not any(role in roles for role in allowed_roles):\n            raise HTTPException(status_code=403, detail=\"Role Not authorized\")\n        return payload",
+      "chunk_id": "auth.py::role_checker",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "payload.get",
+        "any",
+        "HTTPException"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "auth.py"
+    },
+    {
+      "type": "function",
+      "name": "get_my_tickets",
+      "start_line": 52,
+      "end_line": 56,
+      "lines": 5,
+      "docstring": null,
+      "raw_code": "async def get_my_tickets(payload=Depends(check_role(['user', 'admin', 'Developers']))):\n    print(payload)\n    user_id = payload[\"sub\"]\n    tickets = list_serial(collection_name.find({\"user_id\": user_id}))\n    return tickets",
+      "chunk_id": "route.py::get_my_tickets",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "check_role",
+        "print",
+        "list_serial",
+        "collection_name.find"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "route.py"
+    },
+    {
+      "type": "class",
+      "name": "State",
+      "start_line": 26,
+      "end_line": 28,
+      "lines": 3,
+      "docstring": null,
+      "raw_code": "class State(TypedDict):\n    messages: Annotated[list,add_messages]\n    message_type: str | None",
+      "chunk_id": "ticket_agent.py::State",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "ticket_agent.py"
+    },
+    {
+      "type": "function",
+      "name": "get_tickets",
+      "start_line": 16,
+      "end_line": 18,
+      "lines": 3,
+      "docstring": null,
+      "raw_code": "async def get_tickets(payload=Depends(check_role(['admin','Developers']))):\n    tickets = list_serial(collection_name.find())\n    return tickets",
+      "chunk_id": "route.py::get_tickets",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "check_role",
+        "list_serial",
+        "collection_name.find"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "route.py"
+    },
+    {
+      "type": "function",
+      "name": "close_ticket",
+      "start_line": 45,
+      "end_line": 47,
+      "lines": 3,
+      "docstring": null,
+      "raw_code": "async def close_ticket(ticketNo: int ,data: CloseTicket,payload=Depends(check_role(['admin','Developers']))):\n    collection_name.update_one({\"ticket_no\":ticketNo},{\"$set\":{\"isOpen\":data.isOpen}})\n    return {\"message\":\"Ticket closed successfully\"}",
+      "chunk_id": "route.py::close_ticket",
+      "decorators": [],
+      "calls": [
+        "Depends",
+        "check_role",
+        "collection_name.update_one"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "route.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 62,
+      "end_line": 64,
+      "lines": 3,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "getTickets"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => {\n    getTickets();\n  }",
+      "chunk_id": "App.js::<anonymous>",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "handleChange",
+      "start_line": 126,
+      "end_line": 128,
+      "lines": 3,
+      "parameters": [
+        "(",
+        "event"
+      ],
+      "calls": [
+        "setInputValue"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(event) => {\n    setInputValue(event.target.value);\n  }",
+      "chunk_id": "App.js::handleChange",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "admin_only_route",
+      "start_line": 32,
+      "end_line": 33,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "def admin_only_route(user=Depends(token_verify)):\n    return {\"message\": \"welcome you are Authenticated\", \"user\": user}",
+      "chunk_id": "main.py::admin_only_route",
+      "decorators": [],
+      "calls": [
+        "Depends"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "main.py"
+    },
+    {
+      "type": "class",
+      "name": "Message",
+      "start_line": 16,
+      "end_line": 17,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "class Message(BaseModel):\n    message: str",
+      "chunk_id": "model.py::Message",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "class",
+      "name": "CloseTicket",
+      "start_line": 19,
+      "end_line": 20,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "class CloseTicket(BaseModel):\n    isOpen: bool",
+      "chunk_id": "model.py::CloseTicket",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "function",
+      "name": "list_serial",
+      "start_line": 21,
+      "end_line": 22,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "def list_serial(tickets):\n    return [individual_serial(ticket) for ticket in tickets]",
+      "chunk_id": "schemas.py::list_serial",
+      "decorators": [],
+      "calls": [
+        "individual_serial"
+      ],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "tickets",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "schemas.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 86,
+      "end_line": 87,
+      "lines": 2,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "logout"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })",
+      "chunk_id": "App.js::<anonymous>",
+      "decorators": [],
+      "file": "App.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 13,
+      "end_line": 13,
+      "lines": 1,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "loginWithRedirect"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => loginWithRedirect()",
+      "chunk_id": "Login.js::<anonymous>",
+      "decorators": [],
+      "file": "Login.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 20,
+      "end_line": 20,
+      "lines": 1,
+      "parameters": [
+        "(",
+        "r"
+      ],
+      "calls": [
+        "allowedRoles.includes"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(r) => allowedRoles.includes(r)",
+      "chunk_id": "roleRequirer.js::<anonymous>",
+      "decorators": [],
+      "file": "roleRequirer.js"
+    }
+  ]
+]

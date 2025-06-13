@@ -40,6 +40,8 @@ def analyze_codebase(root_dir):
             "relative_path": str(rel_path),
             "symbols": symbols
         })
+    
+    print("successfully parsed files")
 
     return {
     "project": project_name,
@@ -62,6 +64,8 @@ if __name__ == "__main__":
     # 🔧 Change this to your target project directory
     root = "C:/Users/gamin/Documents/projects/Ticket_classifier_using_LangGraph/"
     result = analyze_codebase(root)
+
+    print(type(result))
 
     output_file = f"{result['project']}_analysis.json"
     with open(output_file, 'w', encoding='utf-8') as f:

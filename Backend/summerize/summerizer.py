@@ -140,9 +140,11 @@ README-Level Project Summary:
 """
 
     try:
+        print("Started generating readme.md")
         response = model.generate_content(prompt)
         f = open("response.md",'w',encoding='utf-8')
         f.write(response.text.strip())
+        print("Succesfully generated readme.md")
         return response.text.strip()
         
     except Exception as e:
