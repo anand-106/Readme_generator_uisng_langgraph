@@ -4,6 +4,7 @@ import tree_sitter_javascript as tsjs
 from tree_sitter import Language, Parser
 from pathlib import Path
 from Parser.code_walker import walk_codebase
+
 import pprint
 from collections import defaultdict
 import re
