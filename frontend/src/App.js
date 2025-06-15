@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
-import { ReadMePage } from "./components/GeneratePage/ReadmePage";
+import { ReadMePage } from "./pages/ReadmePage";
 
 function App() {
   return (
