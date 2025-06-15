@@ -4,6 +4,7 @@ from langgraph.types import interrupt, Command
 from typing import TypedDict, List, Any, Dict, Literal
 from api.utils.github_utils import clone_repo
 from pprint import pprint
+import shutil
 
 class ReadmeState(TypedDict, total=False):
     codebase_path: str
@@ -119,6 +120,12 @@ def resume_readme_pipeline(session_id: str, action: str = "end"):
 
     if action == "end":
         SESSION_CACHE[session_id]["ended"]=True
+        try:
+            path = new_state["codebase_path"]
+            shutil.rmtree(path)
+            print(f"Successfully removed the folder at {path}")
+        except Exception as e:
+            print(f'Removing folder failed: {e}')
 
     pprint(new_state.keys())
     return new_state

@@ -1,44 +1,87 @@
-# Ticket Management System
+# AI-Powered Ticket Triage System
 
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Auth0](https://img.shields.io/badge/Auth0-E34D26?style=for-the-badge&logo=auth0&logoColor=white)](https://auth0.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005580?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%234EA94B.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![LangChain](https://img.shields.io/badge/LangChain-34A853?style=for-the-badge&logo=langchain&logoColor=white)](https://www.langchain.com/)
+[![Auth0](https://img.shields.io/badge/Auth0-E22300?style=for-the-badge&logo=auth0&logoColor=white)](https://auth0.com/)
+[![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://www.javascript.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-e44d26?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)](https://axios-http.com/)
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Key Features](#key-features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Environment Variables](#environment-variables)
 - [File Structure](#file-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+  - [Running the Application](#running-the-application)
+- [Usage](#usage)
+- [Backend Details](#backend-details)
+- [Frontend Details](#frontend-details)
 - [Contribution](#contribution)
-- [Support & Contact](#support--contact)
+- [License](#license)
 
 ## Introduction
 
-The Ticket Management System is a full-stack application designed to streamline the process of submitting, triaging, and resolving support tickets. It features a React-based frontend and a Python backend built with FastAPI. The system incorporates role-based access control via Auth0 for secure authentication and authorization.  Leveraging LangChain, tickets are automatically classified and routed to appropriate support teams (React, Java, Python, SQL) based on the ticket content.
+This project is a full-stack ticket triage and management system designed to streamline the process of handling user-submitted support requests.  It features a React-based frontend for ticket submission and display, and a Python backend powered by FastAPI and LangChain for automated ticket classification and routing. Auth0 is integrated for secure authentication and role-based access control.  The system leverages OpenAI's language models to intelligently classify tickets and route them to the appropriate development team (React, Java, Python, or SQL).
 
 ## Key Features
 
-*   **Automated Ticket Triage:** Utilizes LangChain and LLM agents to classify incoming tickets and route them to the relevant team.
-*   **Role-Based Access Control:** Securely manages user access using Auth0, with different roles for users and administrators.
-*   **RESTful API:** Provides a comprehensive API for managing tickets, users, and roles.
-*   **Real-time Updates:** Provides ticket lists and details through the React front end.
-*   **Modern Tech Stack:** Built with React, FastAPI, MongoDB, and other modern technologies for performance and scalability.
-*   **Ticket Submission and Display:** Enables users to submit tickets via a user-friendly interface, and displays ticket details including status and team assignment.
-*   **Ticket Closing:** Authorized users (admins) can close tickets.
-*   **Secure API calls:** Uses the `useApi` custom hook, providing API calls with access token.
+*   **AI-Powered Ticket Triage:** Automatically classifies and routes tickets to the appropriate team using LangChain and OpenAI's language models.
+*   **Secure Authentication:** Utilizes Auth0 for user authentication and authorization, ensuring secure access to the application.
+*   **Role-Based Access Control (RBAC):** Implements RBAC to restrict access to sensitive features and data based on user roles.
+*   **RESTful API:** Provides a well-defined RESTful API built with FastAPI for seamless communication between the frontend and backend.
+*   **Asynchronous Operations:** Leverages `async/await` for efficient handling of API requests and background tasks.
+*   **Real-time Ticket Management:** Provides a user-friendly interface for submitting, viewing, and managing tickets.
 
-## Installation
+## File Structure
 
-Follow these steps to set up the project locally:
+```
+.
+├── backend/                    # Python Backend (FastAPI)
+│   ├── auth.py                 # Authentication logic
+│   ├── model.py                # Data models (e.g., MongoDB schema)
+│   ├── route.py                # API routes and handlers
+│   ├── schemas.py              # Pydantic schemas for data validation and serialization
+│   ├── ticket_agent.py         # AI chatbot and ticket routing logic
+│   └── ...
+├── frontend/                   # React Frontend
+│   ├── src/                    # Source code
+│   │   ├── api.js              # API interaction functions
+│   │   ├── App.js              # Main application component
+│   │   ├── authWrapper.js      # Auth0 authentication wrapper
+│   │   ├── Login.js            # Login component
+│   │   ├── config.js             # Configuration settings for Auth0
+│   │   ├── reportWebVitals.js   # Performance monitoring
+│   │   ├── roleBasedRedirect.js # Role-based redirection logic
+│   │   ├── roleRequirer.js     # Role-based access control component
+│   │   ├── ticketDetails.js     # Ticket details component
+│   │   ├── Tickets.js          # Ticket list component
+│   │   ├── useApi.js            # Custom hook for making authenticated API calls
+│   │   └── ...
+│   ├── public/                 # Static assets
+│   └── ...
+├── .env                        # Environment variables (API keys, URIs, etc.)
+├── README.md                   # This file
+└── ...
+```
+
+## Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+*   Python 3.7+
+*   Node.js and npm
+*   MongoDB
+
+### Installation
 
 1.  **Clone the repository:**
 
@@ -47,123 +90,104 @@ Follow these steps to set up the project locally:
     cd <project_directory>
     ```
 
-2.  **Backend Setup (Python):**
+2.  **Install backend dependencies:**
 
     ```bash
     cd backend
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
     pip install -r requirements.txt
+    cd ..
     ```
 
-3.  **Frontend Setup (React):**
+3.  **Install frontend dependencies:**
 
     ```bash
     cd frontend
     npm install
+    cd ..
     ```
 
-4.  **Environment Variables:**
+### Environment Variables
 
-    Create `.env` files in both the `backend` and `frontend` directories, and populate them with the necessary environment variables. See the [Environment Variables](#environment-variables) section for details.
+Create a `.env` file in the root directory of the project and populate it with the necessary environment variables.  Example:
 
-5.  **Run the Backend:**
+```
+# Backend
+AUTH0_DOMAIN=<your_auth0_domain>
+AUTH0_CLIENT_ID=<your_auth0_client_id>
+AUTH0_CLIENT_SECRET=<your_auth0_client_secret>
+AUTH0_AUDIENCE=<your_auth0_audience>
+MONGODB_URI=<your_mongodb_uri>
+OPENAI_API_KEY=<your_openai_api_key>
+
+# Frontend
+REACT_APP_AUTH0_DOMAIN=<your_auth0_domain>
+REACT_APP_AUTH0_CLIENT_ID=<your_auth0_client_id>
+REACT_APP_AUTH0_AUDIENCE=<your_auth0_audience>
+```
+
+**Note:** Replace the placeholder values with your actual credentials and configurations.
+
+### Running the Application
+
+1.  **Start the backend:**
 
     ```bash
     cd backend
     uvicorn main:app --reload
+    cd ..
     ```
 
-6.  **Run the Frontend:**
+2.  **Start the frontend:**
 
     ```bash
     cd frontend
     npm start
+    cd ..
     ```
+
+The frontend will typically be accessible at `http://localhost:3000`, and the backend API at `http://localhost:8000`.
 
 ## Usage
 
-1.  **Access the application:** Open your web browser and navigate to the frontend URL (typically `http://localhost:3000`).
+1.  Access the application through your web browser.
+2.  Log in using your Auth0 credentials.
+3.  Submit a new ticket using the provided form.
+4.  View existing tickets and their details.
+5.  Admins can close tickets using the `TicketDetails` component.
 
-2.  **Authentication:** Log in using your Auth0 credentials.
+## Backend Details
 
-3.  **Submit a ticket:** Use the ticket submission form to create a new ticket.  The ticket will be automatically triaged and routed to the appropriate team.
+The backend is built using FastAPI and leverages several key modules:
 
-4.  **View tickets:**  Browse the list of tickets or view details for a specific ticket.
+*   **`auth.py`:** Handles authentication and authorization using Auth0. Includes functions for verifying JWT tokens and checking user roles.
+*   **`ticket_agent.py`:** Contains the core logic for ticket triage.  The `run_chatbot` function orchestrates the process, classifying messages and routing tickets to appropriate agents (e.g., `python_agent`, `sql_agent`).
+*   **`schemas.py`:** Defines Pydantic schemas for data validation and serialization.
+*   **`route.py`:** Defines API endpoints for creating, retrieving, and managing tickets.
 
-5.  **Admin actions:**  Administrators can close tickets and manage user roles through the appropriate interfaces (if implemented).
+The backend uses OpenAI's `langchain` to power the AI-driven ticket classification and routing.
 
-## API Endpoints
+## Frontend Details
 
-The backend provides the following API endpoints:
+The frontend is built using React and utilizes the following key components:
 
-*   `POST /tickets/`: Create a new ticket.
-*   `GET /tickets/`: Retrieve all tickets.
-*   `GET /tickets/{ticket_no}`: Retrieve a specific ticket by ticket number.
-*   `PUT /tickets/{ticket_no}`: Close a ticket.
-*   `GET /mytickets`: Retrieves the tickets associated with the current user
+*   **`App.js`:** Sets up the React Router and provides the main application structure.
+*   **`AuthWrapper`:** Handles authentication using Auth0.
+*   **`TicketInput`:** Provides a form for users to submit new tickets.
+*   **`TicketList`:** Displays a list of tickets.
+*   **`TicketDetails`:** Displays detailed information for a single ticket and allows admins to close tickets.
+*   **`useApi.js`:** A custom hook that provides a function to make authenticated API calls.
 
-Authentication is required for all endpoints.  Include the Auth0 access token in the `Authorization` header as `Bearer <access_token>`.  Role-based access control is enforced for certain endpoints.
-
-## Environment Variables
-
-The following environment variables are required:
-
-**Backend (.env):**
-
-*   `MONGODB_URI`: The MongoDB connection string.
-*   `AUTH0_DOMAIN`: Your Auth0 domain.
-*   `AUTH0_CLIENT_ID`: Your Auth0 client ID.
-*   `AUTH0_CLIENT_SECRET`: Your Auth0 client secret.
-*   `AUTH0_API_IDENTIFIER`: Your Auth0 API identifier.
-*   `OPENAI_API_KEY`: Your OpenAI API key.
-
-**Frontend (.env):**
-
-*   `REACT_APP_AUTH0_DOMAIN`: Your Auth0 domain.
-*   `REACT_APP_AUTH0_CLIENT_ID`: Your Auth0 client ID.
-*   `REACT_APP_AUTH0_AUDIENCE`: Your Auth0 API identifier.
-*   `REACT_APP_BACKEND_URL`: The URL of your backend API.
-
-## File Structure
-
-```
-├── backend/
-│   ├── main.py          # Main FastAPI application file
-│   ├── route.py         # Defines FastAPI routes for managing tickets
-│   ├── model.py         # Defines Pydantic models for data
-│   ├── schemas.py       # Defines data serialization functions
-│   ├── auth.py          # Implements authentication and authorization functions
-│   ├── ticket_agent.py  # Contains functions for classifying messages and routing them to agents
-│   └── requirements.txt # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── App.js            # Main React application component
-│   │   ├── Login.js          # React component for the login page
-│   │   ├── TicketDetails.js  # React component for fetching and displaying ticket details
-│   │   ├── Tickets.js        # React component for displaying a list of tickets.
-│   │   ├── authWrapper.js    # Function for calling authenticated APIs
-│   │   ├── useApi.js         # Custom hook for making API calls with authentication
-│   │   ├── roleRequirer.js   # React component for requiring specific roles for access control
-│   │   ├── roleBasedRedirect.js # React component for redirecting users based on their roles
-│   │   ├── config.js         # Manages Auth0 configuration
-│   │   └── reportWebVitals.js # Reports web vitals for performance monitoring
-│   ├── package.json       # Frontend dependencies
-│   └── public/
-│       └── index.html       # Main HTML file
-├── .env                # Environment variables (should NOT be committed)
-└── README.md           # This file
-```
+The frontend interacts with the backend API to retrieve and manage ticket data.
 
 ## Contribution
 
-We welcome contributions to the Ticket Management System! Please follow these guidelines:
+Contributions are welcome! Please follow these steps:
 
 1.  Fork the repository.
 2.  Create a new branch for your feature or bug fix.
-3.  Make your changes and write tests.
-4.  Submit a pull request with a clear description of your changes.
+3.  Make your changes and commit them with descriptive messages.
+4.  Submit a pull request.
 
-## Support & Contact
+## License
 
-If you encounter any issues or have questions, please contact us by opening an issue on GitHub.
+This project is licensed under the [MIT License](LICENSE).
