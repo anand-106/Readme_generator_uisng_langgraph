@@ -1,13 +1,10 @@
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import interrupt, Command
-from typing import TypedDict, List, Dict, Any, Literal
+from typing import TypedDict, List, Any, Dict, Literal
 from api.utils.github_utils import clone_repo
-import os, sys
+from pprint import pprint
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# Define the pipeline state
 class ReadmeState(TypedDict, total=False):
     codebase_path: str
     structure: List[Any]
@@ -19,7 +16,6 @@ class ReadmeState(TypedDict, total=False):
     project_description: str
     action: Literal["regenerate", "end"]
 
-# Nodes
 def walk_codebase_node(state: ReadmeState):
     from Parser.code_walker import walk_codebase
     state["structure"] = walk_codebase(state["codebase_path"])
@@ -42,23 +38,21 @@ def summarizer_node(state: ReadmeState):
 
 def readme_node(state: ReadmeState):
     from summerize.summerizer import generate_final_summary
-    state["readme"] = generate_final_summary(
-        state["summary"],
-        preferences=state["preferences"],
-        project_description=state["project_description"]
-    )
+    state["readme"] = generate_final_summary(state["summary"], preferences=state["preferences"], project_description=state["project_description"])
     return state
 
 def user_feedback_node(state: ReadmeState):
-    return interrupt({"readme": state["readme"], "message": "Review and choose to regenerate or end."})
+    value = interrupt({"readme": state["readme"]})
+    print("In interrept node")
+    return value
 
 def should_continue(state: ReadmeState):
+    print("checking should continue or not")
+    print(f'In state it is : {state.get("action", "end")}')
     return state.get("action", "end")
 
-# Build LangGraph
 def readme_graph():
     builder = StateGraph(ReadmeState)
-
     builder.add_node("WalkCodebase", walk_codebase_node)
     builder.add_node("ASTParser", parser_node)
     builder.add_node("Chunker", chunker_node)
@@ -72,19 +66,16 @@ def readme_graph():
     builder.add_edge("Chunker", "Summarizer")
     builder.add_edge("Summarizer", "ReadmeGenerator")
     builder.add_edge("ReadmeGenerator", "UserFeedback")
+
     builder.add_conditional_edges("UserFeedback", should_continue, {
         "regenerate": "ReadmeGenerator",
         "end": END
     })
 
-    checkpoint = InMemorySaver()
-    return builder.compile(checkpointer=checkpoint)
+    return builder.compile(checkpointer=InMemorySaver())
 
-# Session store
 SESSION_CACHE: Dict[str, Any] = {}
-config = {"configurable": {"thread_id": "1"}}
 
-# First-time run
 def run_readme_pipeline(url: str, description: str, preferences: dict, session_id: str):
     codebase_path = clone_repo(url)
     input_state = {
@@ -93,29 +84,42 @@ def run_readme_pipeline(url: str, description: str, preferences: dict, session_i
         "preferences": preferences,
         "action": "regenerate"
     }
-
     graph = readme_graph()
-    iterator = graph.stream(input_state, config=config)
+    config = {"configurable": {"thread_id": session_id}}
 
-    # Run until first interrupt
-    for _ in range(5):
-        step = next(iterator)
+    iterator = graph.invoke(input_state, config=config)
+    
+    SESSION_CACHE[session_id] = {
+    "graph": graph,
+    "state": input_state,
+    "ended": False
+}
 
-    SESSION_CACHE[session_id] = iterator
-    return step["ReadmeGenerator"]  # Includes intermediate state like readme
+    pprint(iterator.keys())
+    return iterator
 
-# Resume with user input
 def resume_readme_pipeline(session_id: str, action: str = "end"):
-    iterator = SESSION_CACHE.get(session_id)
-
-    if not iterator:
+    session = SESSION_CACHE.get(session_id)
+    if not session:
         raise ValueError("Session not found")
+    if session.get("ended", False):
+        raise RuntimeError("This session has already ended and cannot be resumed.")
 
-    try:
-        step = iterator.send({"action": action})
-        SESSION_CACHE[session_id] = iterator
-        step=next(iterator)
-        return step["ReadmeGenerator"]
-    except StopIteration as e:
-        SESSION_CACHE.pop(session_id, None)
-        return e.value
+    graph = session["graph"]
+    previous_state = session["state"]
+
+    # Update action
+    previous_state["action"] = action
+
+    config = {"configurable": {"thread_id": session_id}}
+    new_state = graph.invoke(Command(resume=previous_state), config=config)
+
+    # Save updated state
+    SESSION_CACHE[session_id]["state"] = new_state
+
+    if action == "end":
+        SESSION_CACHE[session_id]["ended"]=True
+
+    pprint(new_state.keys())
+    return new_state
+

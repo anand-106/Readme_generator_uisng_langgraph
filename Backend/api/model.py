@@ -1,9 +1,8 @@
-from pydantic import BaseModel,HttpUrl
+from pydantic import BaseModel
 from typing import Dict
 
-
 class ReadmeRequest(BaseModel):
-    github_url: HttpUrl
+    github_url: str
     project_description: str
     preferences: Dict
     session_id: str
