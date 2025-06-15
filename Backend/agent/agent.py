@@ -108,14 +108,11 @@ def resume_readme_pipeline(session_id: str, action: str = "end"):
 
     graph = session["graph"]
     previous_state = session["state"]
-
-    # Update action
     previous_state["action"] = action
 
     config = {"configurable": {"thread_id": session_id}}
     new_state = graph.invoke(Command(resume=previous_state), config=config)
 
-    # Save updated state
     SESSION_CACHE[session_id]["state"] = new_state
 
     if action == "end":

@@ -1,0 +1,11 @@
+import { LinkTextBox } from "../components/home/LinkTextBox";
+import { Title } from "../components/home/Title";
+
+export function HomePage() {
+  return (
+    <div className="min-h-screen bg-[#14191f] flex flex-col items-center justify-center">
+      <Title />
+      <LinkTextBox />
+    </div>
+  );
+}
