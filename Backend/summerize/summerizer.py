@@ -66,7 +66,7 @@ def summerize_chunks(chunks):
     
     return summaries
 
-def generate_final_summary(chunk_summaries, project_structure=None):
+def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description=""):
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))  
     model = genai.GenerativeModel(model_name='gemini-2.0-flash')
 
@@ -135,17 +135,26 @@ Contribution Guide
 Support & Contact
 
 Furthermore, add or remove the sections based upon the whole working and structure of the provided codebase.
-
+Return the README content as raw Markdown, without wrapping it in code fences.
 README-Level Project Summary:
 """
 
     try:
         print("Started generating readme.md")
         response = model.generate_content(prompt)
-        f = open("response.md",'w',encoding='utf-8')
-        f.write(response.text.strip())
+        
         print("Succesfully generated readme.md")
-        return response.text.strip()
+        content = response.text.strip()
+
+        if content.startswith("```markdown"):
+           content = content[len("```markdown"):].lstrip()
+        if content.endswith("```"):
+           content = content[:-3].rstrip()
+        
+        f = open("response.md",'w',encoding='utf-8')
+        f.write(content)
+
+        return content
         
     except Exception as e:
         return f"[ERROR generating final summary]: {str(e)}"
