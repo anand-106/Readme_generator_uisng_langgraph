@@ -90,14 +90,14 @@ Use the provided code chunk summaries and project structure to:
 - Mention important agents, workflows, or modules when relevant.
 - Use concise, developer-friendly language with technical precision.
 
-🧩 **Formatting Requirements**:
+**Formatting Requirements**:
 - The project title and badges **must be centered** using `<p align="center"> ... </p>`.
-- Use heading syntax like: `# <p align="center">Your Title Here</p>` the # should always be outside the <p> tag , must make sure of that.
+- Use heading syntax like: `# <p align="center">Your Title Here</p>` the # should always be outside the <p> tag , must make sure of that and that must not change at any circumstances.
 - Insert all badges **inside** the centered `<p>` block. Use proper shields.io badge URLs.
 - Do **not** wrap the output in triple backticks (raw markdown only).
 - Maintain proper markdown formatting with bold text, headers, bullet points, and links where appropriate.
 
-📦 **Content Requirements**:
+ **Content Requirements**:
 
 ### 1. Title & Centered Badges (Required)
 - Use: `# <p align="center">Project Name</p>` the # should be always outside the <p> tag.
@@ -105,10 +105,10 @@ Use the provided code chunk summaries and project structure to:
 - Include relevant tech badges: FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc.
 
 ### 2. Introduction
-- Briefly describe the project in 2–4 lines.
+- Briefly describe the project in 2-4 lines.
 - Mention its purpose, use case, and target users.
 
-### 3. Table of Contents (if the README is long)
+### 3. Table of Contents
 
 ### 4. Key Features
 - List major features, components, workflows, or capabilities.
@@ -127,7 +127,7 @@ Use the provided code chunk summaries and project structure to:
 - List required env vars and what they are used for.
 
 ### 9. Project Structure
-- Include the project’s file structure for context. The structure is: {file_structure}
+- Include the project's file structure for context. The structure is: {file_structure}.Dont forget to add this.
 
 
 ### 10. Technologies Used

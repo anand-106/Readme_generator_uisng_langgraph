@@ -39,7 +39,7 @@ def summarizer_node(state: ReadmeState):
 
 def readme_node(state: ReadmeState):
     from summerize.summerizer import generate_final_summary
-    state["readme"] = generate_final_summary(state["summary"], preferences=state["preferences"], project_description=state["project_description"])
+    state["readme"] = generate_final_summary(state["summary"], preferences=state["preferences"], project_description=state["project_description"],project_structure=state["structure"])
     return state
 
 def user_feedback_node(state: ReadmeState):
