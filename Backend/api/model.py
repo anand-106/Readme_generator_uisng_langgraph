@@ -1,12 +1,6 @@
 from pydantic import BaseModel
 from typing import Dict
 
-class ReadmeRequest(BaseModel):
-    github_url: str
-    project_description: str
-    preferences: Dict
-    session_id: str
-
 class ReadPreferences(BaseModel):
     title: bool
     badge : bool
@@ -20,6 +14,11 @@ class ReadPreferences(BaseModel):
     project_structure:bool
     tech_used:bool
     licenses:bool
+class ReadmeRequest(BaseModel):
+    github_url: str
+    project_description: str
+    preferences: ReadPreferences
+    session_id: str
 
 class ResumeRequest(BaseModel):
     session_id: str

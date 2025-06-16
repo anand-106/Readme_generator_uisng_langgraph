@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from .model import ReadmeRequest, ReadmeResponse, ResumeRequest
 from agent.agent import run_readme_pipeline, resume_readme_pipeline
+from pprint import pprint
 
 router = APIRouter(prefix="/api/readme", tags=["Readme Generator"])
 
 @router.post("/generate", response_model=ReadmeResponse)
 async def generate_readme(request: ReadmeRequest):
+    pprint(request)
     try:
         state = run_readme_pipeline(
             url=request.github_url,
