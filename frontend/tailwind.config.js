@@ -4,7 +4,14 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        githubCode: [
+        sans: [
+          '"Segoe UI"',
+          '"Noto Sans"',
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
+        mono: [
           "SFMono-Regular",
           "Consolas",
           "Liberation Mono",

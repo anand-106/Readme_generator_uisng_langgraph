@@ -1,73 +1,27 @@
-# Support Ticket Management Portal
+# <p align="center">AI-Powered Ticketing System</p>
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![Auth0](https://img.shields.io/badge/Auth0-E34D8F?style=for-the-badge&logo=auth0&logoColor=white)](https://auth0.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![LangChain](https://img.shields.io/badge/LangChain-34A853?style=for-the-badge&logo=langchain&logoColor=white)](https://www.langchain.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-e44d26?style=for-the-badge&logo=python&logoColor=white)](https://pydantic.dev/)
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Key Features](#key-features)
-- [File Structure](#file-structure)
-- [Installation Guide](#installation-guide)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Environment Variables](#environment-variables)
-- [Contribution Guide](#contribution-guide)
-- [Support & Contact](#support--contact)
+<p align="center">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=yellow" alt="Python">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/LangChain-343A40?style=for-the-badge&logo=chainlink&logoColor=orange" alt="LangChain">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Auth0-EB5424?style=for-the-badge&logo=auth0&logoColor=white" alt="Auth0">
+</p>
 
 ## Introduction
 
-This project is a full-stack support ticket management portal designed to streamline the process of submitting, triaging, and resolving user issues. Built with a modern technology stack including React, FastAPI, MongoDB, Auth0, and LangChain, it offers a robust and scalable solution for managing support workflows.  The system leverages Language Models (LLMs) for intelligent ticket routing and analysis, improving efficiency and accuracy.
+This project is a comprehensive ticket submission and management system that leverages AI for efficient ticket triage. It provides a user-friendly React frontend for submitting tickets and a robust FastAPI backend with Langchain integration for automated ticket classification and routing. Auth0 is used for authentication and role-based access control. It's designed to streamline internal support workflows, customer issue tracking, or bug management for software development teams.
 
 ## Key Features
 
-*   **Authentication and Authorization:** Secure user authentication and role-based access control (RBAC) powered by Auth0.
-*   **Ticket Submission:**  Users can submit support tickets via a user-friendly interface.
-*   **Automated Ticket Classification & Routing:** Utilizes LangChain and LLMs to automatically classify and route tickets to the appropriate team (React, Java, Python, SQL) based on ticket content.
-*   **Intelligent Ticket Analysis:** LLMs generate summaries, technical analysis, priority assessments, and suggested approaches for each ticket.
-*   **Role-Based Access Control:** Different user roles (e.g., admin, developers, users) have varying permissions, controlling access to features and data.
-*   **Ticket Management:**  Administrators and developers can view, update, and close tickets.
-*   **API-Driven Architecture:**  A RESTful API built with FastAPI provides a clear and consistent interface for interacting with the backend.
-*   **Frontend (React):** A responsive and intuitive user interface built with React and Tailwind CSS.
-
-## File Structure
-
-```
-├── frontend/
-│   ├── src/
-│   │   ├── App.js                 # Main application component
-│   │   ├── Login.js               # Login component using Auth0
-│   │   ├── roleRequirer.js        # Role-based access control component
-│   │   ├── roleBasedRedirect.js   # Role-based redirection component
-│   │   ├── authWrapper.js         # Authentication API wrapper
-│   │   ├── useApi.js              # Custom hook for API calls
-│   │   ├── ticketDetails.js       # Component for viewing/closing tickets
-│   │   ├── reportWebVitals.js     # Performance monitoring
-│   │   ├── config.js              # Auth0 configuration
-│   │   ├── api.js                 # API function definitions
-│   │   └── ...
-│   ├── public/
-│   │   └── ...
-│   ├── package.json
-│   └── ...
-├── backend/
-│   ├── main.py                # FastAPI application entry point
-│   ├── route.py               # API endpoint definitions
-│   ├── model.py               # Pydantic data models
-│   ├── auth.py                # Authentication and authorization logic
-│   ├── schemas.py             # Data serialization schemas
-│   ├── ticket_agent.py        # Ticket classification and routing logic (LLM)
-│   └── ...
-├── .env                     # Environment variables (Auth0 credentials, DB URI, etc.)
-├── README.md
-└── ...
-```
+*   **AI-Powered Ticket Triage:** Automatically classifies and routes tickets to the appropriate team using a Langchain-based chatbot.
+*   **Role-Based Access Control (RBAC):** Implements granular access control using Auth0 roles to restrict access to certain features based on user roles (admin, developers, users).
+*   **React Frontend:** Provides a responsive and intuitive user interface built with React and Tailwind CSS.
+*   **Secure Authentication:** Integrates with Auth0 for secure user authentication and authorization.
+*   **Detailed Ticket View:** Displays comprehensive information about each ticket, including summary, technical analysis, priority, and suggested approach generated by AI agents.
+*   **API Endpoints:** Exposes a well-defined API for managing tickets, users, and roles.
 
 ## Installation Guide
 
@@ -75,7 +29,7 @@ This project is a full-stack support ticket management portal designed to stream
 
     ```bash
     git clone <repository_url>
-    cd <project_directory>
+    cd <repository_directory>
     ```
 
 2.  **Install backend dependencies:**
@@ -83,7 +37,6 @@ This project is a full-stack support ticket management portal designed to stream
     ```bash
     cd backend
     pip install -r requirements.txt
-    cd ..
     ```
 
 3.  **Install frontend dependencies:**
@@ -91,73 +44,111 @@ This project is a full-stack support ticket management portal designed to stream
     ```bash
     cd frontend
     npm install
-    cd ..
     ```
 
-4.  **Create and configure `.env` file:**
+4.  **Configure environment variables:**
 
-    Create a `.env` file in the root directory with the necessary environment variables (see [Environment Variables](#environment-variables)).  Example:
+    Create `.env` files in both the `backend` and `frontend` directories and populate them with the necessary environment variables.
+
+    **Backend (`backend/.env`):**
 
     ```
-    AUTH0_DOMAIN=your_auth0_domain
-    AUTH0_CLIENT_ID=your_auth0_client_id
-    AUTH0_CLIENT_SECRET=your_auth0_client_secret
-    AUTH0_AUDIENCE=your_auth0_audience
-    DATABASE_URI=mongodb://user:password@host:port/database
+    MONGODB_URI=<your_mongodb_uri>
+    AUTH0_DOMAIN=<your_auth0_domain>
+    AUTH0_CLIENT_ID=<your_auth0_client_id>
+    AUTH0_CLIENT_SECRET=<your_auth0_client_secret>
+    AUTH0_API_IDENTIFIER=<your_auth0_api_identifier>
     ```
 
-## Usage
+    **Frontend (`frontend/.env`):**
 
-1.  **Start the backend server:**
+    ```
+    REACT_APP_AUTH0_DOMAIN=<your_auth0_domain>
+    REACT_APP_AUTH0_CLIENT_ID=<your_auth0_client_id>
+    REACT_APP_AUTH0_AUDIENCE=<your_auth0_api_identifier>
+    REACT_APP_API_URL=<your_backend_api_url> # e.g., http://localhost:8000
+    ```
+
+5.  **Run the FastAPI server:**
 
     ```bash
     cd backend
     uvicorn main:app --reload
-    cd ..
     ```
 
-2.  **Start the frontend development server:**
+6.  **Run the React frontend:**
 
     ```bash
     cd frontend
     npm start
-    cd ..
     ```
 
-3.  **Access the application:**
+## Usage
 
-    Open your web browser and navigate to the address where the frontend server is running (usually `http://localhost:3000`).
-
-## API Endpoints
-
-The backend API provides the following endpoints:
-
-*   `GET /tickets`: Retrieves all tickets (admin/developer only).
-*   `GET /tickets/{ticket_number}`: Retrieves a specific ticket by ticket number.
-*   `POST /tickets`: Creates a new ticket.
-*   `PATCH /tickets/{ticket_number}`: Closes a ticket.
+*   **Frontend:** Access the application in your browser at the address specified when running `npm start` (usually `http://localhost:3000`).  Log in using your Auth0 credentials. Submit tickets through the form, view existing tickets, and, if you have the appropriate roles, close tickets.
+*   **API Endpoints:** The backend exposes REST API endpoints for managing tickets. Refer to the API reference (if available) for details on each endpoint.
+    *   `POST /tickets`: Create a new ticket.
+    *   `GET /tickets`: Retrieve all tickets (admin/developer only).
+    *   `GET /tickets/{ticketNo}`: Retrieve a specific ticket.
+    *   `GET /my-tickets`: Retrieve tickets associated with the current user.
+    *   `PUT /tickets/{ticketNo}/close`: Close a ticket.
 
 ## Environment Variables
 
-The following environment variables are required for the application to function correctly:
+**Backend:**
 
-*   **Auth0 Configuration:**
-    *   `AUTH0_DOMAIN`: Your Auth0 domain.
-    *   `AUTH0_CLIENT_ID`: Your Auth0 client ID.
-    *   `AUTH0_CLIENT_SECRET`: Your Auth0 client secret.
-    *   `AUTH0_AUDIENCE`: Your Auth0 API audience.
-*   **Database Configuration:**
-    *   `DATABASE_URI`:  The MongoDB connection URI.
+*   `MONGODB_URI`: URI for connecting to the MongoDB database.
+*   `AUTH0_DOMAIN`: Auth0 domain for authentication.
+*   `AUTH0_CLIENT_ID`: Auth0 client ID.
+*   `AUTH0_CLIENT_SECRET`: Auth0 client secret (used for machine-to-machine communication).
+*   `AUTH0_API_IDENTIFIER`: Auth0 API identifier (audience).
+
+**Frontend:**
+
+*   `REACT_APP_AUTH0_DOMAIN`: Auth0 domain for authentication.
+*   `REACT_APP_AUTH0_CLIENT_ID`: Auth0 client ID.
+*   `REACT_APP_AUTH0_AUDIENCE`: Auth0 API identifier (audience).
+*   `REACT_APP_API_URL`: URL of the backend API.
+
+## Project Structure
+
+```
+(No project structure provided in source documents.)
+```
+
+## Technologies Used
+
+<p align="center">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=yellow" alt="Python">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/LangChain-343A40?style=for-the-badge&logo=chainlink&logoColor=orange" alt="LangChain">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Auth0-EB5424?style=for-the-badge&logo=auth0&logoColor=white" alt="Auth0">
+</p>
+
+*   **Backend:** FastAPI (API Framework), Python (Programming Language), MongoDB (Database), Langchain (AI Integration), Pydantic (Data Validation)
+*   **Frontend:** React (UI Library), Tailwind CSS (CSS Framework), Auth0 React SDK (Authentication), Axios (HTTP Client)
+*   **Authentication:** Auth0
 
 ## Contribution Guide
 
-Contributions are welcome! Please follow these guidelines:
+We welcome contributions to this project! Please follow these guidelines:
 
 1.  Fork the repository.
 2.  Create a new branch for your feature or bug fix.
-3.  Write clear and concise commit messages.
+3.  Write clear and concise code with appropriate comments.
 4.  Submit a pull request with a detailed description of your changes.
 
 ## Support & Contact
 
-If you encounter any issues or have questions, please open an issue on the GitHub repository.
+For issues or questions, please open an issue on GitHub.
+
+## License
+
+MIT License
+
+<p align="center">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
+</p>

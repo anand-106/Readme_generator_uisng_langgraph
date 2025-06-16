@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown-viewer p[align="center"] {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.markdown-viewer p[align="center"] a {
+  display: inline-block;
+}
+
+/* markdown.css */
+.markdown-rendered pre {
+  background-color: #141b23 !important;
+  color: #c9d1d9 !important;
+}
+
+.markdown-rendered code {
+  background-color: #141b23 !important;
+  color: #c9d1d9 !important;
+}
