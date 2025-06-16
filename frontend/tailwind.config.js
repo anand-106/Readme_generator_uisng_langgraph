@@ -2,7 +2,17 @@
 module.exports = {
   content: ["./src/**/*.js"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        githubCode: [
+          "SFMono-Regular",
+          "Consolas",
+          "Liberation Mono",
+          "Menlo",
+          "monospace",
+        ],
+      },
+    },
   },
   plugins: [require("@tailwindcss/typography")],
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function LinkTextBox() {
-  const [repoUrl, setRepoUrl] = useState();
+  const [repoUrl, setRepoUrl] = useState("");
   const navigate = useNavigate();
   const handleSubmit = () => {
     if (repoUrl.trim()) {
