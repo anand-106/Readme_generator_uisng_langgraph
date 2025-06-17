@@ -3,13 +3,20 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
+import { useState } from "react";
 
 export function MarkdownViewer({ readmeData }) {
+  const [activeTab, setActiveTab] = useState("preview");
+
   return (
-    <div className="h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#0d1017] text-white font-sans">
-      {readmeData?.readme && (
-        <div
-          className="markdown-viewer prose prose-invert max-w-none markdown-rendered
+    <div className="h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#0d1017] text-white font-sans relative">
+      <div className="fixed right-10 bottom-5 z-20 ">
+        <ToggleSwitch activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+      {readmeData?.readme &&
+        (activeTab === "preview" ? (
+          <div
+            className="markdown-viewer prose prose-invert max-w-none markdown-rendered
             prose-pre:rounded-lg prose-pre:px-4 prose-pre:py-3
            prose-code:rounded prose-code:px-1 prose-code:py-0.5
             prose-code:font-[SFMono-Regular,Consolas,Liberation_Mono,Menlo,monospace]
@@ -18,19 +25,46 @@ export function MarkdownViewer({ readmeData }) {
             prose-table:border prose-th:border prose-td:border
             leading-[1.4]
             transition-all duration-150"
-        >
-          <ReactMarkdown
-            children={readmeData.readme}
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeHighlight]}
-          />
-        </div>
-      )}
-      <ToggleSwitch />
+          >
+            <ReactMarkdown
+              children={readmeData.readme}
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeHighlight]}
+            />
+          </div>
+        ) : (
+          <div className="h-full w-full bg-inherit text-white p-4 overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-400">
+            <pre className="whitespace-pre-wrap break-words font-mono text-sm bg-inherit">
+              <code className="language-markdown text-sm font-mono">
+                {readmeData.readme}
+              </code>
+            </pre>
+          </div>
+        ))}
     </div>
   );
 }
 
-function ToggleSwitch() {
-  return <div className="h-10 w-36 bg-white rounded-lg"></div>;
+function ToggleSwitch({ setActiveTab, activeTab }) {
+  return (
+    <div className="h-10 w-36 bg-white rounded-lg flex gap-2 text-black relative">
+      <div
+        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-slate-400  transition-transform duration-500 ease-in-out ${
+          activeTab === "preview" ? "translate-x-0" : "translate-x-full"
+        }`}
+      />
+      <button
+        className="min-h-full w-1/2 z-10"
+        onClick={() => setActiveTab("preview")}
+      >
+        Preview
+      </button>
+      <button
+        className="min-h-full w-1/2 z-10"
+        onClick={() => setActiveTab("code")}
+      >
+        Code
+      </button>
+    </div>
+  );
 }

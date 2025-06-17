@@ -149,6 +149,7 @@ function Description({ setDescription }) {
         onChange={(e) => {
           setDescription(e.target.value);
         }}
+        placeholder="short description..."
       ></textarea>
     </div>
   );
