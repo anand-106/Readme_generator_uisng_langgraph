@@ -4,6 +4,7 @@ import { callApi } from "../../utils/api/ApiCaller";
 export function Preferences({ repoUrl, setReadmeData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [proj_description, setDescription] = useState("");
+  const [isRegenerate, setIsRegenerate] = useState(false);
 
   const [preferences, setPreferences] = useState({
     title: true,
@@ -35,6 +36,23 @@ export function Preferences({ repoUrl, setReadmeData }) {
 
     setReadmeData(readmeResponse);
     setIsLoading(false);
+    setIsRegenerate(true);
+  };
+
+  const reGenerateRequest = async () => {
+    setIsLoading(true);
+    const readmeResponse = await callApi({
+      url: "http://localhost:8000/api/readme/resume",
+      method: "POST",
+      payload: {
+        session_id: "demo-session-001",
+        action: "regenerate",
+        project_description: proj_description,
+        preferences: preferences,
+      },
+    }).catch((err) => console.log(err));
+    setReadmeData(readmeResponse);
+    setIsLoading(false);
   };
 
   return (
@@ -48,15 +66,27 @@ export function Preferences({ repoUrl, setReadmeData }) {
       <CheckList preferences={preferences} setPreferences={setPreferences} />
 
       <div className="w-full mt-auto">
-        <button
-          onClick={GenerateRequest}
-          className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={isLoading}
-        >
-          {isLoading ? "Generating..." : "Generate"}
-        </button>
+        {isRegenerate ? (
+          <button
+            onClick={reGenerateRequest}
+            className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Regnerating..." : "Regenerate"}
+          </button>
+        ) : (
+          <button
+            onClick={GenerateRequest}
+            className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Generating..." : "Generate"}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -71,7 +101,7 @@ function CheckList({ preferences, setPreferences }) {
   };
 
   return (
-    <div className="mt-4 pl-1 pb-4 w-full flex flex-col gap-4 overflow-y-auto scrollbar-hide">
+    <div className="mt-4 pl-1 pb-4 w-full flex flex-col gap-4 overflow-y-auto scrollbar-none">
       {[
         ["title", "Title"],
         ["badge", "Badge"],
@@ -115,7 +145,7 @@ function Description({ setDescription }) {
   return (
     <div className="w-full h-72 border-blue-500 rounded-lg border-2 mt-5">
       <textarea
-        className="h-full w-full rounded-lg bg-inherit text-white p-2"
+        className="h-full w-full rounded-lg bg-inherit text-white p-2 resize-none"
         onChange={(e) => {
           setDescription(e.target.value);
         }}

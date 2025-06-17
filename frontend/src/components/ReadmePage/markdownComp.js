@@ -26,6 +26,11 @@ export function MarkdownViewer({ readmeData }) {
           />
         </div>
       )}
+      <ToggleSwitch />
     </div>
   );
+}
+
+function ToggleSwitch() {
+  return <div className="h-10 w-36 bg-white rounded-lg"></div>;
 }

@@ -19,10 +19,14 @@ class ReadmeRequest(BaseModel):
     project_description: str
     preferences: ReadPreferences
     session_id: str
+    
 
 class ResumeRequest(BaseModel):
     session_id: str
-    action: str  # "regenerate" or "end"
+    action: str
+    project_description: str
+    preferences: ReadPreferences
+
 
 class ReadmeResponse(BaseModel):
     readme: str
