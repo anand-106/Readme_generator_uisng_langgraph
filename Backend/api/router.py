@@ -22,7 +22,7 @@ async def generate_readme(request: ReadmeRequest):
 @router.post("/resume", response_model=ReadmeResponse)
 async def resume_readme(request: ResumeRequest):
     try:
-        state = resume_readme_pipeline(session_id=request.session_id, action=request.action)
+        state = resume_readme_pipeline(session_id=request.session_id, action=request.action,preferences=request.preferences,description=request.project_description)
         return ReadmeResponse(readme=state.get('readme'))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

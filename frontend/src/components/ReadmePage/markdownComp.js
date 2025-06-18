@@ -47,20 +47,25 @@ export function MarkdownViewer({ readmeData }) {
 
 function ToggleSwitch({ setActiveTab, activeTab }) {
   return (
-    <div className="h-10 w-36 bg-white rounded-lg flex gap-2 text-black relative">
+    <div className="h-10 w-36 bg-white rounded-lg flex gap-2  relative border-white border-2">
       <div
-        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-slate-400  transition-transform duration-500 ease-in-out ${
+        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-slate-500  transition-transform duration-500 ease-in-out ${
           activeTab === "preview" ? "translate-x-0" : "translate-x-full"
         }`}
       />
+
       <button
-        className="min-h-full w-1/2 z-10"
+        className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${
+          activeTab === "preview" ? "text-white" : "text-black"
+        } `}
         onClick={() => setActiveTab("preview")}
       >
         Preview
       </button>
       <button
-        className="min-h-full w-1/2 z-10"
+        className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${
+          activeTab === "preview" ? "text-black" : "text-white"
+        } `}
         onClick={() => setActiveTab("code")}
       >
         Code

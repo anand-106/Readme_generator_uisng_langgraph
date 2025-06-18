@@ -22,6 +22,8 @@ export function Preferences({ repoUrl, setReadmeData }) {
   });
 
   const GenerateRequest = async () => {
+    console.log("Regenerating with preferences:", preferences);
+    console.log("Description:", proj_description);
     setIsLoading(true);
     const readmeResponse = await callApi({
       url: "http://localhost:8000/api/readme/generate",
@@ -40,6 +42,8 @@ export function Preferences({ repoUrl, setReadmeData }) {
   };
 
   const reGenerateRequest = async () => {
+    console.log("Regenerating with preferences:", preferences);
+    console.log("Description:", proj_description);
     setIsLoading(true);
     const readmeResponse = await callApi({
       url: "http://localhost:8000/api/readme/resume",

@@ -59,6 +59,7 @@ def summerize_chunks(chunks):
                 'summary':respone.text.strip()
             })
         except Exception as e:
+
             summaries.append({
                 "chunk_index": idx,
                 "summary": f"[ERROR summarizing chunk {idx}]: {str(e)}"
@@ -67,6 +68,9 @@ def summerize_chunks(chunks):
     return summaries
 
 def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description=""):
+
+    preferences = preferences.dict()
+
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))  
     model = genai.GenerativeModel(model_name='gemini-2.0-flash')
 
@@ -80,7 +84,76 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
     file_structure = json.dumps(converted_structure, indent=2)
 
 
-    # Prompt for the final README-level summary
+    section_blocks = []
+
+    if preferences["title"]:
+        section_blocks.append("""
+### 1. Title & Centered Badges (Required)
+- Use: `# <p align="center">Project Name</p>` the # should be always outside the <p> tag.""")
+
+    if preferences["badge"]:
+        section_blocks.append("""
+### 2. Centered Badges
+- Place badges using standard shields.io badge markdown (in another centered <p>).
+- Include relevant tech badges: FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc.""")
+
+    if preferences["introduction"]:
+        section_blocks.append("""
+### 3. Introduction
+- Briefly describe the project in 2–4 lines.
+- Mention its purpose, use case, and target users.""")
+
+    if preferences["table_of_contents"]:
+        section_blocks.append("""
+### 4. Table of Contents
+- Add links to each section of the README.""")
+
+    if preferences["key_features"]:
+        section_blocks.append("""
+### 5. Key Features
+- List major features, components, workflows, or capabilities.""")
+
+    if preferences["install_guide"]:
+        section_blocks.append("""
+### 6. Installation Guide
+- Step-by-step instructions: clone, install dependencies, run the FastAPI server.
+- Mention `.env` variables like Auth0 credentials, DB URI, etc.""")
+
+    if preferences["usage"]:
+        section_blocks.append("""
+### 7. Usage
+- Explain how developers or users interact with it.
+- Mention API endpoints, frontend/backend interaction, or CLI tools if applicable.""")
+
+    if preferences["api_ref"]:
+        section_blocks.append("""
+### 8. API Reference (Optional, if present)
+- Document important endpoints and request/response formats.""")
+
+    if preferences["env_var"]:
+        section_blocks.append("""
+### 9. Environment Variables
+- List required env vars and what they are used for.""")
+
+    if preferences["project_structure"]:
+        section_blocks.append(f"""
+### 10. Project Structure
+- Include the project's file structure for context. The structure is: {file_structure}""")
+    if preferences["tech_used"]:
+        section_blocks.append("""
+### 11. Technologies Used
+- Use `shields.io` badges to represent the stack visually.
+- Mention backend, frontend, database, auth, and tools.""")
+
+    if preferences["licenses"]:
+        section_blocks.append("""
+### 12. License
+- Mention the license (e.g., MIT) and include a badge.""")
+
+    # Combine everything
+    content_requirements = "\n".join(section_blocks)
+
+    # Final prompt
     prompt = f"""
 You are a senior software engineer tasked with writing a modern, professional, high-level `README.md` for a GitHub project.
 
@@ -92,58 +165,17 @@ Use the provided code chunk summaries and project structure to:
 
 **Formatting Requirements**:
 - The project title and badges **must be centered** using `<p align="center"> ... </p>`.
-- Use heading syntax like: `# <p align="center">Your Title Here</p>` the # should always be outside the <p> tag , must make sure of that and that must not change at any circumstances.
-- Insert all badges **inside** the centered `<p>` block. Use proper shields.io badge URLs.
-- Do **not** wrap the output in triple backticks (raw markdown only).
-- Maintain proper markdown formatting with bold text, headers, bullet points, and links where appropriate.
+- Use heading syntax like: `# <p align="center">Your Title Here</p>` — the `#` should always be outside the `<p>` tag. This **must not change**.
+- Insert all badges **inside** the centered `<p>` block using proper shields.io badge URLs.
+- Do **not** wrap the output in triple backticks.
+- Use proper markdown formatting — bold text, headers, bullet points, and links.
 
- **Content Requirements**:
+**Content Requirements**:
+{content_requirements}
 
-### 1. Title & Centered Badges (Required)
-- Use: `# <p align="center">Project Name</p>` the # should be always outside the <p> tag.
-- Below it, place badges using standard shields.io badge markdown (in the another centered <p>).
-- Include relevant tech badges: FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc.
+do not add or remove extra sections other than these.
 
-### 2. Introduction
-- Briefly describe the project in 2-4 lines.
-- Mention its purpose, use case, and target users.
-
-### 3. Table of Contents
-
-### 4. Key Features
-- List major features, components, workflows, or capabilities.
-
-### 5. Installation Guide
-- Step-by-step instructions: clone, install dependencies, run the FastAPI server.
-- Mention `.env` variables like Auth0 credentials, DB URI, etc.
-
-### 6. Usage
-- Briefly explain how developers or users interact with it.
-- Mention API endpoints, frontend/backend interaction, or CLI tools if applicable.
-
-### 7. API Reference (Optional, if present)
-
-### 8. Environment Variables
-- List required env vars and what they are used for.
-
-### 9. Project Structure
-- Include the project's file structure for context. The structure is: {file_structure}.Dont forget to add this.
-
-
-### 10. Technologies Used
-- Use `shields.io` badges to represent the stack visually.
-- Mention backend, frontend, database, auth, and tools.
-
-### 11. Contribution Guide
-- Instructions for contributing, PR guidelines, etc.
-
-### 12. Support & Contact
-- How users can raise issues or reach out.
-
-### 13. License
-- Mention and badge (e.g., MIT).
-
-Use or skip sections based on the actual project and its complexity.
+also take into account : {project_description}
 
 ---
 
@@ -152,7 +184,13 @@ Below are the code chunk summaries for the project:
 {combined_summary}
 
 Now, generate the entire `README.md` as **raw Markdown**.
+
 """
+
+
+
+    print(f'the prompt is : {prompt}')
+    
 
     try:
         print("Started generating readme.md")

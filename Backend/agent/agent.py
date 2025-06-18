@@ -99,7 +99,7 @@ def run_readme_pipeline(url: str, description: str, preferences: dict, session_i
     pprint(iterator.keys())
     return iterator
 
-def resume_readme_pipeline(session_id: str, action: str = "end"):
+def resume_readme_pipeline(session_id: str,description: str, preferences: dict ,action: str = "end" ):
     session = SESSION_CACHE.get(session_id)
     if not session:
         raise ValueError("Session not found")
@@ -109,6 +109,8 @@ def resume_readme_pipeline(session_id: str, action: str = "end"):
     graph = session["graph"]
     previous_state = session["state"]
     previous_state["action"] = action
+    previous_state["preferences"] = preferences
+    previous_state["project_description"] = description
 
     config = {"configurable": {"thread_id": session_id}}
     new_state = graph.invoke(Command(resume=previous_state), config=config)
