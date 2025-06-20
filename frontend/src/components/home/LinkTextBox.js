@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 export function LinkTextBox() {
   const [repoUrl, setRepoUrl] = useState("");
   const navigate = useNavigate();
   const handleSubmit = () => {
-    if (repoUrl.trim()) {
-      navigate(`/readme?repo=${encodeURIComponent(repoUrl)}`);
+    const sanitized_url = DOMPurify.sanitize(repoUrl.trim());
+    const isValidGitHubUrl =
+      /^https:\/\/(www\.)?github\.com\/[^/]+\/[^/]+\/?$/.test(sanitized_url);
+
+    if (sanitized_url && isValidGitHubUrl) {
+      navigate(`/readme?repo=${encodeURIComponent(sanitized_url)}`);
+    } else {
+      alert("Please enter a valid GitHub URL.");
     }
   };
 

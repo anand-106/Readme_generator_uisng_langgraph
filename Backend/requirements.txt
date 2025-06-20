@@ -1,0 +1,31 @@
+# FastAPI and web framework dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# LangGraph and AI dependencies
+langgraph>=0.0.40
+langchain>=0.1.0
+
+# Google Generative AI
+google-generativeai>=0.3.0
+
+# Git operations
+gitpython>=3.1.0
+
+# Token estimation
+tiktoken>=0.5.0
+
+# Tree-sitter for code parsing
+tree-sitter>=0.20.0
+tree-sitter-python>=0.20.0
+tree-sitter-javascript>=0.20.0
+
+# Progress bars
+tqdm>=4.66.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Standard library dependencies (usually included with Python)
+# os, pathlib, json, re, collections, typing, tempfile, shutil, pprint 

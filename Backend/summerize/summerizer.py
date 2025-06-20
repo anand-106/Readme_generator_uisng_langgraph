@@ -164,11 +164,14 @@ Use the provided code chunk summaries and project structure to:
 - Use concise, developer-friendly language with technical precision.
 
 **Formatting Requirements**:
-- The project title and badges **must be centered** using `<p align="center"> ... </p>`.
-- Use heading syntax like: `# <p align="center">Your Title Here</p>` — the `#` should always be outside the `<p>` tag. This **must not change**.
-- Insert all badges **inside** the centered `<p>` block using proper shields.io badge URLs.
-- Do **not** wrap the output in triple backticks.
-- Use proper markdown formatting — bold text, headers, bullet points, and links.
+
+- The project **title and badges must be centered** using `<p align="center"> ... </p>` syntax.
+- The **title must use this exact format**: `# <p align="center">Your Title Here</p>` — `#` must always be outside the `<p>` tag.
+- The **badges block** must appear in a **separate** line after the title like:
+  <p align="center">
+    <a href="#"><img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+  </p>
 
 **Content Requirements**:
 {content_requirements}

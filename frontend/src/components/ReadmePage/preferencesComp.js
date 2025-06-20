@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { callApi } from "../../utils/api/ApiCaller";
 
-export function Preferences({ repoUrl, setReadmeData }) {
-  const [isLoading, setIsLoading] = useState(false);
+export function Preferences({
+  repoUrl,
+  setReadmeData,
+  setFirstGenerate,
+  isLoading,
+  setIsLoading,
+}) {
   const [proj_description, setDescription] = useState("");
   const [isRegenerate, setIsRegenerate] = useState(false);
 
@@ -39,6 +44,7 @@ export function Preferences({ repoUrl, setReadmeData }) {
     setReadmeData(readmeResponse);
     setIsLoading(false);
     setIsRegenerate(true);
+    setFirstGenerate(true);
   };
 
   const reGenerateRequest = async () => {
