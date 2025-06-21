@@ -95,6 +95,10 @@ def run_readme_pipeline(url: str, description: str, preferences: dict, session_i
     "state": input_state,
     "ended": False
 }
+    try:
+        shutil.rmtree(codebase_path)
+    except Exception as e:
+        print(f"error removing tree: {e}")
 
     pprint(iterator.keys())
     return iterator

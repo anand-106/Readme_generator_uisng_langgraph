@@ -192,7 +192,7 @@ Now, generate the entire `README.md` as **raw Markdown**.
 
 
 
-    print(f'the prompt is : {prompt}')
+    # print(f'the prompt is : {prompt}')
     
 
     try:
