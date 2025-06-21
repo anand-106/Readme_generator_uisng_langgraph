@@ -13,4 +13,4 @@ def clone_repo(url: str)->str:
         return tmp_dir
     except Exception as e:
         shutil.rmtree(tmp_dir,ignore_errors=False)
-        raise Exception("Failed to clone repo: {e}")
+        raise Exception(f"Failed to clone repo: {e}")
