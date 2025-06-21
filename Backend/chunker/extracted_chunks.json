@@ -2,278 +2,1533 @@
   [
     {
       "type": "function",
-      "name": "TicketDetails",
-      "start_line": 7,
-      "end_line": 234,
-      "lines": 228,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "useParams",
-        "useState",
-        "useState",
-        "useState",
-        "useAuth0",
-        "useEffect",
-        "getAccessTokenSilently",
-        "axios.get",
-        "setTicket",
-        "setisOpen",
-        "console.log",
-        "fetchTicket",
-        "priority?.toLowerCase",
-        "setisClosing",
-        "axios.patch",
-        "console.log",
-        "console.log",
-        "setisClosing",
-        "setisOpen",
-        "tPriorityColor(\n"
-      ],
-      "complexity": 5,
+      "name": "generate_final_summary",
+      "start_line": 70,
+      "end_line": 216,
+      "lines": 147,
       "docstring": null,
-      "raw_code": "function TicketDetails() {\n  const { ticketNo } = useParams();\n  const [Ticket, setTicket] = useState(null);\n  const [isClosing, setisClosing] = useState(false);\n  const [isOpen, setisOpen] = useState(null);\n  const { getAccessTokenSilently } = useAuth0();\n\n  useEffect(() => {\n    const fetchTicket = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    };\n    fetchTicket();\n  }, [ticketNo]);\n\n  if (!Ticket)\n    return (\n      <div className=\"min-h-screen bg-slate-900 flex items-center justify-center\">\n        <h1 className=\"text-white text-2xl\">Loading...</h1>\n      </div>\n    );\n\n  const getPriorityColor = (priority) => {\n    switch (priority?.toLowerCase()) {\n      case \"high\":\n        return \"bg-red-500\";\n      case \"medium\":\n        return \"bg-yellow-500\";\n      case \"low\":\n        return \"bg-green-500\";\n      default:\n        return \"bg-gray-500\";\n    }\n  };\n\n  const closeTicket = async () => {\n    setisClosing(true);\n    try {\n      const response = await axios.patch(\n        `http://127.0.0.1:8001/ticket/${ticketNo}`,\n        { isOpen: false }\n      );\n      console.log(response);\n    } catch (e) {\n      console.log(e);\n    } finally {\n      setisClosing(false);\n      setisOpen(false);\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-slate-900 text-white p-6\">\n      <div className=\"max-w-6xl mx-auto\">\n        {/* Header */}\n        <div className=\"mb-8\">\n          <div className=\"flex items-center justify-between mb-4\">\n            <h1 className=\"text-4xl font-bold\">Ticket Details</h1>\n            <Link to={\"/\"}>\n              <button className=\"text-blue-400 hover:text-blue-300 text-lg\">\n                ← Back to Tickets\n              </button>\n            </Link>\n          </div>\n\n          {/* Ticket Header Info */}\n          <div className=\"bg-slate-800 rounded-lg p-6 mb-6\">\n            <div className=\"flex items-center justify-between mb-4\">\n              <div className=\"flex items-center gap-4\">\n                <h2 className=\"text-2xl font-semibold text-blue-400\">\n                  Ticket # {Ticket.ticket_no}\n                </h2>\n                <span\n                  className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(\n                    Ticket.priority\n                  )}`}\n                >\n                  {Ticket.priority}\n                </span>\n                <span\n                  className={`px-3 py-1 rounded-full text-sm font-medium ${\n                    isOpen ? \"bg-green-600\" : \"bg-gray-600\"\n                  }`}\n                >\n                  {isOpen ? \"Open\" : \"Closed\"}\n                </span>\n              </div>\n              <div className=\"text-right text-gray-400\">\n                <div>\n                  Team: <span className=\"text-white\">{Ticket.team}</span>\n                </div>\n                <div>Submitted: {Ticket.time}</div>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        {/* Single Rounded Box for All Ticket Details */}\n        <div className=\"bg-slate-800 rounded-lg p-8\">\n          {/* Ticket Metadata Section */}\n          <div className=\"mb-8 pb-6 border-b border-slate-700\">\n            <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\">\n              <div>\n                <span className=\"text-gray-400 text-sm\">Ticket ID:</span>\n                <p className=\"text-white font-mono text-sm\">{Ticket.id}</p>\n              </div>\n              <div>\n                <span className=\"text-gray-400 text-sm\">Team:</span>\n                <p className=\"text-white\">{Ticket.team}</p>\n              </div>\n              <div>\n                <span className=\"text-gray-400 text-sm\">Created:</span>\n                <p className=\"text-white\">{Ticket.time}</p>\n              </div>\n            </div>\n          </div>\n\n          {/* Original Request */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Original Request\n            </h3>\n            <div className=\"bg-slate-700 rounded-lg p-4\">\n              <p className=\"text-gray-300\">{Ticket.message}</p>\n            </div>\n          </div>\n\n          {/* Summary */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Summary\n            </h3>\n            <p className=\"text-gray-300 leading-relaxed\">{Ticket.summary}</p>\n          </div>\n\n          {/* Technical Analysis */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Technical Analysis\n            </h3>\n            <p className=\"text-gray-300 leading-relaxed\">\n              {Ticket.technical_analysis}\n            </p>\n          </div>\n\n          {/* Suggested Approach */}\n          <div className=\"mb-8\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Suggested Approach\n            </h3>\n            <div className=\"text-gray-300 leading-relaxed whitespace-pre-line\">\n              {Ticket.suggested_approach}\n            </div>\n          </div>\n\n          {/* Additional Notes */}\n          {Ticket.additional_notes && (\n            <div className=\"mb-8\">\n              <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n                Additional Notes\n              </h3>\n              <p className=\"text-gray-300 leading-relaxed\">\n                {Ticket.additional_notes}\n              </p>\n            </div>\n          )}\n\n          {/* Actions */}\n          <div className=\"pt-6 border-t border-slate-700\">\n            <h3 className=\"text-xl font-semibold mb-4 text-blue-400\">\n              Actions\n            </h3>\n            <div className=\"grid grid-cols-2 md:grid-cols-4 gap-3\">\n              <RequireRole role={\"admin\"}>\n                <button\n                  className=\"bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors\"\n                  onClick={closeTicket}\n                  disabled={isClosing}\n                >\n                  {isClosing ? (\n                    <>\n                      <svg\n                        className=\"animate-spin -ml-1 mr-3 h-5 w-5 text-white\"\n                        xmlns=\"http://www.w3.org/2000/svg\"\n                        fill=\"none\"\n                        viewBox=\"0 0 24 24\"\n                      >\n                        <circle\n                          className=\"opacity-25\"\n                          cx=\"12\"\n                          cy=\"12\"\n                          r=\"10\"\n                          stroke=\"currentColor\"\n                          strokeWidth=\"4\"\n                        ></circle>\n                        <path\n                          className=\"opacity-75\"\n                          fill=\"currentColor\"\n                          d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"\n                        ></path>\n                      </svg>\n                      Closing...\n                    </>\n                  ) : (\n                    \"Close Ticket\"\n                  )}\n                </button>\n              </RequireRole>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n",
-      "chunk_id": "ticketDetails.js::TicketDetails",
-      "decorators": [],
-      "file": "ticketDetails.js"
-    },
-    {
-      "type": "function",
-      "name": "TicketInput",
-      "start_line": 121,
-      "end_line": 233,
-      "lines": 113,
-      "parameters": [
-        "(",
-        "{ getTickets }"
-      ],
-      "calls": [
-        "useState",
-        "useState",
-        "useAuth0",
-        "setInputValue",
-        "e.preventDefault",
-        "inputValue.trim",
-        "alert",
-        "setIsSubmitting",
-        "getAccessTokenSilently",
-        "fetch",
-        "JSON.stringify",
-        "response.json",
-        "console.log",
-        "alert",
-        "setInputValue",
-        "getTickets",
-        "console.error",
-        "alert",
-        "setIsSubmitting"
-      ],
-      "complexity": 4,
-      "docstring": null,
-      "raw_code": "function TicketInput({ getTickets }) {\n  const [inputValue, setInputValue] = useState(\"\");\n  const [isSubmitting, setIsSubmitting] = useState(false);\n  const { getAccessTokenSilently } = useAuth0();\n\n  const handleChange = (event) => {\n    setInputValue(event.target.value);\n  };\n\n  const handleSubmit = async (e) => {\n    e.preventDefault();\n\n    if (inputValue.trim() === \"\") {\n      alert(\"Please enter ticket details!\");\n      return;\n    }\n\n    setIsSubmitting(true);\n\n    try {\n      // Simulate API call - replace with your actual endpoint\n\n      const token = await getAccessTokenSilently();\n      const response = await fetch(\"http://localhost:8001/add-ticket\", {\n        method: \"POST\",\n        headers: {\n          \"Content-Type\": \"application/json\",\n          Authorization: `Bearer ${token}`,\n        },\n        body: JSON.stringify({\n          message: inputValue,\n        }),\n      });\n\n      if (response.ok) {\n        const data = await response.json();\n        console.log(\"Success:\", data);\n        alert(\"Ticket submitted successfully!\");\n        setInputValue(\"\");\n        getTickets(); // Clear form after successful submission\n      } else {\n        throw new Error(\"Failed to submit ticket\");\n      }\n    } catch (error) {\n      console.error(\"Error:\", error);\n      alert(\"Error submitting ticket. Please try again.\");\n    } finally {\n      setIsSubmitting(false);\n    }\n  };\n\n  return (\n    <div className=\"bg-gray-800 p-6 rounded-xl shadow-2xl\">\n      <div className=\"space-y-6\">\n        <div>\n          <label\n            className=\"block text-sm font-medium text-gray-300 mb-3\"\n            htmlFor=\"ticket-details\"\n          >\n            Ticket Details\n          </label>\n\n          <textarea\n            id=\"ticket-details\"\n            value={inputValue}\n            onChange={handleChange}\n            placeholder=\"Describe your issue or request in detail...\"\n            className=\"w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition duration-200\"\n            rows=\"4\"\n            disabled={isSubmitting}\n          />\n        </div>\n\n        <div className=\"pt-4\">\n          <button\n            type=\"button\"\n            onClick={handleSubmit}\n            disabled={isSubmitting}\n            className=\"w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out\"\n          >\n            {isSubmitting ? (\n              <>\n                <svg\n                  className=\"animate-spin -ml-1 mr-3 h-5 w-5 text-white\"\n                  xmlns=\"http://www.w3.org/2000/svg\"\n                  fill=\"none\"\n                  viewBox=\"0 0 24 24\"\n                >\n                  <circle\n                    className=\"opacity-25\"\n                    cx=\"12\"\n                    cy=\"12\"\n                    r=\"10\"\n                    stroke=\"currentColor\"\n                    strokeWidth=\"4\"\n                  ></circle>\n                  <path\n                    className=\"opacity-75\"\n                    fill=\"currentColor\"\n                    d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"\n                  ></path>\n                </svg>\n                Submitting...\n              </>\n            ) : (\n              \"Submit Ticket\"\n            )}\n          </button>\n        </div>\n      </div>\n    </div>\n  );\n}",
-      "chunk_id": "App.js::TicketInput",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "run_chatbot",
-      "start_line": 173,
-      "end_line": 230,
-      "lines": 58,
-      "docstring": null,
-      "raw_code": "def run_chatbot(user_input,user_id):\n   graph_builder = StateGraph(State)\n   graph_builder.add_node(\"classifier\",classify_message)\n   graph_builder.add_node(\"router\",router)\n   graph_builder.add_node(\"react_agent\",react_agent)\n   graph_builder.add_node(\"java_agent\",java_agent)\n   graph_builder.add_node(\"python_agent\",python_agent)\n   graph_builder.add_node(\"sql_agent\",sql_agent)\n\n   graph_builder.add_edge(START,\"classifier\")\n   graph_builder.add_edge(\"classifier\",\"router\")\n   graph_builder.add_conditional_edges(\n      \"router\",\n      lambda state: state.get(\"next\"),\n      {\n         \"react_agent\":\"react_agent\",\n         \"java_agent\":\"java_agent\",\n         \"python_agent\":\"python_agent\",\n         \"sql_agent\":\"sql_agent\"\n      }\n   )\n\n   graph_builder.add_edge(\"react_agent\",END)\n   graph_builder.add_edge(\"java_agent\",END)\n   graph_builder.add_edge(\"python_agent\",END)\n   graph_builder.add_edge(\"sql_agent\",END)\n\n   graph = graph_builder.compile()\n\n   user_input = user_input.strip()\n   if not user_input:\n      print(\"Error: Please provide a message\")\n      return\n      \n   print(f\"\\nProcessing message: {user_input}\\n\")\n   \n   initial_state = {\n      \"messages\": [{\"role\": \"user\", \"content\": user_input}],\n      \"message_type\": None\n   }\n   \n   result = graph.invoke(initial_state)\n   # print(f'The ticket is sent to the {result[\"message_type\"]} team.')\n   # print(f'Response: {result[\"messages\"][-1].content}')\n\n   content = result[\"messages\"][-1].content\n   cleaned = re.search(r\"\\{.*\\}\", content, re.DOTALL)\n\n   print(cleaned)\n\n   if cleaned:\n      team_dict = {\"message\":user_input,\"team\": result[\"message_type\"],\"user_id\": user_id }\n      result_format = team_dict | (json.loads(cleaned.group(0)))\n   else:\n      raise ValueError(\"No valid JSON found in LLM response.\")\n\n   print(result_format)\n   return result_format",
-      "chunk_id": "ticket_agent.py::run_chatbot",
+      "raw_code": "def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description=\"\"):\n\n    preferences = preferences.dict()\n\n    genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))  \n    model = genai.GenerativeModel(model_name='gemini-2.0-flash')\n\n    # Format the summaries\n    combined_summary = \"\\n\\n\".join(\n        f\"### Chunk {item['index']} Summary:\\n{item['summary']}\"\n        for item in chunk_summaries\n    )\n\n    converted_structure = convert_paths(project_structure)\n    file_structure = json.dumps(converted_structure, indent=2)\n\n\n    section_blocks = []\n\n    if preferences[\"title\"]:\n        section_blocks.append(\"\"\"\n### 1. Title & Centered Badges (Required)\n- Use: `# <p align=\"center\">Project Name</p>` the # should be always outside the <p> tag.\"\"\")\n\n    if preferences[\"badge\"]:\n        section_blocks.append(\"\"\"\n### 2. Centered Badges\n- Place badges using standard shields.io badge markdown (in another centered <p>).\n- Include relevant tech badges: FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc.\"\"\")\n\n    if preferences[\"introduction\"]:\n        section_blocks.append(\"\"\"\n### 3. Introduction\n- Briefly describe the project in 2–4 lines.\n- Mention its purpose, use case, and target users.\"\"\")\n\n    if preferences[\"table_of_contents\"]:\n        section_blocks.append(\"\"\"\n### 4. Table of Contents\n- Add links to each section of the README.\"\"\")\n\n    if preferences[\"key_features\"]:\n        section_blocks.append(\"\"\"\n### 5. Key Features\n- List major features, components, workflows, or capabilities.\"\"\")\n\n    if preferences[\"install_guide\"]:\n        section_blocks.append(\"\"\"\n### 6. Installation Guide\n- Step-by-step instructions: clone, install dependencies, run the FastAPI server.\n- Mention `.env` variables like Auth0 credentials, DB URI, etc.\"\"\")\n\n    if preferences[\"usage\"]:\n        section_blocks.append(\"\"\"\n### 7. Usage\n- Explain how developers or users interact with it.\n- Mention API endpoints, frontend/backend interaction, or CLI tools if applicable.\"\"\")\n\n    if preferences[\"api_ref\"]:\n        section_blocks.append(\"\"\"\n### 8. API Reference (Optional, if present)\n- Document important endpoints and request/response formats.\"\"\")\n\n    if preferences[\"env_var\"]:\n        section_blocks.append(\"\"\"\n### 9. Environment Variables\n- List required env vars and what they are used for.\"\"\")\n\n    if preferences[\"project_structure\"]:\n        section_blocks.append(f\"\"\"\n### 10. Project Structure\n- Include the project's file structure for context. The structure is: {file_structure}\"\"\")\n    if preferences[\"tech_used\"]:\n        section_blocks.append(\"\"\"\n### 11. Technologies Used\n- Use `shields.io` badges to represent the stack visually.\n- Mention backend, frontend, database, auth, and tools.\"\"\")\n\n    if preferences[\"licenses\"]:\n        section_blocks.append(\"\"\"\n### 12. License\n- Mention the license (e.g., MIT) and include a badge.\"\"\")\n\n    # Combine everything\n    content_requirements = \"\\n\".join(section_blocks)\n\n    # Final prompt\n    prompt = f\"\"\"\nYou are a senior software engineer tasked with writing a modern, professional, high-level `README.md` for a GitHub project.\n\nUse the provided code chunk summaries and project structure to:\n- Clearly explain what the project does.\n- Highlight core features, unique architecture, and technical insights.\n- Mention important agents, workflows, or modules when relevant.\n- Use concise, developer-friendly language with technical precision.\n\n**Formatting Requirements**:\n\n- The project **title and badges must be centered** using `<p align=\"center\"> ... </p>` syntax.\n- The **title must use this exact format**: `# <p align=\"center\">Your Title Here</p>` — `#` must always be outside the `<p>` tag.\n- The **badges block** must appear in a **separate** line after the title like:\n  <p align=\"center\">\n    <a href=\"#\"><img src=\"https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi\" alt=\"FastAPI\"></a>\n    <a href=\"#\"><img src=\"https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white\" alt=\"Python\"></a>\n  </p>\n\n**Content Requirements**:\n{content_requirements}\n\ndo not add or remove extra sections other than these.\n\nalso take into account : {project_description}\n\n---\n\nBelow are the code chunk summaries for the project:\n\n{combined_summary}\n\nNow, generate the entire `README.md` as **raw Markdown**.\n\n\"\"\"\n\n\n\n    print(f'the prompt is : {prompt}')\n    \n\n    try:\n        print(\"Started generating readme.md\")\n        response = model.generate_content(prompt)\n        \n        print(\"Succesfully generated readme.md\")\n        content = response.text.strip()\n\n        if content.startswith(\"```markdown\"):\n           content = content[len(\"```markdown\"):].lstrip()\n        if content.endswith(\"```\"):\n           content = content[:-3].rstrip()\n        \n        f = open(\"response.md\",'w',encoding='utf-8')\n        f.write(content)\n\n        return content\n        \n    except Exception as e:\n        return f\"[ERROR generating final summary]: {str(e)}\"\n\n\n",
+      "chunk_id": "summerizer.py::generate_final_summary",
       "decorators": [],
       "calls": [
-        "StateGraph",
-        "graph_builder.add_node",
-        "graph_builder.add_node",
-        "graph_builder.add_node",
-        "graph_builder.add_node",
-        "graph_builder.add_node",
-        "graph_builder.add_node",
-        "graph_builder.add_edge",
-        "graph_builder.add_edge",
-        "graph_builder.add_conditional_edges",
-        "state.get",
-        "graph_builder.add_edge",
-        "graph_builder.add_edge",
-        "graph_builder.add_edge",
-        "graph_builder.add_edge",
-        "graph_builder.compile",
-        "user_input.strip",
-        "print",
-        "print",
-        "graph.invoke",
-        "re.search",
-        "print",
-        "json.loads",
-        "cleaned.group",
-        "ValueError",
-        "print"
+        "preferences.dict",
+        "genai.configure",
+        "os.getenv",
+        "genai.GenerativeModel",
+        "\"\\n\\n\".join",
+        "convert_paths",
+        "json.dumps",
+        "section_blocks.append",
+        "section_blocks.append",
+        "section_blocks.append",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(f",
+        "ction_blocks.append(\"",
+        "ction_blocks.append(\"",
+        "n\".join(s",
+        "t(f't",
+        "t(\"St",
+        "l.generate_content(pro",
+        "t(\"Su",
+        "onse.text.strip()\n\n",
+        "ent.startswith(\"``",
+        "ent[len(\"```markdown\"):].lstrip()\n ",
+        "\"``",
+        "ent.endswith(\"``",
+        "ent[:-3].rstrip()\n ",
+        "(\"re",
+        "ite(con",
+        "e)}"
       ],
-      "complexity": 3,
+      "complexity": 16,
       "parameters": [
         {
-          "name": "user_input",
-          "type": null,
-          "default": null
-        },
-        {
-          "name": "user_id",
+          "name": "chunk_summaries",
           "type": null,
           "default": null
         }
       ],
-      "file": "ticket_agent.py"
+      "file": "summerizer.py"
     },
     {
       "type": "function",
-      "name": "TicketList",
-      "start_line": 3,
-      "end_line": 52,
-      "lines": 50,
+      "name": "extract_symbols_from_js_file",
+      "start_line": 7,
+      "end_line": 119,
+      "lines": 113,
+      "docstring": null,
+      "raw_code": "def extract_symbols_from_js_file(file_path):\n    JS_LANGUAGE = Language(tsjs.language())\n    parser = Parser(JS_LANGUAGE)\n    try:\n        code = Path(file_path).read_text(encoding=\"utf-8\")\n    except:\n        return [], {\"external\": [], \"internal\": []}\n\n    tree = parser.parse(code.encode(\"utf-8\"))\n    root = tree.root_node\n    symbols = []\n    imports = {\"external\": [], \"internal\": []}\n\n    def extract_raw_code(node, code):\n        return code[node.start_byte:node.end_byte]\n\n    def extract_function_calls(node, code):\n        calls=[]\n\n        def walk(n):\n            if n.type == \"call_expression\":\n                func = n.child_by_field_name(\"function\")\n                if func:\n                    calls.append(code[func.start_byte:func.end_byte])\n            for child in n.children:\n                walk(child)\n\n        walk(node)\n        return calls\n\n\n    def extract_parameters(node, code):\n        params_node = node.child_by_field_name(\"parameters\")\n        if params_node:\n            return [\n                code[c.start_byte:c.end_byte]\n                for c in params_node.children\n                if c.type != \",\" and c.type != \")\"\n            ]\n        return []\n\n    def calculate_complexity(node):\n        complexity = 1  # default for the function itself\n\n        def walk(n):\n            nonlocal complexity\n            if n.type in (\"if_statement\", \"for_statement\", \"while_statement\", \"switch_statement\", \"try_statement\"):\n                complexity += 1\n            for child in n.children:\n                walk(child)\n\n        walk(node)\n        return complexity\n\n\n    def walk(node, parent=None):\n        nonlocal code\n\n        if node.type == \"import_declaration\":\n            module_node = node.child_by_field_name(\"source\")\n            if module_node:\n                name = code[module_node.start_byte:module_node.end_byte].strip(\"\\\"'\")\n                if name.startswith(\".\"):\n                    imports[\"internal\"].append(name)\n                else:\n                    imports[\"external\"].append(name)\n\n        if node.type == \"class_declaration\":\n            name_node = node.child_by_field_name(\"name\")\n            if name_node:\n                name = code[name_node.start_byte:name_node.end_byte]\n                symbols.append({\n                    \"type\": \"class\",\n                    \"name\": name,\n                    \"start_line\": node.start_point[0] + 1,\n                    \"end_line\": node.end_point[0] + 1,\n                    \"lines\": node.end_point[0] - node.start_point[0] + 1,\n                    \"parameters\": [],\n                    \"calls\": extract_function_calls(node, code),\n                    \"complexity\": calculate_complexity(node),\n                    \"docstring\": None,\n                    \"raw_code\": extract_raw_code(node, code),\n                    \"chunk_id\": f\"{Path(file_path).name}::{name}\",\n                    \"decorators\": []\n                })\n\n        if node.type in (\"function_declaration\", \"arrow_function\", \"function_expression\", \"method_definition\"):\n            name_node = node.child_by_field_name(\"name\")\n            if not name_node and parent:\n                if parent.type == \"variable_declarator\":\n                    name_node = parent.child_by_field_name(\"name\")\n            name = code[name_node.start_byte:name_node.end_byte] if name_node else \"<anonymous>\"\n\n            symbols.append({\n                \"type\": \"function\",\n                \"name\": name,\n                \"start_line\": node.start_point[0] + 1,\n                \"end_line\": node.end_point[0] + 1,\n                \"lines\": node.end_point[0] - node.start_point[0] + 1,\n                \"parameters\": extract_parameters(node, code),\n                \"calls\": extract_function_calls(node, code),\n                \"complexity\": calculate_complexity(node),\n                \"docstring\": None,\n                \"raw_code\": extract_raw_code(node, code),\n                \"chunk_id\": f\"{Path(file_path).name}::{name}\",\n                \"decorators\": []\n            })\n\n        for child in node.children:\n            walk(child, node)\n\n    walk(root)\n    return symbols, imports",
+      "chunk_id": "js_parser.py::extract_symbols_from_js_file",
+      "decorators": [],
+      "calls": [
+        "Language",
+        "tsjs.language",
+        "Parser",
+        "Path(file_path).read_text",
+        "Path",
+        "parser.parse",
+        "code.encode",
+        "n.child_by_field_name",
+        "calls.append",
+        "walk",
+        "walk",
+        "node.child_by_field_name",
+        "walk",
+        "walk",
+        "node.child_by_field_name",
+        "code[module_node.start_byte:module_node.end_byte].strip",
+        "name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "node.child_by_field_name",
+        "symbols.append",
+        "extract_function_calls",
+        "calculate_complexity",
+        "extract_raw_code",
+        "Path",
+        "node.child_by_field_name",
+        "parent.child_by_field_name",
+        "symbols.append",
+        "extract_parameters",
+        "extract_function_calls",
+        "calculate_complexity",
+        "extract_raw_code",
+        "Path",
+        "walk",
+        "walk"
+      ],
+      "complexity": 17,
+      "parameters": [
+        {
+          "name": "file_path",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "Preferences",
+      "start_line": 4,
+      "end_line": 103,
+      "lines": 100,
       "parameters": [
         "(",
-        "{ tickets }"
+        "{\n  repoUrl,\n  setReadmeData,\n  setFirstGenerate,\n  isLoading,\n  setIsLoading,\n}"
       ],
       "calls": [
-        "tickets.map"
+        "useState",
+        "useState",
+        "useState",
+        "console.log",
+        "console.log",
+        "setIsLoading",
+        "callApi({\n      url: \"http://localhost:8000/api/readme/generate\",\n      method: \"POST\",\n      payload: {\n        github_url: repoUrl,\n        project_description: proj_description,\n        preferences: preferences,\n        session_id: \"demo-session-001\",\n      },\n    }).catch",
+        "callApi",
+        "console.error",
+        "setReadmeData",
+        "setIsLoading",
+        "setIsRegenerate",
+        "setFirstGenerate",
+        "console.log",
+        "console.log",
+        "setIsLoading",
+        "callApi({\n      url: \"http://localhost:8000/api/readme/resume\",\n      method: \"POST\",\n      payload: {\n        session_id: \"demo-session-001\",\n        action: \"regenerate\",\n        project_description: proj_description,\n        preferences: preferences,\n      },\n    }).catch",
+        "callApi",
+        "console.log",
+        "setReadmeData",
+        "setIsLoading"
       ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "function TicketList({ tickets }) {\n  return (\n    <div>\n      <div className=\"text-center mt-4 \">\n        <h1 className=\"text-white text-2xl font-bold\">Tickets</h1>\n        <hr />\n      </div>\n      <div className=\"space-y-6\">\n        <div className=\"space-y-6\">\n          <ul className=\"list-disc pl-5 mt-3 mb-3 list-none\">\n            {tickets.map((ticket) => (\n              <li>\n                <Link to={`/ticket/${ticket.ticket_no}`}>\n                  <div className=\"bg-gray-700 p-6 rounded-lg shadow-md mb-3\">\n                    <div className=\"flex justify-between items-start mb-2\">\n                      <h3 className=\"text-xl font-semibold text-indigo-400\">\n                        Ticket # {ticket.ticket_no}\n                      </h3>\n                      <span\n                        className={`text-xs font-medium px-3 py-1 rounded-full ${\n                          ticket.isOpen\n                            ? \"bg-green-600 text-green-100\"\n                            : \"bg-red-600 text-red-100\"\n                        } `}\n                      >\n                        {ticket.isOpen ? \"Open\" : \"Closed\"}\n                      </span>\n                    </div>\n                    <p className=\"text-gray-300 leading-relaxed mb-3\">\n                      {ticket.message}\n                    </p>\n                    <div className=\"text-sm text-gray-500 flex justify-between items-center\">\n                      <span>Submitted: {ticket.time}</span>\n                      <span className=\"flex items-center\">\n                        <span className=\"material-icons text-base mr-1\">\n                          Team:\n                        </span>\n                        {ticket.team}\n                      </span>\n                    </div>\n                  </div>\n                </Link>\n              </li>\n            ))}\n          </ul>\n        </div>\n      </div>\n    </div>\n  );\n}",
-      "chunk_id": "Tickets.js::TicketList",
+      "raw_code": "function Preferences({\n  repoUrl,\n  setReadmeData,\n  setFirstGenerate,\n  isLoading,\n  setIsLoading,\n}) {\n  const [proj_description, setDescription] = useState(\"\");\n  const [isRegenerate, setIsRegenerate] = useState(false);\n\n  const [preferences, setPreferences] = useState({\n    title: true,\n    badge: true,\n    introduction: true,\n    table_of_contents: true,\n    key_features: true,\n    install_guide: true,\n    usage: true,\n    api_ref: true,\n    env_var: true,\n    project_structure: true,\n    tech_used: true,\n    licenses: true,\n  });\n\n  const GenerateRequest = async () => {\n    console.log(\"Regenerating with preferences:\", preferences);\n    console.log(\"Description:\", proj_description);\n    setIsLoading(true);\n    const readmeResponse = await callApi({\n      url: \"http://localhost:8000/api/readme/generate\",\n      method: \"POST\",\n      payload: {\n        github_url: repoUrl,\n        project_description: proj_description,\n        preferences: preferences,\n        session_id: \"demo-session-001\",\n      },\n    }).catch((err) => console.error(err));\n\n    setReadmeData(readmeResponse);\n    setIsLoading(false);\n    setIsRegenerate(true);\n    setFirstGenerate(true);\n  };\n\n  const reGenerateRequest = async () => {\n    console.log(\"Regenerating with preferences:\", preferences);\n    console.log(\"Description:\", proj_description);\n    setIsLoading(true);\n    const readmeResponse = await callApi({\n      url: \"http://localhost:8000/api/readme/resume\",\n      method: \"POST\",\n      payload: {\n        session_id: \"demo-session-001\",\n        action: \"regenerate\",\n        project_description: proj_description,\n        preferences: preferences,\n      },\n    }).catch((err) => console.log(err));\n    setReadmeData(readmeResponse);\n    setIsLoading(false);\n  };\n\n  return (\n    <div className=\"w-1/4 h-full border-r border-gray-200 flex flex-col justify-between p-4\">\n      <h1 className=\"text-white text-center font-bold text-xl\">\n        AI Readme Generator\n      </h1>\n\n      <Description setDescription={setDescription} />\n\n      <CheckList preferences={preferences} setPreferences={setPreferences} />\n\n      <div className=\"w-full mt-auto\">\n        {isRegenerate ? (\n          <button\n            onClick={reGenerateRequest}\n            className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${\n              isLoading ? \"opacity-50 cursor-not-allowed\" : \"\"\n            }`}\n            disabled={isLoading}\n          >\n            {isLoading ? \"Regnerating...\" : \"Regenerate\"}\n          </button>\n        ) : (\n          <button\n            onClick={GenerateRequest}\n            className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${\n              isLoading ? \"opacity-50 cursor-not-allowed\" : \"\"\n            }`}\n            disabled={isLoading}\n          >\n            {isLoading ? \"Generating...\" : \"Generate\"}\n          </button>\n        )}\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "preferencesComp.js::Preferences",
       "decorators": [],
-      "file": "Tickets.js"
+      "file": "preferencesComp.js"
     },
     {
       "type": "function",
-      "name": "Header",
-      "start_line": 78,
-      "end_line": 119,
-      "lines": 42,
+      "name": "analyze_codebase_with_folders",
+      "start_line": 187,
+      "end_line": 266,
+      "lines": 80,
+      "docstring": "Enhanced codebase analysis with full metadata",
+      "raw_code": "def analyze_codebase_with_folders(root_dir):\n    \"\"\"Enhanced codebase analysis with full metadata\"\"\"\n    files = walk_codebase(root_dir)\n    project_name = Path(root_dir).name\n    folder_map = defaultdict(list)\n    \n    # Track global dependencies and API endpoints\n    all_dependencies = {\"external\": set(), \"internal\": set()}\n    api_endpoints = []\n    \n    for file in files:\n        path = file[\"path\"]\n        lang = file[\"language\"]\n        \n        if lang == \"python\":\n            symbols, file_imports = extract_symbols_from_file(path)\n            \n            # Update global dependencies\n            all_dependencies[\"external\"].update(file_imports[\"external\"])\n            all_dependencies[\"internal\"].update(file_imports[\"internal\"])\n            \n            # Detect API endpoints\n            for symbol in symbols:\n                if symbol[\"decorators\"]:\n                    for decorator in symbol[\"decorators\"]:\n                        if any(method in decorator.lower() for method in [\"@app.get\", \"@app.post\", \"@app.put\", \"@app.delete\"]):\n                            # Extract endpoint path from decorator\n                            path_match = re.search(r'[\"\\']([^\"\\']*)[\"\\']', decorator)\n                            if path_match:\n                                api_endpoints.append({\n                                    \"path\": path_match.group(1),\n                                    \"method\": decorator.split('.')[1].split('(')[0].upper(),\n                                    \"function\": symbol[\"name\"],\n                                    \"file\": path.name\n                                })\n            \n            rel_path = Path(os.path.relpath(path, root_dir))\n            folder = str(rel_path.parent).replace(\"\\\\\", \"/\")\n            \n            # Detect file purpose\n            file_purpose = detect_file_purpose(path, symbols, file_imports)\n            \n            folder_map[folder].append({\n                \"name\": path.name,\n                \"relative_path\": str(rel_path).replace(\"\\\\\", \"/\"),\n                \"file_type\": file_purpose,\n                \"purpose\": generate_file_purpose_description(file_purpose, symbols),\n                \"imports\": file_imports,\n                \"symbols\": symbols\n            })\n    \n    # Generate architecture overview\n    architecture = analyze_architecture(folder_map, all_dependencies)\n    \n    return {\n        \"project\": project_name,\n        \"metadata\": {\n            \"total_files\": len(files),\n            \"total_functions\": sum(len([s for s in folder_files[\"symbols\"] if s[\"type\"] == \"function\"]) \n                                 for folder_data in folder_map.values() \n                                 for folder_files in folder_data),\n            \"total_classes\": sum(len([s for s in folder_files[\"symbols\"] if s[\"type\"] == \"class\"]) \n                               for folder_data in folder_map.values() \n                               for folder_files in folder_data),\n            \"primary_language\": \"python\"\n        },\n        \"dependencies\": {\n            \"external\": list(all_dependencies[\"external\"]),\n            \"internal\": list(all_dependencies[\"internal\"])\n        },\n        \"api_endpoints\": api_endpoints,\n        \"architecture\": architecture,\n        \"structure\": [\n            {\n                \"folder\": folder,\n                \"files\": files\n            }\n            for folder, files in folder_map.items()\n        ]\n    }",
+      "chunk_id": "python_parser.py::analyze_codebase_with_folders",
+      "decorators": [],
+      "calls": [
+        "walk_codebase",
+        "Path",
+        "defaultdict",
+        "set",
+        "set",
+        "extract_symbols_from_file",
+        "all_dependencies[\"external\"].update",
+        "all_dependencies[\"internal\"].update",
+        "any",
+        "decorator.lower",
+        "re.search",
+        "api_endpoints.append",
+        "path_match.group",
+        "decorator.split('.')[1].split('(')[0].upper",
+        "decorator.split('.')[1].split",
+        "decorator.split",
+        "Path",
+        "os.path.relpath",
+        "str(rel_path.parent).replace",
+        "str",
+        "detect_file_purpose",
+        "folder_map[folder].append",
+        "str(rel_path).replace",
+        "str",
+        "generate_file_purpose_description",
+        "analyze_architecture",
+        "len",
+        "sum",
+        "len",
+        "folder_map.values",
+        "sum",
+        "len",
+        "folder_map.values",
+        "list",
+        "list",
+        "folder_map.items"
+      ],
+      "complexity": 8,
+      "parameters": [
+        {
+          "name": "root_dir",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "walk",
+      "start_line": 62,
+      "end_line": 116,
+      "lines": 55,
+      "docstring": null,
+      "raw_code": "def walk(node, parent=None):\n        nonlocal code\n\n        if node.type == \"import_declaration\":\n            module_node = node.child_by_field_name(\"source\")\n            if module_node:\n                name = code[module_node.start_byte:module_node.end_byte].strip(\"\\\"'\")\n                if name.startswith(\".\"):\n                    imports[\"internal\"].append(name)\n                else:\n                    imports[\"external\"].append(name)\n\n        if node.type == \"class_declaration\":\n            name_node = node.child_by_field_name(\"name\")\n            if name_node:\n                name = code[name_node.start_byte:name_node.end_byte]\n                symbols.append({\n                    \"type\": \"class\",\n                    \"name\": name,\n                    \"start_line\": node.start_point[0] + 1,\n                    \"end_line\": node.end_point[0] + 1,\n                    \"lines\": node.end_point[0] - node.start_point[0] + 1,\n                    \"parameters\": [],\n                    \"calls\": extract_function_calls(node, code),\n                    \"complexity\": calculate_complexity(node),\n                    \"docstring\": None,\n                    \"raw_code\": extract_raw_code(node, code),\n                    \"chunk_id\": f\"{Path(file_path).name}::{name}\",\n                    \"decorators\": []\n                })\n\n        if node.type in (\"function_declaration\", \"arrow_function\", \"function_expression\", \"method_definition\"):\n            name_node = node.child_by_field_name(\"name\")\n            if not name_node and parent:\n                if parent.type == \"variable_declarator\":\n                    name_node = parent.child_by_field_name(\"name\")\n            name = code[name_node.start_byte:name_node.end_byte] if name_node else \"<anonymous>\"\n\n            symbols.append({\n                \"type\": \"function\",\n                \"name\": name,\n                \"start_line\": node.start_point[0] + 1,\n                \"end_line\": node.end_point[0] + 1,\n                \"lines\": node.end_point[0] - node.start_point[0] + 1,\n                \"parameters\": extract_parameters(node, code),\n                \"calls\": extract_function_calls(node, code),\n                \"complexity\": calculate_complexity(node),\n                \"docstring\": None,\n                \"raw_code\": extract_raw_code(node, code),\n                \"chunk_id\": f\"{Path(file_path).name}::{name}\",\n                \"decorators\": []\n            })\n\n        for child in node.children:\n            walk(child, node)",
+      "chunk_id": "js_parser.py::walk",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name",
+        "code[module_node.start_byte:module_node.end_byte].strip",
+        "name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "node.child_by_field_name",
+        "symbols.append",
+        "extract_function_calls",
+        "calculate_complexity",
+        "extract_raw_code",
+        "Path",
+        "node.child_by_field_name",
+        "parent.child_by_field_name",
+        "symbols.append",
+        "extract_parameters",
+        "extract_function_calls",
+        "calculate_complexity",
+        "extract_raw_code",
+        "Path",
+        "walk"
+      ],
+      "complexity": 10,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_symbols_from_file",
+      "start_line": 132,
+      "end_line": 185,
+      "lines": 54,
+      "docstring": "Enhanced symbol extraction with full metadata",
+      "raw_code": "def extract_symbols_from_file(file_path):\n    \"\"\"Enhanced symbol extraction with full metadata\"\"\"\n    try:\n        code = Path(file_path).read_text(encoding='utf-8')\n    except UnicodeDecodeError:\n        try:\n            code = Path(file_path).read_text(encoding='latin-1')\n        except:\n            return [], {}\n    \n    tree = parser.parse(code.encode(\"utf8\"))\n    root = tree.root_node\n    symbols = []\n    \n    # Extract file-level imports\n    file_imports = extract_imports(root, code)\n    \n    def walk(node):\n        if node.type in (\"function_definition\", \"class_definition\"):\n            name_node = node.child_by_field_name(\"name\")\n            symbol_name = code[name_node.start_byte:name_node.end_byte]\n            \n            # Extract detailed information\n            raw_code = extract_raw_code(node, code)\n            docstring = extract_docstring(node, code)\n            decorators = extract_decorators(node, code)\n            function_calls = extract_function_calls(node, code)\n            complexity = calculate_complexity(node)\n            \n            symbol_info = {\n                \"type\": node.type.replace(\"_definition\", \"\"),\n                \"name\": symbol_name,\n                \"start_line\": node.start_point[0] + 1,\n                \"end_line\": node.end_point[0] + 1,\n                \"lines\": node.end_point[0] - node.start_point[0] +1,\n                \"docstring\": docstring,\n                \"raw_code\": raw_code,\n                \"chunk_id\": f\"{file_path.name}::{symbol_name}\",\n                \"decorators\": decorators,\n                \"calls\": function_calls,\n                \"complexity\": complexity\n            }\n            \n            # Add function-specific info\n            if node.type == \"function_definition\":\n                symbol_info[\"parameters\"] = extract_parameters(node, code)\n            \n            symbols.append(symbol_info)\n        \n        for child in node.children:\n            walk(child)\n    \n    walk(root)\n    return symbols, file_imports",
+      "chunk_id": "python_parser.py::extract_symbols_from_file",
+      "decorators": [],
+      "calls": [
+        "Path(file_path).read_text",
+        "Path",
+        "Path(file_path).read_text",
+        "Path",
+        "parser.parse",
+        "code.encode",
+        "extract_imports",
+        "node.child_by_field_name",
+        "extract_raw_code",
+        "extract_docstring",
+        "extract_decorators",
+        "extract_function_calls",
+        "calculate_complexity",
+        "node.type.replace",
+        "extract_parameters",
+        "symbols.append",
+        "walk",
+        "walk"
+      ],
+      "complexity": 6,
+      "parameters": [
+        {
+          "name": "file_path",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "MarkdownViewer",
+      "start_line": 10,
+      "end_line": 61,
+      "lines": 52,
+      "parameters": [
+        "(",
+        "{ readmeData, firstGenerate, isLoading }"
+      ],
+      "calls": [
+        "useState"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function MarkdownViewer({ readmeData, firstGenerate, isLoading }) {\n  const [activeTab, setActiveTab] = useState(\"preview\");\n\n  return (\n    <div className=\"h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#0d1017] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300\">\n      {isLoading ? (\n        <Loader />\n      ) : (\n        firstGenerate &&\n        readmeData?.readme && (\n          <>\n            <div className=\"fixed right-10 bottom-5 z-20 \">\n              <ToggleSwitch activeTab={activeTab} setActiveTab={setActiveTab} />\n            </div>\n            <div className=\"fixed bottom-6 z-20\">\n              <CopyDownload readmeData={readmeData} />\n            </div>\n          </>\n        )\n      )}\n\n      {readmeData?.readme &&\n        (activeTab === \"preview\" ? (\n          <div\n            className=\"markdown-viewer prose prose-invert max-w-none markdown-rendered\n            prose-pre:rounded-lg prose-pre:px-4 prose-pre:py-3\n           prose-code:rounded prose-code:px-1 prose-code:py-0.5\n            prose-code:font-[SFMono-Regular,Consolas,Liberation_Mono,Menlo,monospace]\n            prose-h1:mt-3 prose-h2:mt-2 prose-p:my-2 prose-li:my-1 prose-ul:my-1 prose-ol:my-1\n            prose-a:text-blue-400 hover:prose-a:underline\n            prose-table:border prose-th:border prose-td:border\n            leading-[1.4]\n            transition-all duration-150\"\n          >\n            <ReactMarkdown\n              children={readmeData.readme}\n              remarkPlugins={[remarkGfm]}\n              rehypePlugins={[rehypeRaw, rehypeHighlight]}\n            />\n          </div>\n        ) : (\n          <div className=\"h-full w-full bg-inherit text-white\">\n            <pre className=\"whitespace-pre-wrap break-words font-mono text-sm bg-inherit pb-20\">\n              <code className=\"language-markdown text-sm font-mono\">\n                {readmeData.readme}\n              </code>\n            </pre>\n          </div>\n        ))}\n    </div>\n  );\n}",
+      "chunk_id": "markdownComp.js::MarkdownViewer",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "analyze_codebase",
+      "start_line": 10,
+      "end_line": 60,
+      "lines": 51,
+      "docstring": null,
+      "raw_code": "def analyze_codebase(root_dir):\n    files = walk_codebase(root_dir)\n    project_name =  Path(root_dir).name\n    folder_map = defaultdict(list)\n\n    total_functions= 0\n    total_classes = 0\n    languages_used = set()\n\n    for file in files:\n        file_path = file['path']\n        language = file['language']\n        rel_path = Path(file_path).relative_to(root_dir)\n        folder = str(Path(rel_path).parent).replace('\\\\','/')\n\n        symbols = []\n\n        if language == \"python\":\n            symbols,_ = extract_py(file_path)\n        elif language == \"javascript\":\n            symbols,_ = extract_js(file_path)\n        \n        total_functions += sum(1 for s in symbols if s[\"type\"] == \"function\")\n        total_classes += sum(1 for s in symbols if s[\"type\"] == \"class\")\n\n        languages_used.add(language)\n\n        folder_map[folder].append({\n            \"name\": file_path.name,\n            \"language\": language,\n            \"relative_path\": str(rel_path),\n            \"symbols\": symbols\n        })\n    \n    print(\"successfully parsed files\")\n\n    return {\n    \"project\": project_name,\n    \"metadata\": {\n        \"total_files\": len(files),\n        \"total_functions\": total_functions,\n        \"total_classes\": total_classes,\n        \"languages_used\": list(languages_used)\n    },\n    \"structure\": [\n        {\n            \"folder\": folder,\n            \"files\": files\n        } for folder, files in folder_map.items()\n    ]\n    }",
+      "chunk_id": "analyzer.py::analyze_codebase",
+      "decorators": [],
+      "calls": [
+        "walk_codebase",
+        "Path",
+        "defaultdict",
+        "set",
+        "Path(file_path).relative_to",
+        "Path",
+        "str(Path(rel_path).parent).replace",
+        "str",
+        "Path",
+        "extract_py",
+        "extract_js",
+        "sum",
+        "sum",
+        "languages_used.add",
+        "folder_map[folder].append",
+        "str",
+        "print",
+        "len",
+        "list",
+        "folder_map.items"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "root_dir",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "analyzer.py"
+    },
+    {
+      "type": "function",
+      "name": "summerize_chunks",
+      "start_line": 22,
+      "end_line": 68,
+      "lines": 47,
+      "docstring": null,
+      "raw_code": "def summerize_chunks(chunks):\n\n\n\n    genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))\n\n    model = genai.GenerativeModel(model_name='gemini-2.0-flash')\n    summaries=[]\n\n    for idx,chunk in tqdm(enumerate(chunks),total=len(chunks),desc=\"summerizing chunks\"):\n\n        chunk_data = json.dumps(chunk)\n\n        prompt = f\"\"\"\n                You are an AI code summarizer.\n\n                Below is a list of Python code symbols (functions, classes, etc.), including their type, names, and raw source code.\n\n                Summarize the entire chunk based on this structured information. Include:\n                - what is the path to all the files\n                - what are the framework or libraries used if any\n                - What the functions and classes are doing overall.\n                - How they might be used in the context of a project.\n                - Any special behaviors or logic patterns you notice.\n\n                Use professional, concise, and technical language suitable for a developer-oriented README.\n\n                Symbols chunk:\n                {chunk_data}\n\n                Summary:\n                \"\"\"\n        \n        try:\n            respone = model.generate_content(prompt)\n            summaries.append({\n                'index':idx,\n                'summary':respone.text.strip()\n            })\n        except Exception as e:\n\n            summaries.append({\n                \"chunk_index\": idx,\n                \"summary\": f\"[ERROR summarizing chunk {idx}]: {str(e)}\"\n            })\n    \n    return summaries",
+      "chunk_id": "summerizer.py::summerize_chunks",
+      "decorators": [],
+      "calls": [
+        "genai.configure",
+        "os.getenv",
+        "genai.GenerativeModel",
+        "tqdm",
+        "enumerate",
+        "len",
+        "json.dumps",
+        "model.generate_content",
+        "summaries.append",
+        "respone.text.strip",
+        "summaries.append",
+        "str"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "chunks",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "summerizer.py"
+    },
+    {
+      "type": "function",
+      "name": "prepare_chunks",
+      "start_line": 15,
+      "end_line": 60,
+      "lines": 46,
+      "docstring": null,
+      "raw_code": "def prepare_chunks(ast, max_call=13, max_tokens_per_call=6000):\n    all_symbols = extract_symbols_from_ast(ast)\n    sorted_chunks = sorted(all_symbols, key=lambda x: x['lines'], reverse=True)\n\n    chunks = []\n    current_chunk = []\n    current_token_estimate = 0\n\n    for symbol in sorted_chunks:\n        tokens = estimate_token(symbol.get(\"raw_code\"))\n\n        # If symbol alone exceeds token limit, add it as its own chunk\n        if tokens > max_tokens_per_call:\n            if current_chunk:\n                chunks.append(current_chunk)\n                current_chunk = []\n                current_token_estimate = 0\n            chunks.append([symbol])\n            if len(chunks) >= max_call:\n                break\n            continue\n\n        # If current chunk will overflow, push it and start new one\n        if current_token_estimate + tokens > max_tokens_per_call:\n            if current_chunk:\n                chunks.append(current_chunk)\n                if len(chunks) >= max_call:\n                    break\n                current_chunk = []\n                current_token_estimate = 0\n\n        current_chunk.append(symbol)\n        current_token_estimate += tokens\n\n    # Append remaining chunk if not empty and max_call not reached\n    if current_chunk and len(chunks) < max_call:\n        chunks.append(current_chunk)\n    \n    try:\n        file = open(\"C:/Users/gamin/Documents/projects/Readme_generator_uisng_langgraph/Backend/chunker/extracted_chunks.json\",'w',encoding='utf-8')\n        json.dump(chunks,file,indent=2,ensure_ascii=False)\n        print(f'Successfully created {len(chunks)} chunks')\n    except Exception as e:\n        print(e)\n\n    return chunks",
+      "chunk_id": "chunker.py::prepare_chunks",
+      "decorators": [],
+      "calls": [
+        "extract_symbols_from_ast",
+        "sorted",
+        "estimate_token",
+        "symbol.get",
+        "chunks.append",
+        "chunks.append",
+        "len",
+        "chunks.append",
+        "len",
+        "current_chunk.append",
+        "len",
+        "chunks.append",
+        "open",
+        "json.dump",
+        "print",
+        "len",
+        "print"
+      ],
+      "complexity": 10,
+      "parameters": [
+        {
+          "name": "ast",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "chunker.py"
+    },
+    {
+      "type": "function",
+      "name": "CopyDownload",
+      "start_line": 92,
+      "end_line": 137,
+      "lines": 46,
+      "parameters": [
+        "(",
+        "{ readmeData }"
+      ],
+      "calls": [
+        "useState",
+        "navigator.clipboard.writeText",
+        "setCopied",
+        "setTimeout",
+        "setCopied",
+        "console.error",
+        "URL.createObjectURL",
+        "document.createElement",
+        "a.click",
+        "URL.revokeObjectURL"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "function CopyDownload({ readmeData }) {\n  const [copied, setCopied] = useState(false);\n\n  const copyToClipboard = async () => {\n    try {\n      await navigator.clipboard.writeText(readmeData.readme);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch (e) {\n      console.error(\"error copying :\", e);\n    }\n  };\n\n  const handleDownload = () => {\n    const blob = new Blob([readmeData.readme], { type: \"text/markdown\" });\n    const url = URL.createObjectURL(blob);\n    const a = document.createElement(\"a\");\n    a.href = url;\n    a.download = \"Readme.md\";\n    a.click();\n    URL.revokeObjectURL(url);\n  };\n\n  return (\n    <div className=\"h-10 w-38 bg-white rounded-lg flex border-white border-[3px] gap-1 text-white text-sm \">\n      <div className=\"h-full w-16 bg-slate-800 rounded-lg\">\n        <button\n          className=\"h-full w-full\"\n          onClick={copyToClipboard}\n          title=\"Copy to clipboard\"\n        >\n          {copied ? (\n            <CopyCheck className=\"w-full h-full p-[6px]\" />\n          ) : (\n            <Copy className=\"w-full h-full p-[6px]\" />\n          )}\n        </button>\n      </div>\n      <div className=\"h-full w-16 bg-slate-800 rounded-lg\">\n        <button className=\"h-full w-full\" onClick={handleDownload}>\n          <Download className=\"w-full h-full p-[6px]\" />\n        </button>\n      </div>\n    </div>\n  );\n}",
+      "chunk_id": "markdownComp.js::CopyDownload",
+      "decorators": [],
+      "file": "markdownComp.js"
+    }
+  ],
+  [
+    {
+      "type": "function",
+      "name": "LinkTextBox",
+      "start_line": 5,
+      "end_line": 49,
+      "lines": 45,
       "parameters": [
         "("
       ],
       "calls": [
-        "useAuth0",
-        "useAuth0",
-        "logout",
-        "roles.includes",
-        "roles.includes",
-        "roles.includes"
+        "useState",
+        "useNavigate",
+        "DOMPurify.sanitize",
+        "repoUrl.trim",
+        "/^https:\\/\\/(www\\.)?github\\.com\\/[^/]+\\/[^/]+\\/?$/.test",
+        "navigate",
+        "encodeURIComponent",
+        "alert",
+        "e.preventDefault",
+        "handleSubmit",
+        "setRepoUrl"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "function LinkTextBox() {\n  const [repoUrl, setRepoUrl] = useState(\"\");\n  const navigate = useNavigate();\n  const handleSubmit = () => {\n    const sanitized_url = DOMPurify.sanitize(repoUrl.trim());\n    const isValidGitHubUrl =\n      /^https:\\/\\/(www\\.)?github\\.com\\/[^/]+\\/[^/]+\\/?$/.test(sanitized_url);\n\n    if (sanitized_url && isValidGitHubUrl) {\n      navigate(`/readme?repo=${encodeURIComponent(sanitized_url)}`);\n    } else {\n      alert(\"Please enter a valid GitHub URL.\");\n    }\n  };\n\n  return (\n    <form\n      onSubmit={(e) => {\n        e.preventDefault();\n        handleSubmit();\n      }}\n      className=\"w-full max-w-md flex\"\n    >\n      <div className=\"w-full max-w-md flex\">\n        <div className=\"bg-white rounded-l-xl shadow-md w-full max-w-md\">\n          <input\n            type=\"url\"\n            placeholder=\"Enter your Github Repo URL\"\n            className=\"w-full p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out\"\n            value={repoUrl}\n            onChange={(e) => setRepoUrl(e.target.value)}\n          ></input>\n        </div>\n        <div className=\"bg-white rounded-r-xl ml-0\">\n          <button\n            className=\"w-full h-full border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-gray-800 p-3 transition duration-200 ease-in-out\"\n            type=\"submit\"\n          >\n            Submit\n          </button>\n        </div>\n      </div>\n    </form>\n  );\n}",
+      "chunk_id": "LinkTextBox.js::LinkTextBox",
+      "decorators": [],
+      "file": "LinkTextBox.js"
+    },
+    {
+      "type": "function",
+      "name": "walk",
+      "start_line": 149,
+      "end_line": 182,
+      "lines": 34,
+      "docstring": null,
+      "raw_code": "def walk(node):\n        if node.type in (\"function_definition\", \"class_definition\"):\n            name_node = node.child_by_field_name(\"name\")\n            symbol_name = code[name_node.start_byte:name_node.end_byte]\n            \n            # Extract detailed information\n            raw_code = extract_raw_code(node, code)\n            docstring = extract_docstring(node, code)\n            decorators = extract_decorators(node, code)\n            function_calls = extract_function_calls(node, code)\n            complexity = calculate_complexity(node)\n            \n            symbol_info = {\n                \"type\": node.type.replace(\"_definition\", \"\"),\n                \"name\": symbol_name,\n                \"start_line\": node.start_point[0] + 1,\n                \"end_line\": node.end_point[0] + 1,\n                \"lines\": node.end_point[0] - node.start_point[0] +1,\n                \"docstring\": docstring,\n                \"raw_code\": raw_code,\n                \"chunk_id\": f\"{file_path.name}::{symbol_name}\",\n                \"decorators\": decorators,\n                \"calls\": function_calls,\n                \"complexity\": complexity\n            }\n            \n            # Add function-specific info\n            if node.type == \"function_definition\":\n                symbol_info[\"parameters\"] = extract_parameters(node, code)\n            \n            symbols.append(symbol_info)\n        \n        for child in node.children:\n            walk(child)",
+      "chunk_id": "python_parser.py::walk",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name",
+        "extract_raw_code",
+        "extract_docstring",
+        "extract_decorators",
+        "extract_function_calls",
+        "calculate_complexity",
+        "node.type.replace",
+        "extract_parameters",
+        "symbols.append",
+        "walk"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "CheckList",
+      "start_line": 105,
+      "end_line": 138,
+      "lines": 34,
+      "parameters": [
+        "(",
+        "{ preferences, setPreferences }"
+      ],
+      "calls": [
+        "setPreferences",
+        "[\n        [\"title\", \"Title\"],\n        [\"badge\", \"Badge\"],\n        [\"introduction\", \"Introduction\"],\n        [\"table_of_contents\", \"Table of Contents\"],\n        [\"key_features\", \"Key Features\"],\n        [\"install_guide\", \"Installation Guide\"],\n        [\"usage\", \"Usage\"],\n        [\"api_ref\", \"API Reference\"],\n        [\"env_var\", \"Environment Variables\"],\n        [\"project_structure\", \"Project Structure\"],\n        [\"tech_used\", \"Technologies Used\"],\n        [\"licenses\", \"License\"],\n      ].map",
+        "handleChange"
       ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "function Header() {\n  const namespace = \"https://myapp.local\";\n  const { user } = useAuth0();\n  const LogoutButton = () => {\n    const { logout } = useAuth0();\n\n    return (\n      <button\n        onClick={() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })\n        }\n      >\n        <h2 className=\"text-white\">Log Out</h2>\n      </button>\n    );\n  };\n  const roles = user?.[`${namespace}/roles`] || [];\n  return (\n    <div className=\"text-center mb-8\">\n      <div className=\"\">\n        <h1 className=\"text-3xl font-bold text-white mb-2\">\n          Ticket Submission Portal\n        </h1>\n        <div className=\"flex justify-end\">\n          <LogoutButton />\n        </div>\n      </div>\n      {roles.includes(\"user\") && (\n        <p className=\"text-gray-400 text-sm\">Hello User....</p>\n      )}\n      {roles.includes(\"admin\") && (\n        <p className=\"text-gray-400 text-sm\">Hello Admin....</p>\n      )}\n      {roles.includes(\"developer\") && (\n        <p className=\"text-gray-400 text-sm\">Hello Admin....</p>\n      )}\n      <p className=\"text-gray-400 text-sm\">\n        Submit your support requests below\n      </p>\n    </div>\n  );\n}",
-      "chunk_id": "App.js::Header",
+      "raw_code": "function CheckList({ preferences, setPreferences }) {\n  const handleChange = (key) => (e) => {\n    setPreferences((prev) => ({\n      ...prev,\n      [key]: e.target.checked,\n    }));\n  };\n\n  return (\n    <div className=\"mt-4 pl-1 pb-4 w-full flex flex-col gap-4 overflow-y-auto scrollbar-none\">\n      {[\n        [\"title\", \"Title\"],\n        [\"badge\", \"Badge\"],\n        [\"introduction\", \"Introduction\"],\n        [\"table_of_contents\", \"Table of Contents\"],\n        [\"key_features\", \"Key Features\"],\n        [\"install_guide\", \"Installation Guide\"],\n        [\"usage\", \"Usage\"],\n        [\"api_ref\", \"API Reference\"],\n        [\"env_var\", \"Environment Variables\"],\n        [\"project_structure\", \"Project Structure\"],\n        [\"tech_used\", \"Technologies Used\"],\n        [\"licenses\", \"License\"],\n      ].map(([key, label]) => (\n        <CheckListItem\n          key={key}\n          text={label}\n          checked={preferences[key]}\n          onChange={handleChange(key)}\n        />\n      ))}\n    </div>\n  );\n}",
+      "chunk_id": "preferencesComp.js::CheckList",
       "decorators": [],
-      "file": "App.js"
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "resume_readme_pipeline",
+      "start_line": 102,
+      "end_line": 130,
+      "lines": 29,
+      "docstring": null,
+      "raw_code": "def resume_readme_pipeline(session_id: str,description: str, preferences: dict ,action: str = \"end\" ):\n    session = SESSION_CACHE.get(session_id)\n    if not session:\n        raise ValueError(\"Session not found\")\n    if session.get(\"ended\", False):\n        raise RuntimeError(\"This session has already ended and cannot be resumed.\")\n\n    graph = session[\"graph\"]\n    previous_state = session[\"state\"]\n    previous_state[\"action\"] = action\n    previous_state[\"preferences\"] = preferences\n    previous_state[\"project_description\"] = description\n\n    config = {\"configurable\": {\"thread_id\": session_id}}\n    new_state = graph.invoke(Command(resume=previous_state), config=config)\n\n    SESSION_CACHE[session_id][\"state\"] = new_state\n\n    if action == \"end\":\n        SESSION_CACHE[session_id][\"ended\"]=True\n        try:\n            path = new_state[\"codebase_path\"]\n            shutil.rmtree(path)\n            print(f\"Successfully removed the folder at {path}\")\n        except Exception as e:\n            print(f'Removing folder failed: {e}')\n\n    pprint(new_state.keys())\n    return new_state",
+      "chunk_id": "agent.py::resume_readme_pipeline",
+      "decorators": [],
+      "calls": [
+        "SESSION_CACHE.get",
+        "ValueError",
+        "session.get",
+        "RuntimeError",
+        "graph.invoke",
+        "Command",
+        "shutil.rmtree",
+        "print",
+        "print",
+        "pprint",
+        "new_state.keys"
+      ],
+      "complexity": 5,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "detect_file_purpose",
+      "start_line": 102,
+      "end_line": 130,
+      "lines": 29,
+      "docstring": "Heuristically determine the file's purpose",
+      "raw_code": "def detect_file_purpose(file_path, symbols, imports):\n    \"\"\"Heuristically determine the file's purpose\"\"\"\n    file_name = file_path.name.lower()\n    \n    # API/Route files\n    if any(imp in imports[\"external\"] for imp in [\"fastapi\", \"flask\", \"django\"]):\n        return \"api_endpoint\"\n    \n    # Database models\n    if \"model\" in file_name or any(imp in imports[\"external\"] for imp in [\"sqlalchemy\", \"django.db\", \"mongoengine\"]):\n        return \"data_model\"\n    \n    # Main entry points\n    if file_name in [\"main.py\", \"app.py\", \"__init__.py\"]:\n        return \"entry_point\"\n    \n    # Authentication\n    if \"auth\" in file_name:\n        return \"authentication\"\n    \n    # Configuration\n    if \"config\" in file_name or \"settings\" in file_name:\n        return \"configuration\"\n    \n    # Test files\n    if \"test\" in file_name:\n        return \"test\"\n    \n    return \"core_logic\"",
+      "chunk_id": "python_parser.py::detect_file_purpose",
+      "decorators": [],
+      "calls": [
+        "file_path.name.lower",
+        "any",
+        "any"
+      ],
+      "complexity": 7,
+      "parameters": [
+        {
+          "name": "file_path",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "symbols",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "imports",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_imports",
+      "start_line": 20,
+      "end_line": 47,
+      "lines": 28,
+      "docstring": "Extract import statements from the file",
+      "raw_code": "def extract_imports(root_node, code):\n    \"\"\"Extract import statements from the file\"\"\"\n    imports = {\"external\": [], \"internal\": []}\n    \n    def walk_imports(node):\n        if node.type == \"import_statement\":\n            for child in node.children:\n                if child.type == \"dotted_name\":\n                    module_name = code[child.start_byte:child.end_byte]\n                    if module_name.startswith('.') or '/' in module_name or '\\\\' in module_name:\n                        imports[\"internal\"].append(module_name)\n                    else:\n                        imports[\"external\"].append(module_name)\n        \n        elif node.type == \"import_from_statement\":\n            module_node = node.child_by_field_name(\"module_name\")\n            if module_node:\n                module_name = code[module_node.start_byte:module_node.end_byte]\n                if module_name.startswith('.'):\n                    imports[\"internal\"].append(module_name)\n                else:\n                    imports[\"external\"].append(module_name)\n        \n        for child in node.children:\n            walk_imports(child)\n    \n    walk_imports(root_node)\n    return imports",
+      "chunk_id": "python_parser.py::extract_imports",
+      "decorators": [],
+      "calls": [
+        "module_name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "node.child_by_field_name",
+        "module_name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "walk_imports",
+        "walk_imports"
+      ],
+      "complexity": 8,
+      "parameters": [
+        {
+          "name": "root_node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "ToggleSwitch",
+      "start_line": 63,
+      "end_line": 90,
+      "lines": 28,
+      "parameters": [
+        "(",
+        "{ setActiveTab, activeTab }"
+      ],
+      "calls": [
+        "setActiveTab",
+        "setActiveTab"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function ToggleSwitch({ setActiveTab, activeTab }) {\n  return (\n    <div className=\"h-10 w-36 bg-white rounded-lg flex gap-2  relative border-white border-2\">\n      <div\n        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-slate-800  transition-transform duration-500 ease-in-out ${\n          activeTab === \"preview\" ? \"translate-x-0\" : \"translate-x-full\"\n        }`}\n      />\n\n      <button\n        className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${\n          activeTab === \"preview\" ? \"text-white\" : \"text-black\"\n        } `}\n        onClick={() => setActiveTab(\"preview\")}\n      >\n        Preview\n      </button>\n      <button\n        className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${\n          activeTab === \"preview\" ? \"text-black\" : \"text-white\"\n        } `}\n        onClick={() => setActiveTab(\"code\")}\n      >\n        Code\n      </button>\n    </div>\n  );\n}",
+      "chunk_id": "markdownComp.js::ToggleSwitch",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "analyze_architecture",
+      "start_line": 281,
+      "end_line": 307,
+      "lines": 27,
+      "docstring": "Analyze and categorize the codebase architecture",
+      "raw_code": "def analyze_architecture(folder_map, dependencies):\n    \"\"\"Analyze and categorize the codebase architecture\"\"\"\n    architecture = {\n        \"pattern\": \"unknown\",\n        \"layers\": {}\n    }\n    \n    # Detect common patterns\n    folders = list(folder_map.keys())\n    \n    if any(\"api\" in folder.lower() or \"routes\" in folder.lower() for folder in folders):\n        architecture[\"pattern\"] = \"layered_architecture\"\n    elif \"models\" in str(folders) and \"views\" in str(folders):\n        architecture[\"pattern\"] = \"mvc\"\n    elif len(folders) > 3:\n        architecture[\"pattern\"] = \"microservices\"\n    \n    # Categorize layers\n    for folder, files in folder_map.items():\n        if any(f[\"file_type\"] == \"api_endpoint\" for f in files):\n            architecture[\"layers\"][\"api\"] = architecture[\"layers\"].get(\"api\", []) + [folder]\n        elif any(f[\"file_type\"] == \"data_model\" for f in files):\n            architecture[\"layers\"][\"data\"] = architecture[\"layers\"].get(\"data\", []) + [folder]\n        elif any(f[\"file_type\"] == \"authentication\" for f in files):\n            architecture[\"layers\"][\"auth\"] = architecture[\"layers\"].get(\"auth\", []) + [folder]\n    \n    return architecture",
+      "chunk_id": "python_parser.py::analyze_architecture",
+      "decorators": [],
+      "calls": [
+        "list",
+        "folder_map.keys",
+        "any",
+        "folder.lower",
+        "folder.lower",
+        "str",
+        "str",
+        "len",
+        "folder_map.items",
+        "any",
+        "architecture[\"layers\"].get",
+        "any",
+        "architecture[\"layers\"].get",
+        "any",
+        "architecture[\"layers\"].get"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "folder_map",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "dependencies",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "ReadMePage",
+      "start_line": 6,
+      "end_line": 30,
+      "lines": 25,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "useLocation",
+        "searchParams.get",
+        "useState",
+        "useState",
+        "useState"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function ReadMePage() {\n  const location = useLocation();\n  const searchParams = new URLSearchParams(location.search);\n  const repoUrl = searchParams.get(\"repo\");\n  const [readmeData, setReadmeData] = useState(\"\");\n  const [firstGenerate, setFirstGenerate] = useState(false);\n  const [isLoading, setIsLoading] = useState(false);\n\n  return (\n    <div className=\"h-screen bg-[#14191f] flex overflow-hidden\">\n      <Preferences\n        repoUrl={repoUrl}\n        setReadmeData={setReadmeData}\n        setFirstGenerate={setFirstGenerate}\n        isLoading={isLoading}\n        setIsLoading={setIsLoading}\n      />\n      <MarkdownViewer\n        readmeData={readmeData}\n        firstGenerate={firstGenerate}\n        isLoading={isLoading}\n      />\n    </div>\n  );\n}",
+      "chunk_id": "ReadmePage.js::ReadMePage",
+      "decorators": [],
+      "file": "ReadmePage.js"
+    },
+    {
+      "type": "function",
+      "name": "walk_codebase",
+      "start_line": 14,
+      "end_line": 37,
+      "lines": 24,
+      "docstring": null,
+      "raw_code": "def walk_codebase(root_dir):\n\n    code_files = []  #to store the file and path that needs to be parsed\n\n    for dirpath,dirnames,filenames in os.walk(root_dir): #os.walk returns a tuple of dir path, dir name and file name\n\n        dirnames[:] = [d for d in dirnames if not d.startswith('.') and d not in EXCLUDED_DIRS]\n\n        for file in filenames:\n\n            if file.startswith('.'):\n                continue\n\n            filepath = Path(dirpath) / file #combines path with file name\n            ext = filepath.suffix\n\n\n            if ext in SUPPORTED_EXTENSIONS:\n                code_files.append({\n                    'path':filepath,\n                    'language': SUPPORTED_EXTENSIONS[ext]\n                })\n\n    return code_files",
+      "chunk_id": "code_walker.py::walk_codebase",
+      "decorators": [],
+      "calls": [
+        "os.walk",
+        "d.startswith",
+        "file.startswith",
+        "Path",
+        "code_files.append"
+      ],
+      "complexity": 5,
+      "parameters": [
+        {
+          "name": "root_dir",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "code_walker.py"
+    },
+    {
+      "type": "function",
+      "name": "readme_graph",
+      "start_line": 55,
+      "end_line": 76,
+      "lines": 22,
+      "docstring": null,
+      "raw_code": "def readme_graph():\n    builder = StateGraph(ReadmeState)\n    builder.add_node(\"WalkCodebase\", walk_codebase_node)\n    builder.add_node(\"ASTParser\", parser_node)\n    builder.add_node(\"Chunker\", chunker_node)\n    builder.add_node(\"Summarizer\", summarizer_node)\n    builder.add_node(\"ReadmeGenerator\", readme_node)\n    builder.add_node(\"UserFeedback\", user_feedback_node)\n\n    builder.set_entry_point(\"WalkCodebase\")\n    builder.add_edge(\"WalkCodebase\", \"ASTParser\")\n    builder.add_edge(\"ASTParser\", \"Chunker\")\n    builder.add_edge(\"Chunker\", \"Summarizer\")\n    builder.add_edge(\"Summarizer\", \"ReadmeGenerator\")\n    builder.add_edge(\"ReadmeGenerator\", \"UserFeedback\")\n\n    builder.add_conditional_edges(\"UserFeedback\", should_continue, {\n        \"regenerate\": \"ReadmeGenerator\",\n        \"end\": END\n    })\n\n    return builder.compile(checkpointer=InMemorySaver())",
+      "chunk_id": "agent.py::readme_graph",
+      "decorators": [],
+      "calls": [
+        "StateGraph",
+        "builder.add_node",
+        "builder.add_node",
+        "builder.add_node",
+        "builder.add_node",
+        "builder.add_node",
+        "builder.add_node",
+        "builder.set_entry_point",
+        "builder.add_edge",
+        "builder.add_edge",
+        "builder.add_edge",
+        "builder.add_edge",
+        "builder.add_edge",
+        "builder.add_conditional_edges",
+        "builder.compile",
+        "InMemorySaver"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "run_readme_pipeline",
+      "start_line": 80,
+      "end_line": 100,
+      "lines": 21,
+      "docstring": null,
+      "raw_code": "def run_readme_pipeline(url: str, description: str, preferences: dict, session_id: str):\n    codebase_path = clone_repo(url)\n    input_state = {\n        \"codebase_path\": codebase_path,\n        \"project_description\": description,\n        \"preferences\": preferences,\n        \"action\": \"regenerate\"\n    }\n    graph = readme_graph()\n    config = {\"configurable\": {\"thread_id\": session_id}}\n\n    iterator = graph.invoke(input_state, config=config)\n    \n    SESSION_CACHE[session_id] = {\n    \"graph\": graph,\n    \"state\": input_state,\n    \"ended\": False\n}\n\n    pprint(iterator.keys())\n    return iterator",
+      "chunk_id": "agent.py::run_readme_pipeline",
+      "decorators": [],
+      "calls": [
+        "clone_repo",
+        "readme_graph",
+        "graph.invoke",
+        "pprint",
+        "iterator.keys"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "walk_imports",
+      "start_line": 24,
+      "end_line": 44,
+      "lines": 21,
+      "docstring": null,
+      "raw_code": "def walk_imports(node):\n        if node.type == \"import_statement\":\n            for child in node.children:\n                if child.type == \"dotted_name\":\n                    module_name = code[child.start_byte:child.end_byte]\n                    if module_name.startswith('.') or '/' in module_name or '\\\\' in module_name:\n                        imports[\"internal\"].append(module_name)\n                    else:\n                        imports[\"external\"].append(module_name)\n        \n        elif node.type == \"import_from_statement\":\n            module_node = node.child_by_field_name(\"module_name\")\n            if module_node:\n                module_name = code[module_node.start_byte:module_node.end_byte]\n                if module_name.startswith('.'):\n                    imports[\"internal\"].append(module_name)\n                else:\n                    imports[\"external\"].append(module_name)\n        \n        for child in node.children:\n            walk_imports(child)",
+      "chunk_id": "python_parser.py::walk_imports",
+      "decorators": [],
+      "calls": [
+        "module_name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "node.child_by_field_name",
+        "module_name.startswith",
+        "imports[\"internal\"].append",
+        "imports[\"external\"].append",
+        "walk_imports"
+      ],
+      "complexity": 8,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "parse_code",
+      "start_line": 39,
+      "end_line": 58,
+      "lines": 20,
+      "docstring": null,
+      "raw_code": "def parse_code(file_path):\n    lang_key = detect_language(file_path)\n    if not lang_key:\n        print(f\"[SKIP] Unsupported file type: {file_path}\")\n        return\n\n    lang_obj = LANGUAGE_REGISTRY[lang_key][\"language\"]\n    parser = Parser(lang_obj)\n\n\n    code = Path(file_path).read_text(encoding='utf-8', errors='ignore')\n    tree = parser.parse(code.encode(\"utf-8\"))\n    root = tree.root_node\n\n    print(f\"[{lang_key.upper()}] File: {file_path}\")\n    print(f\"Root node: {root.type}\")\n    print(\"Top-level children:\")\n    for child in root.children[:5]:\n        print(f\"  - {child.type} ({child.start_point} → {child.end_point})\")\n    print(\"-\" * 40)\n\n",
+      "chunk_id": "test.py::parse_code",
+      "decorators": [],
+      "calls": [
+        "detect_language",
+        "print",
+        "Parser",
+        "Path(file_path).read_text",
+        "Path",
+        "parser.parse",
+        "code.encode",
+        "print",
+        "lang_key.upper",
+        "print",
+        "print",
+        "print",
+        "int(\""
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "file_path",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "test.py"
+    },
+    {
+      "type": "function",
+      "name": "GenerateRequest",
+      "start_line": 29,
+      "end_line": 48,
+      "lines": 20,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "console.log",
+        "console.log",
+        "setIsLoading",
+        "callApi({\n      url: \"http://localhost:8000/api/readme/generate\",\n      method: \"POST\",\n      payload: {\n        github_url: repoUrl,\n        project_description: proj_description,\n        preferences: preferences,\n        session_id: \"demo-session-001\",\n      },\n    }).catch",
+        "callApi",
+        "console.error",
+        "setReadmeData",
+        "setIsLoading",
+        "setIsRegenerate",
+        "setFirstGenerate"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "async () => {\n    console.log(\"Regenerating with preferences:\", preferences);\n    console.log(\"Description:\", proj_description);\n    setIsLoading(true);\n    const readmeResponse = await callApi({\n      url: \"http://localhost:8000/api/readme/generate\",\n      method: \"POST\",\n      payload: {\n        github_url: repoUrl,\n        project_description: proj_description,\n        preferences: preferences,\n        session_id: \"demo-session-001\",\n      },\n    }).catch((err) => console.error(err));\n\n    setReadmeData(readmeResponse);\n    setIsLoading(false);\n    setIsRegenerate(true);\n    setFirstGenerate(true);\n  }",
+      "chunk_id": "preferencesComp.js::GenerateRequest",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "reGenerateRequest",
+      "start_line": 50,
+      "end_line": 66,
+      "lines": 17,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "console.log",
+        "console.log",
+        "setIsLoading",
+        "callApi({\n      url: \"http://localhost:8000/api/readme/resume\",\n      method: \"POST\",\n      payload: {\n        session_id: \"demo-session-001\",\n        action: \"regenerate\",\n        project_description: proj_description,\n        preferences: preferences,\n      },\n    }).catch",
+        "callApi",
+        "console.log",
+        "setReadmeData",
+        "setIsLoading"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "async () => {\n    console.log(\"Regenerating with preferences:\", preferences);\n    console.log(\"Description:\", proj_description);\n    setIsLoading(true);\n    const readmeResponse = await callApi({\n      url: \"http://localhost:8000/api/readme/resume\",\n      method: \"POST\",\n      payload: {\n        session_id: \"demo-session-001\",\n        action: \"regenerate\",\n        project_description: proj_description,\n        preferences: preferences,\n      },\n    }).catch((err) => console.log(err));\n    setReadmeData(readmeResponse);\n    setIsLoading(false);\n  }",
+      "chunk_id": "preferencesComp.js::reGenerateRequest",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "extract_function_calls",
+      "start_line": 49,
+      "end_line": 64,
+      "lines": 16,
+      "docstring": "Extract function calls within a symbol",
+      "raw_code": "def extract_function_calls(node, code):\n    \"\"\"Extract function calls within a symbol\"\"\"\n    calls = []\n    \n    def walk_calls(node):\n        if node.type == \"call\":\n            func_node = node.child_by_field_name(\"function\")\n            if func_node:\n                func_name = code[func_node.start_byte:func_node.end_byte]\n                calls.append(func_name)\n        \n        for child in node.children:\n            walk_calls(child)\n    \n    walk_calls(node)\n    return calls",
+      "chunk_id": "python_parser.py::extract_function_calls",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name",
+        "calls.append",
+        "walk_calls",
+        "walk_calls"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "callApi",
+      "start_line": 3,
+      "end_line": 18,
+      "lines": 16,
+      "parameters": [
+        "(",
+        "{\n  url,\n  method = \"GET\",\n  payload = null,\n  headers = {},\n}"
+      ],
+      "calls": [
+        "axios",
+        "console.error"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async function callApi({\n  url,\n  method = \"GET\",\n  payload = null,\n  headers = {},\n}) {\n  try {\n    const config = { method, url, headers, data: payload };\n    const response = await axios(config);\n\n    return response.data;\n  } catch (error) {\n    console.error(\"API call failed:\", error);\n    throw error.response?.data || error.message;\n  }\n}",
+      "chunk_id": "ApiCaller.js::callApi",
+      "decorators": [],
+      "file": "ApiCaller.js"
+    },
+    {
+      "type": "function",
+      "name": "calculate_complexity",
+      "start_line": 86,
+      "end_line": 100,
+      "lines": 15,
+      "docstring": "Simple complexity calculation based on control flow",
+      "raw_code": "def calculate_complexity(node):\n    \"\"\"Simple complexity calculation based on control flow\"\"\"\n    complexity = 1  # Base complexity\n    \n    def count_complexity(node):\n        nonlocal complexity\n        if node.type in (\"if_statement\", \"for_statement\", \"while_statement\", \n                        \"try_statement\", \"with_statement\", \"match_statement\"):\n            complexity += 1\n        \n        for child in node.children:\n            count_complexity(child)\n    \n    count_complexity(node)\n    return complexity",
+      "chunk_id": "python_parser.py::calculate_complexity",
+      "decorators": [],
+      "calls": [
+        "count_complexity",
+        "count_complexity"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_docstring",
+      "start_line": 309,
+      "end_line": 323,
+      "lines": 15,
+      "docstring": "Enhanced docstring extraction",
+      "raw_code": "def extract_docstring(node, code: str):\n    \"\"\"Enhanced docstring extraction\"\"\"\n    body = node.child_by_field_name(\"body\")\n    if not body or len(body.children) == 0:\n        return None\n    \n    first_child = body.children[0]\n    if first_child.type == \"expression_statement\":\n        string_node = first_child.children[0]\n        if string_node.type == \"string\":\n            docstring = code[string_node.start_byte:string_node.end_byte]\n            # Clean up the docstring\n            return docstring.strip(\"\\\"'\").strip()\n    \n    return None",
+      "chunk_id": "python_parser.py::extract_docstring",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name",
+        "len",
+        "docstring.strip(\"\\\"'\").strip",
+        "docstring.strip"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "class",
+      "name": "ReadPreferences",
+      "start_line": 4,
+      "end_line": 16,
+      "lines": 13,
+      "docstring": null,
+      "raw_code": "class ReadPreferences(BaseModel):\n    title: bool\n    badge : bool\n    introduction:bool\n    table_of_contents:bool\n    key_features:bool\n    install_guide:bool\n    usage:bool\n    api_ref:bool\n    env_var:bool\n    project_structure:bool\n    tech_used:bool\n    licenses:bool",
+      "chunk_id": "model.py::ReadPreferences",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_function_calls",
+      "start_line": 23,
+      "end_line": 35,
+      "lines": 13,
+      "docstring": null,
+      "raw_code": "def extract_function_calls(node, code):\n        calls=[]\n\n        def walk(n):\n            if n.type == \"call_expression\":\n                func = n.child_by_field_name(\"function\")\n                if func:\n                    calls.append(code[func.start_byte:func.end_byte])\n            for child in n.children:\n                walk(child)\n\n        walk(node)\n        return calls",
+      "chunk_id": "js_parser.py::extract_function_calls",
+      "decorators": [],
+      "calls": [
+        "n.child_by_field_name",
+        "calls.append",
+        "walk",
+        "walk"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "CheckListItem",
+      "start_line": 140,
+      "end_line": 152,
+      "lines": 13,
+      "parameters": [
+        "(",
+        "{ text, checked, onChange }"
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function CheckListItem({ text, checked, onChange }) {\n  return (\n    <label className=\"flex items-center gap-3 p-3 rounded-lg bg-[#1e2733] hover:bg-[#2a3442] transition duration-500 ease-in-out cursor-pointer\">\n      <input\n        type=\"checkbox\"\n        checked={checked}\n        onChange={onChange}\n        className=\"w-5 h-5 text-blue-500 accent-blue-500 bg-gray-800 border border-gray-600 rounded focus:ring-2 focus:ring-blue-400 transition duration-500 ease-in-out\"\n      />\n      <span className=\"text-white text-lg font-medium\">{text}</span>\n    </label>\n  );\n}",
+      "chunk_id": "preferencesComp.js::CheckListItem",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "Description",
+      "start_line": 154,
+      "end_line": 166,
+      "lines": 13,
+      "parameters": [
+        "(",
+        "{ setDescription }"
+      ],
+      "calls": [
+        "setDescription"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function Description({ setDescription }) {\n  return (\n    <div className=\"w-full h-72 border-blue-500 rounded-lg border-2 mt-5\">\n      <textarea\n        className=\"h-full w-full rounded-lg bg-inherit text-white p-2 resize-none\"\n        onChange={(e) => {\n          setDescription(e.target.value);\n        }}\n        placeholder=\"short description...\"\n      ></textarea>\n    </div>\n  );\n}",
+      "chunk_id": "preferencesComp.js::Description",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "generate_readme",
+      "start_line": 9,
+      "end_line": 20,
+      "lines": 12,
+      "docstring": null,
+      "raw_code": "async def generate_readme(request: ReadmeRequest):\n    pprint(request)\n    try:\n        state = run_readme_pipeline(\n            url=request.github_url,\n            description=request.project_description,\n            preferences=request.preferences,\n            session_id=request.session_id\n        )\n        return ReadmeResponse(readme=state.get('readme'))\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+      "chunk_id": "router.py::generate_readme",
+      "decorators": [],
+      "calls": [
+        "pprint",
+        "run_readme_pipeline",
+        "ReadmeResponse",
+        "state.get",
+        "HTTPException",
+        "str"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "router.py"
+    },
+    {
+      "type": "function",
+      "name": "calculate_complexity",
+      "start_line": 48,
+      "end_line": 59,
+      "lines": 12,
+      "docstring": null,
+      "raw_code": "def calculate_complexity(node):\n        complexity = 1  # default for the function itself\n\n        def walk(n):\n            nonlocal complexity\n            if n.type in (\"if_statement\", \"for_statement\", \"while_statement\", \"switch_statement\", \"try_statement\"):\n                complexity += 1\n            for child in n.children:\n                walk(child)\n\n        walk(node)\n        return complexity",
+      "chunk_id": "js_parser.py::calculate_complexity",
+      "decorators": [],
+      "calls": [
+        "walk",
+        "walk"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "generate_file_purpose_description",
+      "start_line": 268,
+      "end_line": 279,
+      "lines": 12,
+      "docstring": "Generate human-readable purpose description",
+      "raw_code": "def generate_file_purpose_description(file_type, symbols):\n    \"\"\"Generate human-readable purpose description\"\"\"\n    purposes = {\n        \"api_endpoint\": \"REST API endpoints and route handlers\",\n        \"data_model\": \"Database models and data structures\", \n        \"entry_point\": \"Application entry point and initialization\",\n        \"authentication\": \"User authentication and authorization\",\n        \"configuration\": \"Application configuration and settings\",\n        \"test\": \"Unit tests and test utilities\",\n        \"core_logic\": \"Core business logic and functionality\"\n    }\n    return purposes.get(file_type, \"Application logic\")",
+      "chunk_id": "python_parser.py::generate_file_purpose_description",
+      "decorators": [],
+      "calls": [
+        "purposes.get"
+      ],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "file_type",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "symbols",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "clone_repo",
+      "start_line": 6,
+      "end_line": 16,
+      "lines": 11,
+      "docstring": null,
+      "raw_code": "def clone_repo(url: str)->str:\n\n    tmp_dir = tempfile.mkdtemp(prefix=\"repo_\")\n\n    try:\n        Repo.clone_from(url,tmp_dir)\n        print(f\"Repo cloned Sucessfully at {tmp_dir}\")\n        return tmp_dir\n    except Exception as e:\n        shutil.rmtree(tmp_dir,ignore_errors=False)\n        raise Exception(f\"Failed to clone repo: {e}\")",
+      "chunk_id": "github_utils.py::clone_repo",
+      "decorators": [],
+      "calls": [
+        "tempfile.mkdtemp",
+        "Repo.clone_from",
+        "print",
+        "shutil.rmtree",
+        "Exception"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "github_utils.py"
+    },
+    {
+      "type": "function",
+      "name": "parse_code_file",
+      "start_line": 6,
+      "end_line": 16,
+      "lines": 11,
+      "docstring": null,
+      "raw_code": "def parse_code_file(file_path: str,language: str):\n\n    \n\n    parser = get_parser(language)\n\n    code = Path(file_path).read_text(encoding=\"utf-8\")\n\n    tree = parser.parse(bytes(code,'utf8'))\n\n    return tree",
+      "chunk_id": "AST_parser.py::parse_code_file",
+      "decorators": [],
+      "calls": [
+        "get_parser",
+        "Path(file_path).read_text",
+        "Path",
+        "parser.parse",
+        "bytes"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "AST_parser.py"
     },
     {
       "type": "function",
       "name": "handleSubmit",
-      "start_line": 130,
-      "end_line": 170,
-      "lines": 41,
+      "start_line": 8,
+      "end_line": 18,
+      "lines": 11,
       "parameters": [
-        "(",
-        "e"
+        "("
       ],
       "calls": [
-        "e.preventDefault",
-        "inputValue.trim",
-        "alert",
-        "setIsSubmitting",
-        "getAccessTokenSilently",
-        "fetch",
-        "JSON.stringify",
-        "response.json",
-        "console.log",
-        "alert",
-        "setInputValue",
-        "getTickets",
-        "console.error",
-        "alert",
-        "setIsSubmitting"
+        "DOMPurify.sanitize",
+        "repoUrl.trim",
+        "/^https:\\/\\/(www\\.)?github\\.com\\/[^/]+\\/[^/]+\\/?$/.test",
+        "navigate",
+        "encodeURIComponent",
+        "alert"
       ],
-      "complexity": 4,
+      "complexity": 2,
       "docstring": null,
-      "raw_code": "async (e) => {\n    e.preventDefault();\n\n    if (inputValue.trim() === \"\") {\n      alert(\"Please enter ticket details!\");\n      return;\n    }\n\n    setIsSubmitting(true);\n\n    try {\n      // Simulate API call - replace with your actual endpoint\n\n      const token = await getAccessTokenSilently();\n      const response = await fetch(\"http://localhost:8001/add-ticket\", {\n        method: \"POST\",\n        headers: {\n          \"Content-Type\": \"application/json\",\n          Authorization: `Bearer ${token}`,\n        },\n        body: JSON.stringify({\n          message: inputValue,\n        }),\n      });\n\n      if (response.ok) {\n        const data = await response.json();\n        console.log(\"Success:\", data);\n        alert(\"Ticket submitted successfully!\");\n        setInputValue(\"\");\n        getTickets(); // Clear form after successful submission\n      } else {\n        throw new Error(\"Failed to submit ticket\");\n      }\n    } catch (error) {\n      console.error(\"Error:\", error);\n      alert(\"Error submitting ticket. Please try again.\");\n    } finally {\n      setIsSubmitting(false);\n    }\n  }",
-      "chunk_id": "App.js::handleSubmit",
+      "raw_code": "() => {\n    const sanitized_url = DOMPurify.sanitize(repoUrl.trim());\n    const isValidGitHubUrl =\n      /^https:\\/\\/(www\\.)?github\\.com\\/[^/]+\\/[^/]+\\/?$/.test(sanitized_url);\n\n    if (sanitized_url && isValidGitHubUrl) {\n      navigate(`/readme?repo=${encodeURIComponent(sanitized_url)}`);\n    } else {\n      alert(\"Please enter a valid GitHub URL.\");\n    }\n  }",
+      "chunk_id": "LinkTextBox.js::handleSubmit",
       "decorators": [],
-      "file": "App.js"
+      "file": "LinkTextBox.js"
+    },
+    {
+      "type": "class",
+      "name": "ReadmeState",
+      "start_line": 9,
+      "end_line": 18,
+      "lines": 10,
+      "docstring": null,
+      "raw_code": "class ReadmeState(TypedDict, total=False):\n    codebase_path: str\n    structure: List[Any]\n    ast: Dict[str, Any]\n    chunks: List[Any]\n    summary: List[Any]\n    readme: str\n    preferences: Dict[str, Any]\n    project_description: str\n    action: Literal[\"regenerate\", \"end\"]",
+      "chunk_id": "agent.py::ReadmeState",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "agent.py"
     },
     {
       "type": "function",
-      "name": "token_verify",
-      "start_line": 17,
-      "end_line": 56,
-      "lines": 40,
+      "name": "extract_symbols_from_ast",
+      "start_line": 4,
+      "end_line": 13,
+      "lines": 10,
       "docstring": null,
-      "raw_code": "def token_verify(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):\n\n    token = credentials.credentials\n\n    jwks_url = f\"https://{AUTH0_DOMAIN}/.well-known/jwks.json\"\n    jwks = requests.get(jwks_url).json()\n\n    unverified_token = jwt.get_unverified_header(token)\n    print(unverified_token)  \n\n    rsa_key = next(\n        (\n            {\n                \"kty\": key[\"kty\"],\n                \"kid\": key[\"kid\"],\n                \"use\": key[\"use\"],\n                \"n\": key[\"n\"],\n                \"e\": key[\"e\"],\n            }\n            for key in jwks[\"keys\"]\n            if key[\"kid\"] == unverified_token[\"kid\"]\n        ),\n        None,\n    )\n\n    if rsa_key is None:\n        raise HTTPException(status_code=401, detail=\"Invalid token\")\n    \n\n    try:\n        payload= jwt.decode(\n            token,\n            rsa_key,\n            algorithms=ALGORITHMS,\n            audience=API_AUDIENCE,\n            issuer=f'https://{AUTH0_DOMAIN}/'\n        )\n        return payload\n    except Exception as e:\n        raise HTTPException(status_code=401, detail=\"token validation failed\")",
-      "chunk_id": "auth.py::token_verify",
+      "raw_code": "def extract_symbols_from_ast(ast):\n    symbols = []\n    for folder in ast.get(\"structure\", []):\n        for file in folder.get(\"files\", []):\n            for symbol in file.get(\"symbols\", []):\n                symbol[\"file\"] = file[\"name\"]\n                if \"lines\" not in symbol:\n                    symbol[\"lines\"] = symbol[\"end_line\"] - symbol[\"start_line\"] + 1\n                symbols.append(symbol)\n    return symbols",
+      "chunk_id": "chunker.py::extract_symbols_from_ast",
       "decorators": [],
       "calls": [
-        "Depends",
-        "requests.get(jwks_url).json",
-        "requests.get",
-        "jwt.get_unverified_header",
-        "print",
-        "next",
-        "HTTPException",
-        "jwt.decode",
-        "HTTPException"
-      ],
-      "complexity": 3,
-      "parameters": [],
-      "file": "auth.py"
-    },
-    {
-      "type": "function",
-      "name": "AuthWrapper",
-      "start_line": 5,
-      "end_line": 43,
-      "lines": 39,
-      "parameters": [
-        "(",
-        "{ children }"
-      ],
-      "calls": [
-        "useAuth0",
-        "useEffect",
-        "getAccessTokenSilently",
-        "console.log",
-        "fetch",
-        "console.log",
-        "console.error",
-        "response.text",
-        "console.error",
-        "callAuthAPI"
+        "ast.get",
+        "folder.get",
+        "file.get",
+        "symbols.append"
       ],
       "complexity": 5,
-      "docstring": null,
-      "raw_code": "function AuthWrapper({ children }) {\n  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();\n\n  useEffect(() => {\n    const callAuthAPI = async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      callAuthAPI();\n    }\n  }, [isAuthenticated, getAccessTokenSilently]);\n\n  if (isLoading) {\n    return <h1 className=\"text-white font-bold items-center\">Loading....</h1>;\n  }\n\n  return isAuthenticated ? children : <Navigate to=\"/login\" />;\n}",
-      "chunk_id": "authWrapper.js::AuthWrapper",
+      "parameters": [
+        {
+          "name": "ast",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "chunker.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_parameters",
+      "start_line": 75,
+      "end_line": 84,
+      "lines": 10,
+      "docstring": "Extract function parameters",
+      "raw_code": "def extract_parameters(node, code):\n    \"\"\"Extract function parameters\"\"\"\n    parameters = []\n    params_node = node.child_by_field_name(\"parameters\")\n    if params_node:\n        for child in params_node.children:\n            if child.type == \"identifier\":\n                param_name = code[child.start_byte:child.end_byte]\n                parameters.append({\"name\": param_name, \"type\": None, \"default\": None})\n    return parameters",
+      "chunk_id": "python_parser.py::extract_parameters",
       "decorators": [],
-      "file": "authWrapper.js"
+      "calls": [
+        "node.child_by_field_name",
+        "parameters.append"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_parameters",
+      "start_line": 38,
+      "end_line": 46,
+      "lines": 9,
+      "docstring": null,
+      "raw_code": "def extract_parameters(node, code):\n        params_node = node.child_by_field_name(\"parameters\")\n        if params_node:\n            return [\n                code[c.start_byte:c.end_byte]\n                for c in params_node.children\n                if c.type != \",\" and c.type != \")\"\n            ]\n        return []",
+      "chunk_id": "js_parser.py::extract_parameters",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name"
+      ],
+      "complexity": 2,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "walk_calls",
+      "start_line": 53,
+      "end_line": 61,
+      "lines": 9,
+      "docstring": null,
+      "raw_code": "def walk_calls(node):\n        if node.type == \"call\":\n            func_node = node.child_by_field_name(\"function\")\n            if func_node:\n                func_name = code[func_node.start_byte:func_node.end_byte]\n                calls.append(func_name)\n        \n        for child in node.children:\n            walk_calls(child)",
+      "chunk_id": "python_parser.py::walk_calls",
+      "decorators": [],
+      "calls": [
+        "node.child_by_field_name",
+        "calls.append",
+        "walk_calls"
+      ],
+      "complexity": 4,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "convert_paths",
+      "start_line": 10,
+      "end_line": 18,
+      "lines": 9,
+      "docstring": null,
+      "raw_code": "def convert_paths(obj):\n    if isinstance(obj, dict):\n        return {k: convert_paths(v) for k, v in obj.items()}\n    elif isinstance(obj, list):\n        return [convert_paths(i) for i in obj]\n    elif isinstance(obj, Path):\n        return str(obj)\n    else:\n        return obj",
+      "chunk_id": "summerizer.py::convert_paths",
+      "decorators": [],
+      "calls": [
+        "isinstance",
+        "convert_paths",
+        "obj.items",
+        "isinstance",
+        "convert_paths",
+        "isinstance",
+        "str"
+      ],
+      "complexity": 2,
+      "parameters": [
+        {
+          "name": "obj",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "summerizer.py"
+    },
+    {
+      "type": "function",
+      "name": "copyToClipboard",
+      "start_line": 95,
+      "end_line": 103,
+      "lines": 9,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "navigator.clipboard.writeText",
+        "setCopied",
+        "setTimeout",
+        "setCopied",
+        "console.error"
+      ],
+      "complexity": 2,
+      "docstring": null,
+      "raw_code": "async () => {\n    try {\n      await navigator.clipboard.writeText(readmeData.readme);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch (e) {\n      console.error(\"error copying :\", e);\n    }\n  }",
+      "chunk_id": "markdownComp.js::copyToClipboard",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "handleDownload",
+      "start_line": 105,
+      "end_line": 113,
+      "lines": 9,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "URL.createObjectURL",
+        "document.createElement",
+        "a.click",
+        "URL.revokeObjectURL"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => {\n    const blob = new Blob([readmeData.readme], { type: \"text/markdown\" });\n    const url = URL.createObjectURL(blob);\n    const a = document.createElement(\"a\");\n    a.href = url;\n    a.download = \"Readme.md\";\n    a.click();\n    URL.revokeObjectURL(url);\n  }",
+      "chunk_id": "markdownComp.js::handleDownload",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "estimate_token",
+      "start_line": 3,
+      "end_line": 10,
+      "lines": 8,
+      "docstring": null,
+      "raw_code": "def estimate_token(text: str,model: str = \"gpt-3.5-turbo\") -> int:\n    try:\n        enc = tiktoken.encoding_for_model(model)\n    \n    except KeyError:\n        enc = tiktoken.get_encoding(\"cl100k_base\")\n    \n    return len(enc.encode(text))",
+      "chunk_id": "token_estimator.py::estimate_token",
+      "decorators": [],
+      "calls": [
+        "tiktoken.encoding_for_model",
+        "tiktoken.get_encoding",
+        "len",
+        "enc.encode"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "token_estimator.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_decorators",
+      "start_line": 66,
+      "end_line": 73,
+      "lines": 8,
+      "docstring": "Extract decorators for functions/classes",
+      "raw_code": "def extract_decorators(node, code):\n    \"\"\"Extract decorators for functions/classes\"\"\"\n    decorators = []\n    for child in node.children:\n        if child.type == \"decorator\":\n            decorator_text = code[child.start_byte:child.end_byte]\n            decorators.append(decorator_text)\n    return decorators",
+      "chunk_id": "python_parser.py::extract_decorators",
+      "decorators": [],
+      "calls": [
+        "decorators.append"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "count_complexity",
+      "start_line": 90,
+      "end_line": 97,
+      "lines": 8,
+      "docstring": null,
+      "raw_code": "def count_complexity(node):\n        nonlocal complexity\n        if node.type in (\"if_statement\", \"for_statement\", \"while_statement\", \n                        \"try_statement\", \"with_statement\", \"match_statement\"):\n            complexity += 1\n        \n        for child in node.children:\n            count_complexity(child)",
+      "chunk_id": "python_parser.py::count_complexity",
+      "decorators": [],
+      "calls": [
+        "count_complexity"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
     },
     {
       "type": "function",
       "name": "App",
-      "start_line": 13,
-      "end_line": 46,
-      "lines": 34,
+      "start_line": 5,
+      "end_line": 12,
+      "lines": 8,
       "parameters": [
         "("
       ],
       "calls": [],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "function App() {\n  return (\n    <Router>\n      <Routes>\n        <Route\n          path=\"/\"\n          element={\n            <AuthWrapper>\n              <RoleRedirect />\n            </AuthWrapper>\n          }\n        />\n        <Route\n          path=\"/admin-home\"\n          element={\n            <AuthWrapper>\n              <Home link={\"http://localhost:8001/tickets\"} />{\" \"}\n            </AuthWrapper>\n          }\n        />\n        <Route\n          path=\"/user-home\"\n          element={\n            <AuthWrapper>\n              <Home link={\"http://localhost:8001/my-tickets\"} />{\" \"}\n            </AuthWrapper>\n          }\n        />\n        <Route path=\"/login\" element={<LoginPage />} />\n        <Route path=\"/ticket/:ticketNo\" element={<TicketDetails />} />{\" \"}\n      </Routes>\n    </Router>\n  );\n}",
+      "raw_code": "function App() {\n  return (\n    <Routes>\n      <Route path=\"/\" element={<HomePage />} />\n      <Route path=\"/readme\" element={<ReadMePage />} />\n    </Routes>\n  );\n}",
       "chunk_id": "App.js::App",
       "decorators": [],
       "file": "App.js"
@@ -281,1070 +1536,682 @@
     {
       "type": "function",
       "name": "<anonymous>",
-      "start_line": 13,
-      "end_line": 46,
-      "lines": 34,
+      "start_line": 128,
+      "end_line": 135,
+      "lines": 8,
       "parameters": [
         "(",
-        "ticket"
+        "[key, label]"
       ],
-      "calls": [],
+      "calls": [
+        "handleChange"
+      ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "(ticket) => (\n              <li>\n                <Link to={`/ticket/${ticket.ticket_no}`}>\n                  <div className=\"bg-gray-700 p-6 rounded-lg shadow-md mb-3\">\n                    <div className=\"flex justify-between items-start mb-2\">\n                      <h3 className=\"text-xl font-semibold text-indigo-400\">\n                        Ticket # {ticket.ticket_no}\n                      </h3>\n                      <span\n                        className={`text-xs font-medium px-3 py-1 rounded-full ${\n                          ticket.isOpen\n                            ? \"bg-green-600 text-green-100\"\n                            : \"bg-red-600 text-red-100\"\n                        } `}\n                      >\n                        {ticket.isOpen ? \"Open\" : \"Closed\"}\n                      </span>\n                    </div>\n                    <p className=\"text-gray-300 leading-relaxed mb-3\">\n                      {ticket.message}\n                    </p>\n                    <div className=\"text-sm text-gray-500 flex justify-between items-center\">\n                      <span>Submitted: {ticket.time}</span>\n                      <span className=\"flex items-center\">\n                        <span className=\"material-icons text-base mr-1\">\n                          Team:\n                        </span>\n                        {ticket.team}\n                      </span>\n                    </div>\n                  </div>\n                </Link>\n              </li>\n            )",
-      "chunk_id": "Tickets.js::<anonymous>",
+      "raw_code": "([key, label]) => (\n        <CheckListItem\n          key={key}\n          text={label}\n          checked={preferences[key]}\n          onChange={handleChange(key)}\n        />\n      )",
+      "chunk_id": "preferencesComp.js::<anonymous>",
       "decorators": [],
-      "file": "Tickets.js"
+      "file": "preferencesComp.js"
     },
     {
       "type": "function",
-      "name": "Home",
-      "start_line": 48,
-      "end_line": 76,
-      "lines": 29,
-      "parameters": [
-        "(",
-        "{ link }"
-      ],
-      "calls": [
-        "useState",
-        "useApi",
-        "useCallback",
-        "console.log",
-        "callAPI",
-        "setTickets",
-        "console.log",
-        "useEffect",
-        "getTickets"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "function Home({ link }) {\n  const [tickets, setTickets] = useState([]);\n  const { callAPI } = useApi();\n\n  const getTickets = useCallback(async () => {\n    try {\n      console.log(\"trying to get tickets\");\n      const data = await callAPI(link, \"get\");\n      setTickets(data);\n    } catch (e) {\n      console.log(\"Failed to load Tickets \", e);\n    }\n  }, [callAPI]);\n\n  useEffect(() => {\n    getTickets();\n  }, []);\n  return (\n    <div className=\"min-h-screen bg-gray-900 flex items-center justify-center p-4\">\n      <div className=\"w-full max-w-5xl mx-auto px-4\">\n        <Header />\n        <TicketInput getTickets={getTickets} />\n        {/* <RequireRole role={\"admin\"}> */}\n        <TicketList tickets={tickets} />\n        {/* </RequireRole> */}\n      </div>\n    </div>\n  );\n}",
-      "chunk_id": "App.js::Home",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 8,
-      "end_line": 36,
-      "lines": 29,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "console.log",
-        "fetch",
-        "console.log",
-        "console.error",
-        "response.text",
-        "console.error",
-        "callAuthAPI"
-      ],
-      "complexity": 4,
-      "docstring": null,
-      "raw_code": "() => {\n    const callAuthAPI = async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      callAuthAPI();\n    }\n  }",
-      "chunk_id": "authWrapper.js::<anonymous>",
-      "decorators": [],
-      "file": "authWrapper.js"
-    },
-    {
-      "type": "function",
-      "name": "useApi",
+      "name": "HomePage",
       "start_line": 4,
-      "end_line": 30,
-      "lines": 27,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "useAuth0",
-        "getAccessTokenSilently",
-        "console.log",
-        "axios",
-        "console.log",
-        "console.error"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "function useApi() {\n  const { getAccessTokenSilently } = useAuth0();\n\n  const callAPI = async (url, method = \"get\", data = null, config = {}) => {\n    try {\n      const token = await getAccessTokenSilently();\n      console.log(\"token accesed\");\n      const response = await axios({\n        url,\n        method,\n        data,\n        headers: {\n          Authorization: `Bearer ${token}`,\n          \"Content-Type\": \"application/json\",\n          ...config.headers,\n        },\n        ...config,\n      });\n      console.log(response.data);\n      return response.data;\n    } catch (err) {\n      console.error(\"API call failed:\", err.response?.data || err.message);\n      throw err;\n    }\n  };\n  return { callAPI };\n}",
-      "chunk_id": "useApi.js::useApi",
-      "decorators": [],
-      "file": "useApi.js"
-    },
-    {
-      "type": "function",
-      "name": "react_agent",
-      "start_line": 65,
-      "end_line": 90,
-      "lines": 26,
-      "docstring": null,
-      "raw_code": "def react_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a React expert helping to triage and document frontend issues for the React development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the React team should take\n         5. additional_notes: Any relevant context about React version, dependencies, or browser compatibility\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
-      "chunk_id": "ticket_agent.py::react_agent",
-      "decorators": [],
-      "calls": [
-        "llm.invoke"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "java_agent",
-      "start_line": 92,
-      "end_line": 117,
-      "lines": 26,
-      "docstring": null,
-      "raw_code": "def java_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a Java expert helping to triage and document backend issues for the Java development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the Java team should take\n         5. additional_notes: Any relevant context about Java version, frameworks, or performance implications\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
-      "chunk_id": "ticket_agent.py::java_agent",
-      "decorators": [],
-      "calls": [
-        "llm.invoke"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    }
-  ],
-  [
-    {
-      "type": "function",
-      "name": "python_agent",
-      "start_line": 119,
-      "end_line": 144,
-      "lines": 26,
-      "docstring": null,
-      "raw_code": "def python_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a Python expert helping to triage and document Python-related issues for the Python development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the Python team should take\n         5. additional_notes: Any relevant context about Python version, dependencies, or environment setup\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
-      "chunk_id": "ticket_agent.py::python_agent",
-      "decorators": [],
-      "calls": [
-        "llm.invoke"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "sql_agent",
-      "start_line": 146,
-      "end_line": 171,
-      "lines": 26,
-      "docstring": null,
-      "raw_code": "def sql_agent(state:State):\n   last_message = state[\"messages\"][-1]\n   messages = [\n      {\n         \"role\": \"system\",\n         \"content\": \"\"\"You are a SQL expert helping to triage and document database issues for the SQL development team.\n         For each ticket, provide the following:\n         1. summary: Brief overview of the issue\n         2. technical_analysis: Initial assessment of what might be causing the problem\n         3. priority: High/Medium/Low based on impact\n         4. suggested_approach: Key steps the SQL team should take\n         5. additional_notes: Any relevant context about database type, schema implications, or performance considerations\n         \n         Format your response using these headers for clarity.\n         Don't include any other text in your response.\n         Don't add any follow up questions.\n         respond only with valid JSON using the fields: summary, technical_analysis, priority, suggested_approach, additional_notes. Do not include Markdown formatting or backticks. Don not change the keys.\n         \"\"\"\n      },\n      {\n         \"role\": \"user\",\n         \"content\": last_message.content\n      }\n   ]\n   response = llm.invoke(messages)\n   return {\"messages\": [{\"role\": \"assistant\", \"content\": response.content}]}",
-      "chunk_id": "ticket_agent.py::sql_agent",
-      "decorators": [],
-      "calls": [
-        "llm.invoke"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "RequireRole",
-      "start_line": 8,
-      "end_line": 33,
-      "lines": 26,
-      "parameters": [
-        "(",
-        "{ role, children }"
-      ],
-      "calls": [
-        "useAuth0",
-        "useState",
-        "useEffect",
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "console.log",
-        "Array.isArray",
-        "roles.some",
-        "allowedRoles.includes",
-        "setHasRole",
-        "console.error",
-        "checkRole"
-      ],
-      "complexity": 3,
-      "docstring": null,
-      "raw_code": "function RequireRole({ role, children }) {\n  const { getAccessTokenSilently, isAuthenticated } = useAuth0();\n  const [hasRole, setHasRole] = useState(false);\n\n  useEffect(() => {\n    const checkRole = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      checkRole();\n    }\n  }, [getAccessTokenSilently, isAuthenticated, role]);\n\n  return hasRole ? <>{children}</> : null;\n}",
-      "chunk_id": "roleRequirer.js::RequireRole",
-      "decorators": [],
-      "file": "roleRequirer.js"
-    },
-    {
-      "type": "function",
-      "name": "RoleRedirect",
-      "start_line": 8,
-      "end_line": 32,
-      "lines": 25,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "useAuth0",
-        "useNavigate",
-        "useEffect",
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "roles.includes",
-        "roles.includes",
-        "navigate",
-        "roles.includes",
-        "navigate",
-        "navigate",
-        "console.error",
-        "getRoute"
-      ],
-      "complexity": 4,
-      "docstring": null,
-      "raw_code": "function RoleRedirect() {\n  const { getAccessTokenSilently, isAuthenticated } = useAuth0();\n  const navigate = useNavigate();\n  useEffect(() => {\n    const getRoute = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    };\n    getRoute();\n  }, [getAccessTokenSilently, navigate, isAuthenticated]);\n  return null;\n}",
-      "chunk_id": "roleBasedRedirect.js::RoleRedirect",
-      "decorators": [],
-      "file": "roleBasedRedirect.js"
-    },
-    {
-      "type": "function",
-      "name": "callAuthAPI",
-      "start_line": 9,
-      "end_line": 31,
-      "lines": 23,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "console.log",
-        "fetch",
-        "console.log",
-        "console.error",
-        "response.text",
-        "console.error"
-      ],
-      "complexity": 3,
-      "docstring": null,
-      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently({\n          audience: \"https://myapp.example.com/api\",\n        });\n\n        console.log(\"Access Token:\", token);\n\n        const response = await fetch(\"http://localhost:8001/protected\", {\n          headers: {\n            Authorization: `Bearer ${token}`,\n          },\n        });\n        console.log(response);\n\n        // Optional: handle response\n        if (!response.ok) {\n          console.error(\"Unauthorized or error:\", await response.text());\n        }\n      } catch (err) {\n        console.error(\"Error fetching access token or calling API:\", err);\n      }\n    }",
-      "chunk_id": "authWrapper.js::callAuthAPI",
-      "decorators": [],
-      "file": "authWrapper.js"
-    },
-    {
-      "type": "function",
-      "name": "callAPI",
-      "start_line": 7,
-      "end_line": 28,
-      "lines": 22,
-      "parameters": [
-        "(",
-        "url",
-        "method = \"get\"",
-        "data = null",
-        "config = {}"
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "console.log",
-        "axios",
-        "console.log",
-        "console.error"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async (url, method = \"get\", data = null, config = {}) => {\n    try {\n      const token = await getAccessTokenSilently();\n      console.log(\"token accesed\");\n      const response = await axios({\n        url,\n        method,\n        data,\n        headers: {\n          Authorization: `Bearer ${token}`,\n          \"Content-Type\": \"application/json\",\n          ...config.headers,\n        },\n        ...config,\n      });\n      console.log(response.data);\n      return response.data;\n    } catch (err) {\n      console.error(\"API call failed:\", err.response?.data || err.message);\n      throw err;\n    }\n  }",
-      "chunk_id": "useApi.js::callAPI",
-      "decorators": [],
-      "file": "useApi.js"
-    },
-    {
-      "type": "function",
-      "name": "classify_message",
-      "start_line": 30,
-      "end_line": 49,
-      "lines": 20,
-      "docstring": null,
-      "raw_code": "def classify_message(state:State):\n   last_message = state[\"messages\"][-1]\n   classifier_llm  = llm.with_structured_output(MessageClassifier)\n   \n   result= classifier_llm.invoke([\n      {\n         \"role\":\"system\",\n         \"content\":\"\"\"Classify the user message as either:\n            - 'React': if it requires help with React development\n            - 'Java': if it requires help with Java development\n            - 'Python': if it requires help with Python development\n            - 'SQL': if it requires help with SQL development\n            \"\"\"\n        },\n        {\n           \"role\":\"user\",\n           \"content\":last_message.content\n        }\n   ])\n   return {\"message_type\": result.message_type}",
-      "chunk_id": "ticket_agent.py::classify_message",
-      "decorators": [],
-      "calls": [
-        "llm.with_structured_output",
-        "classifier_llm.invoke"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 14,
-      "end_line": 33,
-      "lines": 20,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "axios.get",
-        "setTicket",
-        "setisOpen",
-        "console.log",
-        "fetchTicket"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "() => {\n    const fetchTicket = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    };\n    fetchTicket();\n  }",
-      "chunk_id": "ticketDetails.js::<anonymous>",
-      "decorators": [],
-      "file": "ticketDetails.js"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 11,
-      "end_line": 30,
-      "lines": 20,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "roles.includes",
-        "roles.includes",
-        "navigate",
-        "roles.includes",
-        "navigate",
-        "navigate",
-        "console.error",
-        "getRoute"
-      ],
-      "complexity": 4,
-      "docstring": null,
-      "raw_code": "() => {\n    const getRoute = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    };\n    getRoute();\n  }",
-      "chunk_id": "roleBasedRedirect.js::<anonymous>",
-      "decorators": [],
-      "file": "roleBasedRedirect.js"
-    },
-    {
-      "type": "function",
-      "name": "make_ticket",
-      "start_line": 24,
-      "end_line": 42,
-      "lines": 19,
-      "docstring": null,
-      "raw_code": "def make_ticket(ticket):\n\n    ist = pytz.timezone('Asia/Kolkata')\n    now = datetime.now(ist)\n    formatted_now = now.strftime('%Y-%m-%d %H:%M:%S')\n\n    return {\n        \"ticket_no\": 1001+collection_name.count_documents({}),\n        \"message\": ticket[\"message\"],\n        \"team\": ticket[\"team\"],\n        \"summary\": ticket[\"summary\"],\n        \"technical_analysis\" : ticket[\"technical_analysis\"],\n        \"priority\": ticket[\"priority\"],\n        \"suggested_approach\": ticket[\"suggested_approach\"],\n        \"additional_notes\": ticket[\"additional_notes\"],\n        \"time\": str(formatted_now),\n        \"isOpen\": True,\n        \"user_id\":ticket[\"user_id\"]\n    }",
-      "chunk_id": "schemas.py::make_ticket",
-      "decorators": [],
-      "calls": [
-        "pytz.timezone",
-        "datetime.now",
-        "now.strftime",
-        "collection_name.count_documents",
-        "str"
-      ],
-      "complexity": 1,
-      "parameters": [
-        {
-          "name": "ticket",
-          "type": null,
-          "default": null
-        }
-      ],
-      "file": "schemas.py"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 12,
-      "end_line": 30,
-      "lines": 19,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "console.log",
-        "Array.isArray",
-        "roles.some",
-        "allowedRoles.includes",
-        "setHasRole",
-        "console.error",
-        "checkRole"
-      ],
-      "complexity": 3,
-      "docstring": null,
-      "raw_code": "() => {\n    const checkRole = async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    };\n\n    if (isAuthenticated) {\n      checkRole();\n    }\n  }",
-      "chunk_id": "roleRequirer.js::<anonymous>",
-      "decorators": [],
-      "file": "roleRequirer.js"
-    },
-    {
-      "type": "function",
-      "name": "getConfig",
-      "start_line": 3,
-      "end_line": 20,
-      "lines": 18,
-      "parameters": [
-        "("
-      ],
-      "calls": [],
-      "complexity": 1,
-      "docstring": null,
-      "raw_code": "function getConfig() {\n  // Configure the audience here. By default, it will take whatever is in the config\n  // (specified by the `audience` key) unless it's the default value of \"{yourApiIdentifier}\" (which\n  // is what you get sometimes by using the Auth0 sample download tool from the quickstart page, if you\n  // don't have an API).\n  // If this resolves to `null`, the API page changes to show some helpful info about what to do\n  // with the audience.\n  const audience =\n    configJson.audience && configJson.audience !== \"{yourApiIdentifier}\"\n      ? configJson.audience\n      : null;\n\n  return {\n    domain: configJson.domain,\n    clientId: configJson.clientId,\n    ...(audience ? { audience } : null),\n  };\n}",
-      "chunk_id": "config.js::getConfig",
-      "decorators": [],
-      "file": "config.js"
-    },
-    {
-      "type": "function",
-      "name": "LoginPage",
-      "start_line": 4,
-      "end_line": 21,
-      "lines": 18,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "useAuth0",
-        "loginWithRedirect"
-      ],
-      "complexity": 1,
-      "docstring": null,
-      "raw_code": "function LoginPage() {\n  const { loginWithRedirect } = useAuth0();\n\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-gray-100\">\n      <div className=\"text-center\">\n        <h1 className=\"text-3xl font-bold mb-4 text-white\">Welcome!</h1>\n        <p className=\"mb-6 text-white\">Please log in or sign up to continue</p>\n        <button\n          onClick={() => loginWithRedirect()}\n          className=\"bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700\"\n        >\n          Log In / Sign Up\n        </button>\n      </div>\n    </div>\n  );\n}",
-      "chunk_id": "Login.js::LoginPage",
-      "decorators": [],
-      "file": "Login.js"
-    },
-    {
-      "type": "function",
-      "name": "fetchTicket",
-      "start_line": 15,
-      "end_line": 31,
-      "lines": 17,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "axios.get",
-        "setTicket",
-        "setisOpen",
-        "console.log"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const response = await axios.get(\n          `http://127.0.0.1:8001/ticket/${ticketNo}`,\n          {\n            headers: {\n              Authorization: `Bearer ${token}`,\n            },\n          }\n        );\n        setTicket(response.data);\n        setisOpen(response.data.isOpen);\n      } catch (e) {\n        console.log(e);\n      }\n    }",
-      "chunk_id": "ticketDetails.js::fetchTicket",
-      "decorators": [],
-      "file": "ticketDetails.js"
-    },
-    {
-      "type": "function",
-      "name": "getRoute",
-      "start_line": 12,
-      "end_line": 28,
-      "lines": 17,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "roles.includes",
-        "roles.includes",
-        "navigate",
-        "roles.includes",
-        "navigate",
-        "navigate",
-        "console.error"
-      ],
-      "complexity": 4,
-      "docstring": null,
-      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        const roles = decoded[`${namespace}roles`] || [];\n\n        if (roles.includes(\"admin\") || roles.includes(\"Developers\")) {\n          navigate(\"/admin-home/\");\n        } else if (roles.includes(\"user\")) {\n          navigate(\"/user-home/\");\n        } else {\n          navigate(\"unauthorized\");\n        }\n      } catch (e) {\n        console.error(\"Role check failed\", e);\n      }\n    }",
-      "chunk_id": "roleBasedRedirect.js::getRoute",
-      "decorators": [],
-      "file": "roleBasedRedirect.js"
-    },
-    {
-      "type": "function",
-      "name": "individual_serial",
-      "start_line": 5,
-      "end_line": 19,
-      "lines": 15,
-      "docstring": null,
-      "raw_code": "def individual_serial(ticket)->dict:\n    return {\n        \"id\": str(ticket[\"_id\"]),\n        \"ticket_no\": ticket[\"ticket_no\"],\n        \"message\": ticket[\"message\"],\n        \"team\": ticket[\"team\"],\n        \"summary\": ticket[\"summary\"],\n        \"technical_analysis\" : ticket[\"technical_analysis\"],\n        \"priority\": ticket[\"priority\"],\n        \"suggested_approach\": ticket[\"suggested_approach\"],\n        \"additional_notes\": ticket[\"additional_notes\"],\n        \"time\": ticket[\"time\"],\n        \"isOpen\": ticket[\"isOpen\"],\n        \"user_id\":ticket[\"user_id\"]\n    }",
-      "chunk_id": "schemas.py::individual_serial",
-      "decorators": [],
-      "calls": [
-        "str"
-      ],
-      "complexity": 1,
-      "parameters": [
-        {
-          "name": "ticket",
-          "type": null,
-          "default": null
-        }
-      ],
-      "file": "schemas.py"
-    },
-    {
-      "type": "function",
-      "name": "closeTicket",
-      "start_line": 55,
-      "end_line": 69,
-      "lines": 15,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "setisClosing",
-        "axios.patch",
-        "console.log",
-        "console.log",
-        "setisClosing",
-        "setisOpen"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async () => {\n    setisClosing(true);\n    try {\n      const response = await axios.patch(\n        `http://127.0.0.1:8001/ticket/${ticketNo}`,\n        { isOpen: false }\n      );\n      console.log(response);\n    } catch (e) {\n      console.log(e);\n    } finally {\n      setisClosing(false);\n      setisOpen(false);\n    }\n  }",
-      "chunk_id": "ticketDetails.js::closeTicket",
-      "decorators": [],
-      "file": "ticketDetails.js"
-    },
-    {
-      "type": "function",
-      "name": "router",
-      "start_line": 51,
-      "end_line": 63,
-      "lines": 13,
-      "docstring": null,
-      "raw_code": "def router(state:State):\n   message_type = state.get(\"message_type\",\"React\")\n   \n   if message_type == \"React\":\n      return {\"next\":\"react_agent\"}\n   elif message_type == \"Java\":\n      return {\"next\":\"java_agent\"}\n   elif message_type == \"Python\":\n      return {\"next\":\"python_agent\"}\n   elif message_type == \"SQL\":\n      return {\"next\":\"sql_agent\"}\n   else:\n      return {\"next\":\"react_agent\"}",
-      "chunk_id": "ticket_agent.py::router",
-      "decorators": [],
-      "calls": [
-        "state.get"
-      ],
-      "complexity": 2,
-      "parameters": [],
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "LogoutButton",
-      "start_line": 81,
-      "end_line": 93,
-      "lines": 13,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "useAuth0",
-        "logout"
-      ],
-      "complexity": 1,
-      "docstring": null,
-      "raw_code": "() => {\n    const { logout } = useAuth0();\n\n    return (\n      <button\n        onClick={() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })\n        }\n      >\n        <h2 className=\"text-white\">Log Out</h2>\n      </button>\n    );\n  }",
-      "chunk_id": "App.js::LogoutButton",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "checkRole",
-      "start_line": 13,
-      "end_line": 25,
-      "lines": 13,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getAccessTokenSilently",
-        "jwtDecode",
-        "console.log",
-        "Array.isArray",
-        "roles.some",
-        "allowedRoles.includes",
-        "setHasRole",
-        "console.error"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async () => {\n      try {\n        const token = await getAccessTokenSilently();\n        const decoded = jwtDecode(token);\n        console.log(decoded);\n        const roles = decoded[`${namespace}roles`] || [];\n        const allowedRoles = Array.isArray(role) ? role : [role];\n        const matched = roles.some((r) => allowedRoles.includes(r));\n        setHasRole(matched);\n      } catch (err) {\n        console.error(\"Error checking roles:\", err);\n      }\n    }",
-      "chunk_id": "roleRequirer.js::checkRole",
-      "decorators": [],
-      "file": "roleRequirer.js"
-    },
-    {
-      "type": "class",
-      "name": "Ticket",
-      "start_line": 3,
-      "end_line": 14,
-      "lines": 12,
-      "docstring": null,
-      "raw_code": "class Ticket(BaseModel):\n    ticket_no: int\n    message: str\n    team: str\n    summary: str\n    technical_analysis : str\n    priority: str\n    suggested_approach: str\n    additional_notes: str\n    time: str\n    isOpen: bool\n    user_id: Optional[str] = Field(default=None)",
-      "chunk_id": "model.py::Ticket",
-      "decorators": [],
-      "calls": [
-        "Field"
-      ],
-      "complexity": 1,
-      "file": "model.py"
-    },
-    {
-      "type": "function",
-      "name": "getPriorityColor",
-      "start_line": 42,
-      "end_line": 53,
-      "lines": 12,
-      "parameters": [
-        "(",
-        "priority"
-      ],
-      "calls": [
-        "priority?.toLowerCase"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "(priority) => {\n    switch (priority?.toLowerCase()) {\n      case \"high\":\n        return \"bg-red-500\";\n      case \"medium\":\n        return \"bg-yellow-500\";\n      case \"low\":\n        return \"bg-green-500\";\n      default:\n        return \"bg-gray-500\";\n    }\n  }",
-      "chunk_id": "ticketDetails.js::getPriorityColor",
-      "decorators": [],
-      "file": "ticketDetails.js"
-    },
-    {
-      "type": "function",
-      "name": "reportWebVitals",
-      "start_line": 1,
       "end_line": 11,
-      "lines": 11,
-      "parameters": [],
-      "calls": [
-        "import('web-vitals').then",
-        "import",
-        "getCLS",
-        "getFID",
-        "getFCP",
-        "getLCP",
-        "getTTFB"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "onPerfEntry => {\n  if (onPerfEntry && onPerfEntry instanceof Function) {\n    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {\n      getCLS(onPerfEntry);\n      getFID(onPerfEntry);\n      getFCP(onPerfEntry);\n      getLCP(onPerfEntry);\n      getTTFB(onPerfEntry);\n    });\n  }\n}",
-      "chunk_id": "reportWebVitals.js::reportWebVitals",
-      "decorators": [],
-      "file": "reportWebVitals.js"
-    },
-    {
-      "type": "function",
-      "name": "set_ticket",
-      "start_line": 22,
-      "end_line": 31,
-      "lines": 10,
-      "docstring": null,
-      "raw_code": "async def set_ticket(message: Message,payload=Depends(check_role(['user','admin','Developers']))):\n    print(\"setting ticket\")\n    try:\n        ticket = run_chatbot(message.message,user_id=payload[\"sub\"])\n        final_ticket=make_ticket(ticket)\n        print(payload)\n        collection_name.insert_one(Ticket(**final_ticket).model_dump(mode=\"alias\"))\n        return final_ticket\n    except ValidationError as e:\n        print(e)",
-      "chunk_id": "route.py::set_ticket",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "check_role",
-        "print",
-        "run_chatbot",
-        "make_ticket",
-        "print",
-        "collection_name.insert_one",
-        "Ticket(**final_ticket).model_dump",
-        "Ticket",
-        "print"
-      ],
-      "complexity": 2,
-      "parameters": [],
-      "file": "route.py"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 52,
-      "end_line": 60,
-      "lines": 9,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "console.log",
-        "callAPI",
-        "setTickets",
-        "console.log"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async () => {\n    try {\n      console.log(\"trying to get tickets\");\n      const data = await callAPI(link, \"get\");\n      setTickets(data);\n    } catch (e) {\n      console.log(\"Failed to load Tickets \", e);\n    }\n  }",
-      "chunk_id": "App.js::<anonymous>",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "fetchTickets",
-      "start_line": 3,
-      "end_line": 10,
       "lines": 8,
       "parameters": [
         "("
       ],
-      "calls": [
-        "axios.get",
-        "console.log"
-      ],
-      "complexity": 2,
-      "docstring": null,
-      "raw_code": "async () => {\n  try {\n    const tickets = await axios.get(\"http://localhost:8001/tickets\");\n    return tickets.data;\n  } catch (e) {\n    console.log(\"error:\", e);\n  }\n}",
-      "chunk_id": "api.js::fetchTickets",
-      "decorators": [],
-      "file": "api.js"
-    },
-    {
-      "type": "function",
-      "name": "check_role",
-      "start_line": 58,
-      "end_line": 64,
-      "lines": 7,
-      "docstring": null,
-      "raw_code": "def check_role(allowed_roles: list[str]):\n    def role_checker(payload=Depends(token_verify)):\n        roles = payload.get(f\"{NAMESPACE}/roles\", [])\n        if not any(role in roles for role in allowed_roles):\n            raise HTTPException(status_code=403, detail=\"Role Not authorized\")\n        return payload\n    return role_checker",
-      "chunk_id": "auth.py::check_role",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "payload.get",
-        "any",
-        "HTTPException"
-      ],
-      "complexity": 2,
-      "parameters": [],
-      "file": "auth.py"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 3,
-      "end_line": 9,
-      "lines": 7,
-      "parameters": [
-        "(",
-        "{ getCLS, getFID, getFCP, getLCP, getTTFB }"
-      ],
-      "calls": [
-        "getCLS",
-        "getFID",
-        "getFCP",
-        "getLCP",
-        "getTTFB"
-      ],
+      "calls": [],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {\n      getCLS(onPerfEntry);\n      getFID(onPerfEntry);\n      getFCP(onPerfEntry);\n      getLCP(onPerfEntry);\n      getTTFB(onPerfEntry);\n    }",
-      "chunk_id": "reportWebVitals.js::<anonymous>",
+      "raw_code": "function HomePage() {\n  return (\n    <div className=\"min-h-screen bg-[#14191f] flex flex-col items-center justify-center\">\n      <Title />\n      <LinkTextBox />\n    </div>\n  );\n}",
+      "chunk_id": "HomePage.js::HomePage",
       "decorators": [],
-      "file": "reportWebVitals.js"
+      "file": "HomePage.js"
     },
     {
       "type": "function",
-      "name": "get_ticket",
-      "start_line": 35,
-      "end_line": 40,
-      "lines": 6,
-      "docstring": null,
-      "raw_code": "async def get_ticket(ticketNo:int,payload=Depends(check_role(['user','admin','Developers']))):\n    ticket = collection_name.find_one({\"ticket_no\":ticketNo})\n    if ticket:\n        return individual_serial(ticket)\n    else:\n        raise HTTPException(status_code=404, detail=\"Ticket not found\")",
-      "chunk_id": "route.py::get_ticket",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "check_role",
-        "collection_name.find_one",
-        "individual_serial",
-        "HTTPException"
-      ],
-      "complexity": 2,
-      "parameters": [],
-      "file": "route.py"
-    },
-    {
-      "type": "class",
-      "name": "MessageClassifier",
-      "start_line": 19,
-      "end_line": 23,
-      "lines": 5,
-      "docstring": null,
-      "raw_code": "class MessageClassifier(BaseModel):\n   message_type: Literal[\"React\", \"Java\", \"Python\", \"SQL\"] = Field(\n      ...,\n      description=\"Classify if the message requires support from a React, Java, Python, or SQL expert\"\n   )",
-      "chunk_id": "ticket_agent.py::MessageClassifier",
-      "decorators": [],
-      "calls": [
-        "Field"
-      ],
-      "complexity": 1,
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "role_checker",
-      "start_line": 59,
-      "end_line": 63,
-      "lines": 5,
-      "docstring": null,
-      "raw_code": "def role_checker(payload=Depends(token_verify)):\n        roles = payload.get(f\"{NAMESPACE}/roles\", [])\n        if not any(role in roles for role in allowed_roles):\n            raise HTTPException(status_code=403, detail=\"Role Not authorized\")\n        return payload",
-      "chunk_id": "auth.py::role_checker",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "payload.get",
-        "any",
-        "HTTPException"
-      ],
-      "complexity": 2,
-      "parameters": [],
-      "file": "auth.py"
-    },
-    {
-      "type": "function",
-      "name": "get_my_tickets",
-      "start_line": 52,
-      "end_line": 56,
-      "lines": 5,
-      "docstring": null,
-      "raw_code": "async def get_my_tickets(payload=Depends(check_role(['user', 'admin', 'Developers']))):\n    print(payload)\n    user_id = payload[\"sub\"]\n    tickets = list_serial(collection_name.find({\"user_id\": user_id}))\n    return tickets",
-      "chunk_id": "route.py::get_my_tickets",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "check_role",
-        "print",
-        "list_serial",
-        "collection_name.find"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "route.py"
-    },
-    {
-      "type": "class",
-      "name": "State",
+      "name": "walk",
       "start_line": 26,
-      "end_line": 28,
-      "lines": 3,
+      "end_line": 32,
+      "lines": 7,
       "docstring": null,
-      "raw_code": "class State(TypedDict):\n    messages: Annotated[list,add_messages]\n    message_type: str | None",
-      "chunk_id": "ticket_agent.py::State",
-      "decorators": [],
-      "calls": [],
-      "complexity": 1,
-      "file": "ticket_agent.py"
-    },
-    {
-      "type": "function",
-      "name": "get_tickets",
-      "start_line": 16,
-      "end_line": 18,
-      "lines": 3,
-      "docstring": null,
-      "raw_code": "async def get_tickets(payload=Depends(check_role(['admin','Developers']))):\n    tickets = list_serial(collection_name.find())\n    return tickets",
-      "chunk_id": "route.py::get_tickets",
+      "raw_code": "def walk(n):\n            if n.type == \"call_expression\":\n                func = n.child_by_field_name(\"function\")\n                if func:\n                    calls.append(code[func.start_byte:func.end_byte])\n            for child in n.children:\n                walk(child)",
+      "chunk_id": "js_parser.py::walk",
       "decorators": [],
       "calls": [
-        "Depends",
-        "check_role",
-        "list_serial",
-        "collection_name.find"
+        "n.child_by_field_name",
+        "calls.append",
+        "walk"
       ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "route.py"
-    },
-    {
-      "type": "function",
-      "name": "close_ticket",
-      "start_line": 45,
-      "end_line": 47,
-      "lines": 3,
-      "docstring": null,
-      "raw_code": "async def close_ticket(ticketNo: int ,data: CloseTicket,payload=Depends(check_role(['admin','Developers']))):\n    collection_name.update_one({\"ticket_no\":ticketNo},{\"$set\":{\"isOpen\":data.isOpen}})\n    return {\"message\":\"Ticket closed successfully\"}",
-      "chunk_id": "route.py::close_ticket",
-      "decorators": [],
-      "calls": [
-        "Depends",
-        "check_role",
-        "collection_name.update_one"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "route.py"
-    },
-    {
-      "type": "function",
-      "name": "<anonymous>",
-      "start_line": 62,
-      "end_line": 64,
-      "lines": 3,
-      "parameters": [
-        "("
-      ],
-      "calls": [
-        "getTickets"
-      ],
-      "complexity": 1,
-      "docstring": null,
-      "raw_code": "() => {\n    getTickets();\n  }",
-      "chunk_id": "App.js::<anonymous>",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "handleChange",
-      "start_line": 126,
-      "end_line": 128,
-      "lines": 3,
-      "parameters": [
-        "(",
-        "event"
-      ],
-      "calls": [
-        "setInputValue"
-      ],
-      "complexity": 1,
-      "docstring": null,
-      "raw_code": "(event) => {\n    setInputValue(event.target.value);\n  }",
-      "chunk_id": "App.js::handleChange",
-      "decorators": [],
-      "file": "App.js"
-    },
-    {
-      "type": "function",
-      "name": "admin_only_route",
-      "start_line": 32,
-      "end_line": 33,
-      "lines": 2,
-      "docstring": null,
-      "raw_code": "def admin_only_route(user=Depends(token_verify)):\n    return {\"message\": \"welcome you are Authenticated\", \"user\": user}",
-      "chunk_id": "main.py::admin_only_route",
-      "decorators": [],
-      "calls": [
-        "Depends"
-      ],
-      "complexity": 1,
-      "parameters": [],
-      "file": "main.py"
-    },
-    {
-      "type": "class",
-      "name": "Message",
-      "start_line": 16,
-      "end_line": 17,
-      "lines": 2,
-      "docstring": null,
-      "raw_code": "class Message(BaseModel):\n    message: str",
-      "chunk_id": "model.py::Message",
-      "decorators": [],
-      "calls": [],
-      "complexity": 1,
-      "file": "model.py"
-    },
-    {
-      "type": "class",
-      "name": "CloseTicket",
-      "start_line": 19,
-      "end_line": 20,
-      "lines": 2,
-      "docstring": null,
-      "raw_code": "class CloseTicket(BaseModel):\n    isOpen: bool",
-      "chunk_id": "model.py::CloseTicket",
-      "decorators": [],
-      "calls": [],
-      "complexity": 1,
-      "file": "model.py"
-    },
-    {
-      "type": "function",
-      "name": "list_serial",
-      "start_line": 21,
-      "end_line": 22,
-      "lines": 2,
-      "docstring": null,
-      "raw_code": "def list_serial(tickets):\n    return [individual_serial(ticket) for ticket in tickets]",
-      "chunk_id": "schemas.py::list_serial",
-      "decorators": [],
-      "calls": [
-        "individual_serial"
-      ],
-      "complexity": 1,
+      "complexity": 4,
       "parameters": [
         {
-          "name": "tickets",
+          "name": "n",
           "type": null,
           "default": null
         }
       ],
-      "file": "schemas.py"
+      "file": "js_parser.py"
     },
     {
       "type": "function",
-      "name": "<anonymous>",
-      "start_line": 86,
-      "end_line": 87,
-      "lines": 2,
+      "name": "build_language_library",
+      "start_line": 17,
+      "end_line": 23,
+      "lines": 7,
+      "docstring": null,
+      "raw_code": "def build_language_library():\n    language_paths = [os.path.join(LANGUAGE_DIR, repo) for repo in LANGUAGE_REPOS.values()]\n    Language.build_library(\n        BUILD_PATH,\n        language_paths\n    )\n    print(f\"✅ Built shared library at {BUILD_PATH}\")\n\n",
+      "chunk_id": "parser_setup.py::build_language_library",
+      "decorators": [],
+      "calls": [
+        "os.path.join",
+        "LANGUAGE_REPOS.values",
+        "Language.build_library",
+        "print"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "parser_setup.py"
+    },
+    {
+      "type": "function",
+      "name": "Title",
+      "start_line": 1,
+      "end_line": 7,
+      "lines": 7,
       "parameters": [
         "("
       ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function Title() {\n  return (\n    <h1 className=\"text-center text-3xl text-white font-bold pt-4 min-w-full mb-6\">\n      AI Readme Generator\n    </h1>\n  );\n}",
+      "chunk_id": "Title.js::Title",
+      "decorators": [],
+      "file": "Title.js"
+    },
+    {
+      "type": "function",
+      "name": "Loader",
+      "start_line": 139,
+      "end_line": 145,
+      "lines": 7,
+      "parameters": [
+        "("
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "function Loader() {\n  return (\n    <div className=\" absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-50\">\n      <DotLottieReact className=\"w-1/2\" src=\"/loader.lottie\" loop autoplay />\n    </div>\n  );\n}",
+      "chunk_id": "markdownComp.js::Loader",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "resume_readme",
+      "start_line": 23,
+      "end_line": 28,
+      "lines": 6,
+      "docstring": null,
+      "raw_code": "async def resume_readme(request: ResumeRequest):\n    try:\n        state = resume_readme_pipeline(session_id=request.session_id, action=request.action,preferences=request.preferences,description=request.project_description)\n        return ReadmeResponse(readme=state.get('readme'))\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+      "chunk_id": "router.py::resume_readme",
+      "decorators": [],
       "calls": [
-        "logout"
+        "resume_readme_pipeline",
+        "ReadmeResponse",
+        "state.get",
+        "HTTPException",
+        "str"
+      ],
+      "complexity": 2,
+      "parameters": [],
+      "file": "router.py"
+    },
+    {
+      "type": "function",
+      "name": "walk",
+      "start_line": 51,
+      "end_line": 56,
+      "lines": 6,
+      "docstring": null,
+      "raw_code": "def walk(n):\n            nonlocal complexity\n            if n.type in (\"if_statement\", \"for_statement\", \"while_statement\", \"switch_statement\", \"try_statement\"):\n                complexity += 1\n            for child in n.children:\n                walk(child)",
+      "chunk_id": "js_parser.py::walk",
+      "decorators": [],
+      "calls": [
+        "walk"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "n",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "parser(lan",
+      "start_line": 31,
+      "end_line": 36,
+      "lines": 6,
+      "docstring": null,
+      "raw_code": "get_parser(language_name):\n    if language_name not in LANGUAGE_MAPPING:\n        raise ValueError(f\"Unsupported language: {language_name}\")\n    parser = Parser()\n    parser.set_language(LANGUAGE_MAPPING[language_name])\n    return parser\n",
+      "chunk_id": "parser_setup.py::parser(lan",
+      "decorators": [],
+      "calls": [
+        "eError(f\"U",
+        "er()\n ",
+        "er.set_language(LAN"
+      ],
+      "complexity": 2,
+      "parameters": [
+        {
+          "name": "uage_name):\n ",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "parser_setup.py"
+    },
+    {
+      "type": "function",
+      "name": "detect_language",
+      "start_line": 32,
+      "end_line": 37,
+      "lines": 6,
+      "docstring": null,
+      "raw_code": "def detect_language(file_path):\n    ext = Path(file_path).suffix\n    for lang, data in LANGUAGE_REGISTRY.items():\n        if ext in data[\"extensions\"]:\n            return lang\n    return None",
+      "chunk_id": "test.py::detect_language",
+      "decorators": [],
+      "calls": [
+        "Path",
+        "LANGUAGE_REGISTRY.items"
+      ],
+      "complexity": 3,
+      "parameters": [
+        {
+          "name": "file_path",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "test.py"
+    },
+    {
+      "type": "function",
+      "name": "handleChange",
+      "start_line": 106,
+      "end_line": 111,
+      "lines": 6,
+      "parameters": [
+        "(",
+        "key"
+      ],
+      "calls": [
+        "setPreferences"
       ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "() =>\n          logout({ logoutParams: { returnTo: window.location.origin } })",
-      "chunk_id": "App.js::<anonymous>",
+      "raw_code": "(key) => (e) => {\n    setPreferences((prev) => ({\n      ...prev,\n      [key]: e.target.checked,\n    }));\n  }",
+      "chunk_id": "preferencesComp.js::handleChange",
       "decorators": [],
-      "file": "App.js"
+      "file": "preferencesComp.js"
     },
     {
       "type": "function",
       "name": "<anonymous>",
-      "start_line": 13,
-      "end_line": 13,
+      "start_line": 106,
+      "end_line": 111,
+      "lines": 6,
+      "parameters": [
+        "(",
+        "e"
+      ],
+      "calls": [
+        "setPreferences"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(e) => {\n    setPreferences((prev) => ({\n      ...prev,\n      [key]: e.target.checked,\n    }));\n  }",
+      "chunk_id": "preferencesComp.js::<anonymous>",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    }
+  ],
+  [
+    {
+      "type": "class",
+      "name": "ReadmeRequest",
+      "start_line": 17,
+      "end_line": 21,
+      "lines": 5,
+      "docstring": null,
+      "raw_code": "class ReadmeRequest(BaseModel):\n    github_url: str\n    project_description: str\n    preferences: ReadPreferences\n    session_id: str",
+      "chunk_id": "model.py::ReadmeRequest",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "class",
+      "name": "ResumeRequest",
+      "start_line": 24,
+      "end_line": 28,
+      "lines": 5,
+      "docstring": null,
+      "raw_code": "class ResumeRequest(BaseModel):\n    session_id: str\n    action: str\n    project_description: str\n    preferences: ReadPreferences",
+      "chunk_id": "model.py::ResumeRequest",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "function",
+      "name": "walk_codebase_node",
+      "start_line": 20,
+      "end_line": 23,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def walk_codebase_node(state: ReadmeState):\n    from Parser.code_walker import walk_codebase\n    state[\"structure\"] = walk_codebase(state[\"codebase_path\"])\n    return state",
+      "chunk_id": "agent.py::walk_codebase_node",
+      "decorators": [],
+      "calls": [
+        "walk_codebase"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "parser_node",
+      "start_line": 25,
+      "end_line": 28,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def parser_node(state: ReadmeState):\n    from Parser.analyzer import analyze_codebase\n    state[\"ast\"] = analyze_codebase(state[\"codebase_path\"])\n    return state",
+      "chunk_id": "agent.py::parser_node",
+      "decorators": [],
+      "calls": [
+        "analyze_codebase"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "chunker_node",
+      "start_line": 30,
+      "end_line": 33,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def chunker_node(state: ReadmeState):\n    from chunker.chunker import prepare_chunks\n    state[\"chunks\"] = prepare_chunks(state[\"ast\"])\n    return state",
+      "chunk_id": "agent.py::chunker_node",
+      "decorators": [],
+      "calls": [
+        "prepare_chunks"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "summarizer_node",
+      "start_line": 35,
+      "end_line": 38,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def summarizer_node(state: ReadmeState):\n    from summerize.summerizer import summerize_chunks\n    state[\"summary\"] = summerize_chunks(state[\"chunks\"])\n    return state",
+      "chunk_id": "agent.py::summarizer_node",
+      "decorators": [],
+      "calls": [
+        "summerize_chunks"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "readme_node",
+      "start_line": 40,
+      "end_line": 43,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def readme_node(state: ReadmeState):\n    from summerize.summerizer import generate_final_summary\n    state[\"readme\"] = generate_final_summary(state[\"summary\"], preferences=state[\"preferences\"], project_description=state[\"project_description\"],project_structure=state[\"structure\"])\n    return state",
+      "chunk_id": "agent.py::readme_node",
+      "decorators": [],
+      "calls": [
+        "generate_final_summary"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "user_feedback_node",
+      "start_line": 45,
+      "end_line": 48,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def user_feedback_node(state: ReadmeState):\n    value = interrupt({\"readme\": state[\"readme\"]})\n    print(\"In interrept node\")\n    return value",
+      "chunk_id": "agent.py::user_feedback_node",
+      "decorators": [],
+      "calls": [
+        "interrupt",
+        "print"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "should_continue",
+      "start_line": 50,
+      "end_line": 53,
+      "lines": 4,
+      "docstring": null,
+      "raw_code": "def should_continue(state: ReadmeState):\n    print(\"checking should continue or not\")\n    print(f'In state it is : {state.get(\"action\", \"end\")}')\n    return state.get(\"action\", \"end\")",
+      "chunk_id": "agent.py::should_continue",
+      "decorators": [],
+      "calls": [
+        "print",
+        "print",
+        "state.get",
+        "state.get"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "agent.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 22,
+      "end_line": 25,
+      "lines": 4,
+      "parameters": [
+        "(",
+        "e"
+      ],
+      "calls": [
+        "e.preventDefault",
+        "handleSubmit"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(e) => {\n        e.preventDefault();\n        handleSubmit();\n      }",
+      "chunk_id": "LinkTextBox.js::<anonymous>",
+      "decorators": [],
+      "file": "LinkTextBox.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 107,
+      "end_line": 110,
+      "lines": 4,
+      "parameters": [
+        "(",
+        "prev"
+      ],
+      "calls": [],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(prev) => ({\n      ...prev,\n      [key]: e.target.checked,\n    })",
+      "chunk_id": "preferencesComp.js::<anonymous>",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "extract_raw_code",
+      "start_line": 16,
+      "end_line": 18,
+      "lines": 3,
+      "docstring": "Extract the raw code for a symbol",
+      "raw_code": "def extract_raw_code(node, code):\n    \"\"\"Extract the raw code for a symbol\"\"\"\n    return code[node.start_byte:node.end_byte]",
+      "chunk_id": "python_parser.py::extract_raw_code",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "python_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 159,
+      "end_line": 161,
+      "lines": 3,
+      "parameters": [
+        "(",
+        "e"
+      ],
+      "calls": [
+        "setDescription"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(e) => {\n          setDescription(e.target.value);\n        }",
+      "chunk_id": "preferencesComp.js::<anonymous>",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "class",
+      "name": "ReadmeResponse",
+      "start_line": 31,
+      "end_line": 32,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "class ReadmeResponse(BaseModel):\n    readme: str",
+      "chunk_id": "model.py::ReadmeResponse",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "file": "model.py"
+    },
+    {
+      "type": "function",
+      "name": "extract_raw_code",
+      "start_line": 20,
+      "end_line": 21,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "def extract_raw_code(node, code):\n        return code[node.start_byte:node.end_byte]",
+      "chunk_id": "js_parser.py::extract_raw_code",
+      "decorators": [],
+      "calls": [],
+      "complexity": 1,
+      "parameters": [
+        {
+          "name": "node",
+          "type": null,
+          "default": null
+        },
+        {
+          "name": "code",
+          "type": null,
+          "default": null
+        }
+      ],
+      "file": "js_parser.py"
+    },
+    {
+      "type": "function",
+      "name": "hello",
+      "start_line": 1,
+      "end_line": 2,
+      "lines": 2,
+      "docstring": null,
+      "raw_code": "def hello():\n    print('Hello World')",
+      "chunk_id": "sample.py::hello",
+      "decorators": [],
+      "calls": [
+        "print"
+      ],
+      "complexity": 1,
+      "parameters": [],
+      "file": "sample.py"
+    },
+    {
+      "type": "function",
+      "name": "greet",
+      "start_line": 1,
+      "end_line": 1,
       "lines": 1,
       "parameters": [
         "("
       ],
       "calls": [
-        "loginWithRedirect"
+        "console.log"
       ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "() => loginWithRedirect()",
-      "chunk_id": "Login.js::<anonymous>",
+      "raw_code": "function greet() { console.log('Hi'); }",
+      "chunk_id": "sample.js::greet",
       "decorators": [],
-      "file": "Login.js"
+      "file": "sample.js"
     },
     {
       "type": "function",
       "name": "<anonymous>",
-      "start_line": 20,
-      "end_line": 20,
+      "start_line": 35,
+      "end_line": 35,
       "lines": 1,
       "parameters": [
         "(",
-        "r"
+        "e"
       ],
       "calls": [
-        "allowedRoles.includes"
+        "setRepoUrl"
       ],
       "complexity": 1,
       "docstring": null,
-      "raw_code": "(r) => allowedRoles.includes(r)",
-      "chunk_id": "roleRequirer.js::<anonymous>",
+      "raw_code": "(e) => setRepoUrl(e.target.value)",
+      "chunk_id": "LinkTextBox.js::<anonymous>",
       "decorators": [],
-      "file": "roleRequirer.js"
+      "file": "LinkTextBox.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 76,
+      "end_line": 76,
+      "lines": 1,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "setActiveTab"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => setActiveTab(\"preview\")",
+      "chunk_id": "markdownComp.js::<anonymous>",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 84,
+      "end_line": 84,
+      "lines": 1,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "setActiveTab"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => setActiveTab(\"code\")",
+      "chunk_id": "markdownComp.js::<anonymous>",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 99,
+      "end_line": 99,
+      "lines": 1,
+      "parameters": [
+        "("
+      ],
+      "calls": [
+        "setCopied"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "() => setCopied(false)",
+      "chunk_id": "markdownComp.js::<anonymous>",
+      "decorators": [],
+      "file": "markdownComp.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 42,
+      "end_line": 42,
+      "lines": 1,
+      "parameters": [
+        "(",
+        "err"
+      ],
+      "calls": [
+        "console.error"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(err) => console.error(err)",
+      "chunk_id": "preferencesComp.js::<anonymous>",
+      "decorators": [],
+      "file": "preferencesComp.js"
+    },
+    {
+      "type": "function",
+      "name": "<anonymous>",
+      "start_line": 63,
+      "end_line": 63,
+      "lines": 1,
+      "parameters": [
+        "(",
+        "err"
+      ],
+      "calls": [
+        "console.log"
+      ],
+      "complexity": 1,
+      "docstring": null,
+      "raw_code": "(err) => console.log(err)",
+      "chunk_id": "preferencesComp.js::<anonymous>",
+      "decorators": [],
+      "file": "preferencesComp.js"
     }
   ]
 ]

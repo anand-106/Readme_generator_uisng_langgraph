@@ -1,9 +1,169 @@
-# <p align="center">Intelligent Ticket Management System</p>
+# <p align="center">AI-Powered README Generator</p>
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI"></a>
   <a href="#"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
-  <a href="#"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Auth0-E34F26?style=for-the-badge&logo=auth0&logoColor=white" alt="Auth0"></a>
-  <a href="#"><img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"></a>
-  <a href="#"><img src="https://img.shields.io/badge/LangChain-343434?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAMrSURBVHgB1VZdLFNBFH/euF+G+i0gJq1wZFFEQVQF0UcRHRwsFNFEUQsFBQRFUVwsBBFlkEKIiBZEkEKBhEIl1Sj0B0169477zjv3nHtO9055y3c95z7nOd9z7szsL/sH4oJz3H4iFmHcc4HqK6F5TjX2XucJt4h38Qp4x87v2iB9rX8Bw7w+W7X1B5u71X+p2t+3qG8qE3zC8/137P1T5l/iJk99/lK+w4hQj+5z7jV9R2v8zXJ9gN6hL+x2B6u/wB18U+q0H+m6i+fL/X04+S+7/A5W0j/hG/y9N9L1rJ/wH4Y70XN94K32t5R/mY1t7JtE9K12S69/y6N8S0317Uf57H8X4D54c00hX8/fJ51h+K/5K76Tq2V4Qf3fWb+y4Zqg8Q9fX1z/Vn5v/8V37mB+hJ22/Gz49nEf6X0/U2y3K+v/tM5x/jXf8b/wV/jM76b0j4U65H/fH0/N829c20V8v/vD8F4n/8E19x/vD4QG6H18/J54P2Qf9p5J9P6a9/jLhW1r8B6n/u+r35xN+2/jA5z558680v/2W5L0R4n68x/S/0T3q9hU519T5z9R/63g/u79j/5P3h7O0z+z7G71O+v/Hn7e1j2z/71+0/gT3rL8V6D6F+eE/d38v/3p8f8h74H1V6v4L7P1f6b1H7N8i+H+H/v36H83/yH0/3f0P7N/F6m/t7Q/1x9P9L559I6h85v8L9D5P+H/p3m9/e3m9H2N+v3yH4T5o8L+7/i6i9J4t/4d9b5z9H5P8b7/N2c3t/e3vX6f0H6I8u5/e0l8P6l9X4X4n+k+X9f5359a69/a36/4N4b/N2b3j+j7i8v7x+p/R3tfP8v3h8w1h96vE/07+j7H5W+p8v93bB96vE/3dD3f07tX9+4J/g8l7k8/9T1L895f09/j/N8T4t/P6/9r+E8L8/n1V877h6Z+q3W/03nL7r8L9f0P+X0v8v0z+t/G/3f3/q/V/5/0Pmf4v3f5r+P0/6v1f4v0H+v9X+r/N/H/n/V/q/df+/7X8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/7/0/7P9f6r9F/z/q/V/q/zv9/7f8/639X+r9N/v/Z/m/
+  <a href="#"><img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="#"><img src="https://img.shields.io/badge/LangChain-343434?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain"></a>
+</p>
+
+## Introduction
+
+This project is an AI-powered README generator that automates the creation of comprehensive documentation for software projects. It analyzes a codebase, extracts relevant information, and uses a GenAI model to generate a well-structured README file. This tool aims to simplify the documentation process for developers, saving time and improving project understanding.
+
+## Table of Contents
+
+1.  [Key Features](#key-features)
+2.  [Installation Guide](#installation-guide)
+3.  [Usage](#usage)
+4.  [Environment Variables](#environment-variables)
+5.  [Project Structure](#project-structure)
+6.  [Technologies Used](#technologies-used)
+7.  [License](#license)
+
+## Key Features
+
+*   **Automated Code Analysis:** Analyzes the project's codebase to extract project metadata, file structure, dependencies, and API endpoints.
+*   **Intelligent Chunking:** Divides the codebase into smaller chunks for efficient summarization by the GenAI model.
+*   **AI-Powered Summarization:** Leverages a GenAI model (e.g., Gemini) to generate summaries for each code chunk.
+*   **Customizable README Generation:** Allows users to customize the generated README by selecting which sections to include and providing a project description.
+*   **Frontend Interface:** Provides a user-friendly React interface for inputting the GitHub URL, setting preferences, and previewing the generated README.
+*   **Langchain Integration:** Uses Langchain to orchestrate the README generation process through a state graph, allowing for flexible and extensible workflows.
+*   **Multi-language Support**: Supports both Python and JavaScript codebases, using `tree-sitter` for parsing.
+
+## Installation Guide
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository_url>
+    cd <repository_directory>
+    ```
+
+2.  **Install backend dependencies:**
+
+    ```bash
+    cd Backend
+    pip install -r requirements.txt
+    ```
+
+3.  **Install frontend dependencies:**
+
+    ```bash
+    cd ../frontend
+    npm install
+    ```
+
+4.  **Configure environment variables:**
+
+    Create a `.env` file in the `Backend` directory and set the following variables:
+
+    ```
+    GOOGLE_API_KEY=<your_google_api_key>
+    # Add other necessary environment variables here
+    ```
+
+5.  **Run the FastAPI server:**
+
+    ```bash
+    cd ../Backend
+    uvicorn main:app --reload
+    ```
+
+6.  **Run the React frontend:**
+
+    ```bash
+    cd ../frontend
+    npm start
+    ```
+
+## Usage
+
+1.  Open the frontend application in your browser (usually at `http://localhost:3000`).
+2.  Enter the GitHub repository URL in the provided text box.
+3.  Navigate to the README generation page.
+4.  Customize the README by selecting the desired sections and providing a project description.
+5.  Click the "Generate README" button to initiate the generation process.
+6.  Preview the generated README and copy or download it as needed.
+7.  You can regenerate the README with different preferences if needed.
+
+## Environment Variables
+
+*   `GOOGLE_API_KEY`:  The API key for the GenAI model (e.g., Gemini).  Required for summarizing code chunks and generating the final README content.
+
+## Project Structure
+
+```
+├── Backend/
+│   ├── main.py            # FastAPI application entry point
+│   ├── agent/
+│   │   └── agent.py       # Core logic of the README generation process
+│   ├── api/
+│   │   ├── model.py       # Pydantic data models
+│   │   └── router.py      # FastAPI API endpoints
+│   │   └── utils/
+│   │       └── github_utils.py # Utility functions for interacting with GitHub
+│   ├── chunker/
+│   │   ├── chunker.py     # Code chunking logic
+│   │   └── token_estimator.py # Token estimation for code chunks
+│   ├── Parser/
+│   │   ├── analyzer.py    # Codebase analyzer
+│   │   ├── code_walker.py # Codebase traversal
+│   │   ├── js_parser.py   # JavaScript code parser
+│   │   ├── python_parser.py # Python code parser
+│   │   └── full/         # parser for code
+│   │       ├── AST_parser.py # AST parser
+│   │       ├── build_library.py # Build Parser Library
+│   │       ├── parser_setup.py # Parser setup
+│   │       ├── sample.js     # Sample javascript file
+│   │       ├── sample.py     # Sample python file
+│   │       └── test.py       # Test
+│   ├── summerize/
+│   │   └── summerizer.py  # Code summarization and README generation
+├── frontend/
+│   ├── src/
+│   │   ├── App.js         # React application entry point
+│   │   ├── index.js       # React index file
+│   │   ├── components/
+│   │   │   ├── home/
+│   │   │   │   ├── LinkTextBox.js  # GitHub URL input component
+│   │   │   │   └── Title.js       # Title component
+│   │   │   └── ReadmePage/
+│   │   │       ├── markdownComp.js   # Markdown display and download component
+│   │   │       └── preferencesComp.js # README preferences component
+│   │   ├── pages/
+│   │   │   ├── HomePage.js      # Home page component
+│   │   │   └── ReadmePage.js    # README generation page component
+│   │   ├── utils/
+│   │   │   └── api/
+│   │   │       └── ApiCaller.js   # API calling utility
+│   ├── tailwind.config.js # Tailwind CSS configuration
+```
+
+## Technologies Used
+
+<p align="left">
+    <a href="#"><img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+    <a href="#"><img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+    <a href="#"><img src="https://img.shields.io/badge/LangChain-343434?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Tree--sitter-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyLjM3NSAxLjc1YS42MjUuNjI1IDAgMCAwLS42MjUtLjYyNWgtMy41Yy0uMzQ1IDAtLjYyNS4yODEtLjYyNS42MjV2Ni41NjNjMCAuMzQ0LjI4LjYyNC42MjUuNjI0aDMuNWMuMzQ1IDAgLjYyNS0uMjguNjI1LS42MjRWMS43NXpNOC4zNzUgNy44NzVhLjYyNS42MjUgMCAwIDAtLjYyNS0uNjI1aC0zLjVjLS4zNDUgMC0uNjI1LjI4LS42MjUuNjI1djYuNTYyYzAgLjM0NS4yOC42MjUuNjI1LjYyNWgzLjVjLjM0NSAwIC42MjUtLjI4LjYyNS0uNjI1Vjc4NzVaTTQuMzc1IDQuMzYyYS42MjUuNjI1IDAgMCAwLS42MjUtLjYyNWgtMy41Yy0uMzQ1IDAtLjYyNS4yOC0uNjI1LjYyNXY2LjU2M2MwIC4zNDQuMjguNjI0LjYyNS42MjRoMy41Yy4zNDUgMCAuNjI1LS4yOC42MjUtLjYyNFY0LjM2M1oiLz48L3N2Zz4=" alt="Tree-sitter"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Pydantic-e83d88?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic"></a>
+    <a href="#"><img src="https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios"></a>
+    <a href="#"><img src="https://img.shields.io/badge/GitPython-F05032?style=for-the-badge&logo=git&logoColor=white" alt="GitPython"></a>
+
+</p>
+
+*   **Backend:** FastAPI, Python, Langchain, Tree-sitter, Pydantic, GitPython
+*   **Frontend:** React, React Router DOM, Axios, DOMPurify, Tailwind CSS
+*   **GenAI Model:** Google Gemini (via `google.generativeai`)
+
+## License
+
+MIT License
+
+<p align="left">
+    <a href="#"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License"></a>
+</p>
