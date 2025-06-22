@@ -207,8 +207,8 @@ Now, generate the entire `README.md` as **raw Markdown**.
         if content.endswith("```"):
            content = content[:-3].rstrip()
         
-        f = open("response.md",'w',encoding='utf-8')
-        f.write(content)
+        # f = open("response.md",'w',encoding='utf-8')
+        # f.write(content)
 
         return content
         
