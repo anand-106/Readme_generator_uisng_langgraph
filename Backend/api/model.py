@@ -18,11 +18,9 @@ class ReadmeRequest(BaseModel):
     github_url: str
     project_description: str
     preferences: ReadPreferences
-    session_id: str
     
 
 class ResumeRequest(BaseModel):
-    session_id: str
     action: str
     project_description: str
     preferences: ReadPreferences

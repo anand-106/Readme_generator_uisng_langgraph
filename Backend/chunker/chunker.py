@@ -50,11 +50,13 @@ def prepare_chunks(ast, max_call=13, max_tokens_per_call=6000):
     if current_chunk and len(chunks) < max_call:
         chunks.append(current_chunk)
     
-    try:
-        file = open("C:/Users/gamin/Documents/projects/Readme_generator_uisng_langgraph/Backend/chunker/extracted_chunks.json",'w',encoding='utf-8')
-        json.dump(chunks,file,indent=2,ensure_ascii=False)
-        print(f'Successfully created {len(chunks)} chunks')
-    except Exception as e:
-        print(e)
+    # try:
+    #     file = open("C:/Users/gamin/Documents/projects/Readme_generator_uisng_langgraph/Backend/chunker/extracted_chunks.json",'w',encoding='utf-8')
+    #     json.dump(chunks,file,indent=2,ensure_ascii=False)
+    #     print(f'Successfully created {len(chunks)} chunks')
+    # except Exception as e:
+    #     print(e)
+
+    print(f'Successfully created {len(chunks)} chunks')
 
     return chunks

@@ -7,7 +7,13 @@ export async function callApi({
   headers = {},
 }) {
   try {
-    const config = { method, url, headers, data: payload };
+    const config = {
+      method,
+      url,
+      headers,
+      data: payload,
+      withCredentials: true,
+    };
     const response = await axios(config);
 
     return response.data;

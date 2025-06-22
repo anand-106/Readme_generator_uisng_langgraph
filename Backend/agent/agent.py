@@ -97,6 +97,7 @@ def run_readme_pipeline(url: str, description: str, preferences: dict, session_i
 }
     try:
         shutil.rmtree(codebase_path)
+        print("Successfully removed the temp repo")
     except Exception as e:
         print(f"error removing tree: {e}")
 

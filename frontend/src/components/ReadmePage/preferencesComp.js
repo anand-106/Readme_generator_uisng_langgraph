@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { callApi } from "../../utils/api/ApiCaller";
+import axios from "axios";
 
 export function Preferences({
   repoUrl,
@@ -26,18 +27,28 @@ export function Preferences({
     licenses: true,
   });
 
+  useEffect(() => {
+    axios
+      .post(
+        "https://readme-generator-uisng-langgraph.onrender.com/api/readme/start",
+        {},
+        { withCredentials: true }
+      )
+      .then((res) => console.log("Session Started"))
+      .catch((err) => console.log("Error starting session", err));
+  }, []);
+
   const GenerateRequest = async () => {
     console.log("Regenerating with preferences:", preferences);
     console.log("Description:", proj_description);
     setIsLoading(true);
     const readmeResponse = await callApi({
-      url: "http://localhost:8000/api/readme/generate",
+      url: "https://readme-generator-uisng-langgraph.onrender.com/api/readme/generate",
       method: "POST",
       payload: {
         github_url: repoUrl,
         project_description: proj_description,
         preferences: preferences,
-        session_id: "demo-session-001",
       },
     }).catch((err) => console.error(err));
 
@@ -52,10 +63,9 @@ export function Preferences({
     console.log("Description:", proj_description);
     setIsLoading(true);
     const readmeResponse = await callApi({
-      url: "http://localhost:8000/api/readme/resume",
+      url: "https://readme-generator-uisng-langgraph.onrender.com/api/readme/resume",
       method: "POST",
       payload: {
-        session_id: "demo-session-001",
         action: "regenerate",
         project_description: proj_description,
         preferences: preferences,
