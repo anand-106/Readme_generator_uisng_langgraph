@@ -18,7 +18,7 @@ async def start_session(response: Response):
         value=session_id,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         max_age=86400
     )
     return {"message": "Session started"}
