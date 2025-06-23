@@ -14,7 +14,8 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost:3000",  # React dev server
+    "http://localhost:3000",
+      "https://readme-generator-uisng-langgraph.vercel.app"  # React dev server
     # Add more origins here if needed
 ]
 
