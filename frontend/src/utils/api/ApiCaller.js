@@ -5,6 +5,8 @@ export async function callApi({
   method = "GET",
   payload = null,
   headers = {},
+  retry = 3,
+  delay = 5000,
 }) {
   try {
     const config = {

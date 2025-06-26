@@ -11,6 +11,7 @@ export function Preferences({
 }) {
   const [proj_description, setDescription] = useState("");
   const [isRegenerate, setIsRegenerate] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
 
   const [preferences, setPreferences] = useState({
     title: true,
@@ -34,12 +35,16 @@ export function Preferences({
         {},
         { withCredentials: true }
       )
-      .then((res) => console.log("Session Started"))
+      .then((res) => {
+        setSessionReady(true);
+        console.log("Session Started");
+      })
       .catch((err) => console.log("Error starting session", err));
   }, []);
 
   const GenerateRequest = async () => {
-    console.log("Regenerating with preferences:", preferences);
+    if (!sessionReady) return;
+    console.log("generating with preferences:", preferences);
     console.log("Description:", proj_description);
     setIsLoading(true);
     const readmeResponse = await callApi({
@@ -59,6 +64,7 @@ export function Preferences({
   };
 
   const reGenerateRequest = async () => {
+    if (!sessionReady) return;
     console.log("Regenerating with preferences:", preferences);
     console.log("Description:", proj_description);
     setIsLoading(true);
@@ -92,9 +98,13 @@ export function Preferences({
             className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={isLoading}
+            disabled={isLoading || !sessionReady}
           >
-            {isLoading ? "Regnerating..." : "Regenerate"}
+            {sessionReady
+              ? isLoading
+                ? "Generating..."
+                : "Generate"
+              : "Server starting please wait.."}
           </button>
         ) : (
           <button
@@ -102,9 +112,13 @@ export function Preferences({
             className={`text-black font-semibold min-w-full min-h-10 bg-slate-50 rounded-lg border-blue-400 border-2 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={isLoading}
+            disabled={isLoading || !sessionReady}
           >
-            {isLoading ? "Generating..." : "Generate"}
+            {sessionReady
+              ? isLoading
+                ? "Generating..."
+                : "Generate"
+              : "Server starting please wait.."}
           </button>
         )}
       </div>
