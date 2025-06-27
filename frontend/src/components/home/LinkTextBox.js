@@ -18,32 +18,35 @@ export function LinkTextBox() {
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-      className="w-full max-w-md flex"
-    >
-      <div className="w-full max-w-md flex">
-        <div className="bg-white rounded-l-xl shadow-md w-full max-w-md">
-          <input
-            type="url"
-            placeholder="Enter your Github Repo URL"
-            className="w-full p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
-            value={repoUrl}
-            onChange={(e) => setRepoUrl(e.target.value)}
-          ></input>
+    <div className="w-full max-w-2xl bg-gray-800 p-7 rounded-lg shadow-2xl">
+      <p className="text-white mb-2">Enter your GitHub Repo Url</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+        className="w-full  flex"
+      >
+        <div className="w-full  flex gap-2">
+          <div className="bg-white rounded-xl shadow-md w-full">
+            <input
+              type="url"
+              placeholder="https://github.com/username/repository"
+              className="w-full p-3 bg-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200 ease-in-out text-white"
+              value={repoUrl}
+              onChange={(e) => setRepoUrl(e.target.value)}
+            ></input>
+          </div>
+          <div className=" rounded-xl">
+            <button
+              className="w-full h-full  bg-indigo-500  rounded-lg focus:outline-none focus:bg-indigo-600 text-center text-white font-semibold p-3 transition duration-200 ease-in-out"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
         </div>
-        <div className="bg-white rounded-r-xl ml-0">
-          <button
-            className="w-full h-full border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-gray-800 p-3 transition duration-200 ease-in-out"
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
