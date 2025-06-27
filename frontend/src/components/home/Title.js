@@ -1,9 +1,16 @@
+import GradientText from "../../src/pages/GradientText/GradientText";
+
 export function Title() {
   return (
     <>
-      <h1 className="text-center text-5xl text-white font-bold pt-2 min-w-full mb-6 gradient-text ">
+      <GradientText
+        colors={["#02c6ff", "#0066ff", "#da00ff"]}
+        animationSpeed={6}
+        showBorder={false}
+        className=" text-center text-6xl font-bold pt-2 min-w-full mb-6"
+      >
         AI Readme Generator
-      </h1>
+      </GradientText>
       <div className="w-full max-w-xl text-center">
         <p className="text-white mb-14">
           Instantly create professional, well-structured README files for your

@@ -83,7 +83,7 @@ export function Preferences({
 
   return (
     <div className="w-1/4 h-full border-r border-gray-200 flex flex-col justify-between p-4">
-      <h1 className="text-white text-center font-bold text-xl">
+      <h1 className="text-white text-center font-bold text-2xl gradient-text">
         AI Readme Generator
       </h1>
 
@@ -168,7 +168,7 @@ function CheckListItem({ text, checked, onChange }) {
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="w-5 h-5 text-blue-500 accent-blue-500 bg-gray-800 border border-gray-600 rounded focus:ring-2 focus:ring-blue-400 transition duration-500 ease-in-out"
+        className="w-5 h-5 text-indigo-500 accent-indigo-500 bg-gray-800  rounded focus:ring-2 focus:ring-blue-400 transition duration-500 ease-in-out"
       />
       <span className="text-white text-lg font-medium">{text}</span>
     </label>
@@ -177,7 +177,7 @@ function CheckListItem({ text, checked, onChange }) {
 
 function Description({ setDescription }) {
   return (
-    <div className="w-full h-72 border-blue-500 rounded-lg border-2 mt-5">
+    <div className="w-full h-72 border-indigo-500 rounded-lg border-2 mt-5">
       <textarea
         className="h-full w-full rounded-lg bg-inherit text-white p-2 resize-none"
         onChange={(e) => {

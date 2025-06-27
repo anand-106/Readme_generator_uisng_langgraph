@@ -18,10 +18,10 @@ export function MarkdownViewer({ readmeData, firstGenerate, isLoading }) {
         firstGenerate &&
         readmeData?.readme && (
           <>
-            <div className="fixed right-10 bottom-5 z-20 ">
+            <div className="fixed right-10 bottom-5 z-20 shadow-md">
               <ToggleSwitch activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-            <div className="fixed bottom-6 z-20">
+            <div className="fixed bottom-6 z-20 shadow-md">
               <CopyDownload readmeData={readmeData} />
             </div>
           </>
