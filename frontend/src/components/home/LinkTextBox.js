@@ -18,7 +18,7 @@ export function LinkTextBox() {
   };
 
   return (
-    <div className="w-full max-w-2xl bg-gray-800 p-7 rounded-lg shadow-2xl">
+    <div className="w-full max-w-2xl bg-[#030617] p-7 rounded-lg shadow-2xl">
       <p className="text-white mb-2">Enter your GitHub Repo Url</p>
       <form
         onSubmit={(e) => {
@@ -28,18 +28,18 @@ export function LinkTextBox() {
         className="w-full  flex"
       >
         <div className="w-full  flex gap-2">
-          <div className="bg-white rounded-xl shadow-md w-full">
+          <div className=" rounded-lg shadow-md w-full">
             <input
               type="url"
               placeholder="https://github.com/username/repository"
-              className="w-full p-3 bg-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200 ease-in-out text-white"
+              className="w-full h-full p-3 bg-white/10 border backdrop-blur-md border-white/70 rounded-lg placeholder-white/50 text-white transition-all duration-400 ease-out focus:shadow-[0_0_75px_10px_rgba(255,255,255,0.3)] hover:shadow-[0_0_15px_3px_rgba(255,255,255,0.3)]"
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
             ></input>
           </div>
-          <div className=" rounded-xl">
+          <div className=" rounded-lg p-[3px] bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-out shadow-[0_0_5px_3px_rgba(0,128,255,0.5)]">
             <button
-              className="w-full h-full  bg-indigo-500  rounded-lg focus:outline-none focus:bg-indigo-600 text-center text-white font-semibold p-3 transition duration-200 ease-in-out"
+              className="w-full h-full  bg-[#030617]  rounded-lg  text-center text-white font-semibold p-3  "
               type="submit"
             >
               Submit

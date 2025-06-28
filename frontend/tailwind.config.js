@@ -9,9 +9,14 @@ module.exports = {
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-300% 0" },
+          "100%": { backgroundPosition: "300% 0" },
+        },
       },
       animation: {
         gradient: "gradient 8s linear infinite",
+        shimmer: "shimmer 1.5s ease-in-out infinite",
       },
       fontFamily: {
         sans: [

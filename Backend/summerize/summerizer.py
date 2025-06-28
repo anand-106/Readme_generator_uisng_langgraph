@@ -95,7 +95,7 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
         section_blocks.append("""
 ### 2. Centered Badges
 - Place badges using standard shields.io badge markdown (in another centered <p>).
-- Include relevant tech badges: FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc.""")
+- Include relevant tech badges: for example FastAPI, Python, MongoDB, LangChain, React, Tailwind, Auth0, etc. that are used in the project only""")
 
     if preferences["introduction"]:
         section_blocks.append("""

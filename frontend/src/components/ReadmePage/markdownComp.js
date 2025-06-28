@@ -5,13 +5,21 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { useState } from "react";
 import { Download, Copy, CopyCheck } from "lucide-react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+// import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
-export function MarkdownViewer({ readmeData, firstGenerate, isLoading }) {
+export function MarkdownViewer({
+  readmeData,
+  firstGenerate,
+  isLoading,
+  generateError,
+}) {
   const [activeTab, setActiveTab] = useState("preview");
 
   return (
-    <div className="h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#0d1017] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
+    <div className="h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
+      {/* <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff6ec4] via-white to-[#7873f5] bg-[length:300%_100%] animate-shimmer">
+        Generating Readme...
+      </h1> */}
       {isLoading ? (
         <Loader />
       ) : (
@@ -56,6 +64,11 @@ export function MarkdownViewer({ readmeData, firstGenerate, isLoading }) {
             </pre>
           </div>
         ))}
+      {generateError && (
+        <div className="mt-4 text-red-400 w-full h-full font-semibold text-center flex justify-center items-center">
+          <h4>❌ Failed to generate README. Please try again.</h4>
+        </div>
+      )}
     </div>
   );
 }
@@ -138,8 +151,10 @@ function CopyDownload({ readmeData }) {
 
 function Loader() {
   return (
-    <div className=" absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-50">
-      <DotLottieReact className="w-1/2" src="/loader.lottie" loop autoplay />
+    <div className="absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-50">
+      <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-purple-500 bg-[length:300%_100%] animate-shimmer leading-[1.4] pb-1">
+        Generating Readme...
+      </h1>
     </div>
   );
 }
