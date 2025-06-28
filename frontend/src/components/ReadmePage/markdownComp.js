@@ -75,16 +75,16 @@ export function MarkdownViewer({
 
 function ToggleSwitch({ setActiveTab, activeTab }) {
   return (
-    <div className="h-10 w-36 bg-white rounded-lg flex gap-2  relative border-white border-2">
+    <div className="h-10 w-36 bg-white/20 backdrop-blur-md rounded-lg flex gap-2  relative border-white/50 border-2">
       <div
-        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-slate-800  transition-transform duration-500 ease-in-out ${
+        className={`absolute bottom-0 h-full shadow-sm w-1/2 rounded-lg bg-[#030617]/80 backdrop-blur-sm  transition-transform duration-500 ease-in-out ${
           activeTab === "preview" ? "translate-x-0" : "translate-x-full"
         }`}
       />
 
       <button
         className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${
-          activeTab === "preview" ? "text-white" : "text-black"
+          activeTab === "preview" ? "text-white" : "text-white"
         } `}
         onClick={() => setActiveTab("preview")}
       >
@@ -92,7 +92,7 @@ function ToggleSwitch({ setActiveTab, activeTab }) {
       </button>
       <button
         className={`min-h-full w-1/2 z-10 transition-colors duration-500 ${
-          activeTab === "preview" ? "text-black" : "text-white"
+          activeTab === "preview" ? "text-white" : "text-white"
         } `}
         onClick={() => setActiveTab("code")}
       >
@@ -126,8 +126,8 @@ function CopyDownload({ readmeData }) {
   };
 
   return (
-    <div className="h-10 w-38 bg-white rounded-lg flex border-white border-[3px] gap-1 text-white text-sm ">
-      <div className="h-full w-16 bg-slate-800 rounded-lg">
+    <div className="h-10 w-38 flex  gap-2 text-white text-sm ">
+      <div className="h-full w-16 bg-[#030617]/10 backdrop-blur-md hover:scale-105 transition-all duration-300 ease-out border-white/50 border-[1px] rounded-lg">
         <button
           className="h-full w-full"
           onClick={copyToClipboard}
@@ -140,7 +140,7 @@ function CopyDownload({ readmeData }) {
           )}
         </button>
       </div>
-      <div className="h-full w-16 bg-slate-800 rounded-lg">
+      <div className="h-full w-16 bg-[#030617]/10 backdrop-blur-md hover:scale-105 transition-all duration-300 border-white/50 border-[1px] rounded-lg">
         <button className="h-full w-full" onClick={handleDownload}>
           <Download className="w-full h-full p-[6px]" />
         </button>
