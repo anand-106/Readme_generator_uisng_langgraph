@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { MarkdownViewer } from "../components/ReadmePage/markdownComp";
 import { Preferences } from "../components/ReadmePage/preferencesComp";
 import { useState } from "react";
+import SlidePageWrapper from "../animations/SlidePageWrapper";
 
 export function ReadMePage() {
   const location = useLocation();
@@ -13,21 +14,23 @@ export function ReadMePage() {
   const [generateError, setGenerateError] = useState("");
 
   return (
-    <div className="h-screen bg-[#030617] flex overflow-hidden selection:bg-white/30">
-      <Preferences
-        repoUrl={repoUrl}
-        setReadmeData={setReadmeData}
-        setFirstGenerate={setFirstGenerate}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        setGenerateError={setGenerateError}
-      />
-      <MarkdownViewer
-        readmeData={readmeData}
-        firstGenerate={firstGenerate}
-        isLoading={isLoading}
-        generateError={generateError}
-      />
-    </div>
+    <SlidePageWrapper>
+      <div className="h-screen bg-[#030617] flex overflow-hidden selection:bg-white/30">
+        <Preferences
+          repoUrl={repoUrl}
+          setReadmeData={setReadmeData}
+          setFirstGenerate={setFirstGenerate}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setGenerateError={setGenerateError}
+        />
+        <MarkdownViewer
+          readmeData={readmeData}
+          firstGenerate={firstGenerate}
+          isLoading={isLoading}
+          generateError={generateError}
+        />
+      </div>
+    </SlidePageWrapper>
   );
 }

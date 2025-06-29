@@ -1,13 +1,20 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { ReadMePage } from "./pages/ReadmePage";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/readme" element={<ReadMePage />} />
-    </Routes>
+    <div className="w-screen h-screen overflow-hidden relative bg-[#030617]">
+      <AnimatePresence mode="wait" initial={false}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/readme" element={<ReadMePage />} />
+        </Routes>
+      </AnimatePresence>
+    </div>
   );
 }
 

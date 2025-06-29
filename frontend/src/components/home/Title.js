@@ -12,7 +12,7 @@ export function Title() {
         <h1 className="title hover:glow">AI Readme Generator</h1>
       </GradientText>
       <div className="w-full max-w-xl text-center">
-        <p className="text-white mb-14 ">
+        <p className="text-white font-figtree font-medium mb-14 px-5 ">
           Instantly create professional, well-structured README files for your
           GitHub projects using the power of AI.
         </p>

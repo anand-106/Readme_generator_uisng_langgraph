@@ -16,7 +16,7 @@ export function MarkdownViewer({
   const [activeTab, setActiveTab] = useState("preview");
 
   return (
-    <div className="h-full w-3/4 overflow-y-auto px-12 py-10 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
+    <div className="h-full w-full overflow-y-auto px-12 py-10 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
       {/* <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff6ec4] via-white to-[#7873f5] bg-[length:300%_100%] animate-shimmer">
         Generating Readme...
       </h1> */}
@@ -65,8 +65,16 @@ export function MarkdownViewer({
           </div>
         ))}
       {generateError && (
-        <div className="mt-4 text-red-400 w-full h-full font-semibold text-center flex justify-center items-center">
+        <div className=" text-red-400 w-full h-full select-none font-semibold text-center flex justify-center items-center">
           <h4>❌ Failed to generate README. Please try again.</h4>
+        </div>
+      )}
+      {!firstGenerate && (
+        <div className=" text-white/20 w-full select-none h-full font-semibold text-center flex justify-center items-center">
+          <div>
+            <h4>Click "Generate" to create your AI README!</h4>
+            <h4> Not happy with the result? Just click Regenerate anytime!</h4>
+          </div>
         </div>
       )}
     </div>

@@ -96,14 +96,17 @@ export function Preferences({
   };
 
   return (
-    <div className="w-1/4 h-full border-r border-gray-200 flex flex-col justify-between p-4">
+    <div className="w-[500px] h-full border-r border-gray-200/50 flex flex-col justify-between p-4">
       <Link to={"/"}>
-        <h1 className="text-white text-center font-bold text-2xl gradient-text">
+        <h1 className="text-white text-center font-figtree font-bold text-[24px] gradient-text">
           Readme AI
         </h1>
       </Link>
 
-      <Description setDescription={setDescription} />
+      <Description
+        setDescription={setDescription}
+        proj_description={proj_description}
+      />
 
       <CheckList preferences={preferences} setPreferences={setPreferences} />
 
@@ -112,7 +115,7 @@ export function Preferences({
           {isRegenerate ? (
             <button
               onClick={reGenerateRequest}
-              className={`text-white font-semibold min-w-full min-h-10 bg-[#030617] rounded-lg  ${
+              className={`text-white font-figtree font-semibold min-w-full min-h-10 bg-[#030617] rounded-lg  ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading || !sessionReady}
@@ -126,7 +129,7 @@ export function Preferences({
           ) : (
             <button
               onClick={GenerateRequest}
-              className={`text-white font-semibold min-w-full min-h-10 bg-[#030617] rounded-lg  ${
+              className={`text-white font-figtree font-semibold min-w-full min-h-10 bg-[#030617] rounded-lg  ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading || !sessionReady}
@@ -188,21 +191,28 @@ function CheckListItem({ text, checked, onChange }) {
         onChange={onChange}
         className="w-5 h-5 bg-transparent accent-white/10 opacity-75 focus:opacity-50 rounded-lg  transition duration-500 ease-in-out"
       />
-      <span className="text-white text-lg font-medium">{text}</span>
+      <span className="text-white font-figtree text-base font-medium">
+        {text}
+      </span>
     </label>
   );
 }
 
-function Description({ setDescription }) {
+function Description({ proj_description, setDescription }) {
+  const maxChars = 200;
   return (
-    <div className="w-full h-72  rounded-lg  mt-5">
+    <div className="w-full h-72  rounded-lg  mt-2 relative">
       <textarea
-        className="h-full w-full rounded-lg bg-white/10 backdrop-blur-md text-white p-2 resize-none focus:border-none focus:ring-0 outline-none"
+        maxLength={maxChars}
+        className="h-full w-full rounded-lg bg-white/10 backdrop-blur-md text-white p-2 resize-none focus:border-none focus:ring-0 outline-none scrollbar-none"
         onChange={(e) => {
           setDescription(e.target.value);
         }}
-        placeholder="short description..."
+        placeholder="Any preferences or extra context? (optional)"
       ></textarea>
+      <p className="absolute bottom-0 right-0 text-white/40 text-sm mb-2 mr-2">
+        {maxChars - (maxChars - proj_description.length)}/{maxChars}
+      </p>
     </div>
   );
 }

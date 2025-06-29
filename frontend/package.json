@@ -13,6 +13,7 @@
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.2.6",
+    "framer-motion": "^12.19.2",
     "highlight.js": "^11.11.1",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.517.0",
