@@ -37,7 +37,7 @@ export function LinkTextBox() {
               onChange={(e) => setRepoUrl(e.target.value)}
             ></input>
           </div>
-          <div className=" rounded-lg p-[3px] bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-out shadow-[0_0_5px_3px_rgba(0,128,255,0.5)]">
+          <div className=" rounded-lg p-[3px] bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-in-out shadow-[0_0_5px_3px_rgba(0,128,255,0.5)]">
             <button
               className="w-full h-full  bg-[#030617]  rounded-lg  text-center text-white font-semibold p-3  "
               type="submit"

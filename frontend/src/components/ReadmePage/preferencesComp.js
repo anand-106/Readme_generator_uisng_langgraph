@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { callApi } from "../../utils/api/ApiCaller";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export function Preferences({
   repoUrl,
@@ -96,9 +97,11 @@ export function Preferences({
 
   return (
     <div className="w-1/4 h-full border-r border-gray-200 flex flex-col justify-between p-4">
-      <h1 className="text-white text-center font-bold text-2xl gradient-text">
-        AI Readme Generator
-      </h1>
+      <Link to={"/"}>
+        <h1 className="text-white text-center font-bold text-2xl gradient-text">
+          Readme AI
+        </h1>
+      </Link>
 
       <Description setDescription={setDescription} />
 
