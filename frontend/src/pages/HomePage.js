@@ -28,7 +28,7 @@ function Header() {
         amplitude={1.0}
         speed={0.5}
       />
-      <div className="absolute top-0 text-white right-0 z-20 mt-7 mr-12">
+      <div className="absolute top-0 text-white right-0 z-20 mt-7 mr-5 lg:mr-12">
         <a
           href="https://github.com/anand-106/Readme_generator_uisng_langgraph"
           target="_blank"
@@ -40,7 +40,7 @@ function Header() {
           </div>
         </a>
       </div>
-      <div className="absolute top-0 text-white left-0 z-20 mt-7 ml-12">
+      <div className="absolute top-0 text-white left-0 z-20 mt-7 ml-5 lg:ml-12">
         <Link to={"/"}>
           <div className="flex justify-center items-center gap-2">
             <img src="assets/logo160.png" alt="logo" className="w-7" />

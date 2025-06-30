@@ -28,7 +28,7 @@ export function ReadMePage() {
         </div>
 
         <div
-          className={`fixed top-0 left-0 max-w-[400px] w-full h-screen  z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
+          className={`fixed top-0 left-0 max-w-[400px] w-full h-screen  min-h-[100dvh] z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           } `}
         >
