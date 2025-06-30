@@ -28,18 +28,20 @@ export function ReadMePage() {
         </div>
 
         <div
-          className={`absolute max-w-[400px] w-full h-screen overflow-y-auto z-10 block md:hidden transition-transform duration-300 bg-[#030617]  ease-in-out ${
+          className={`fixed top-0 left-0 max-w-[400px] w-full h-screen  z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           } `}
         >
-          <Preferences
-            repoUrl={repoUrl}
-            setReadmeData={setReadmeData}
-            setFirstGenerate={setFirstGenerate}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            setGenerateError={setGenerateError}
-          />
+          <div className="w-full h-full overflow-y-auto flex flex-col">
+            <Preferences
+              repoUrl={repoUrl}
+              setReadmeData={setReadmeData}
+              setFirstGenerate={setFirstGenerate}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              setGenerateError={setGenerateError}
+            />
+          </div>
         </div>
         <div className="hidden md:block w-full max-w-[400px]">
           <Preferences
