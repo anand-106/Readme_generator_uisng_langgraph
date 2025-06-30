@@ -96,7 +96,7 @@ export function Preferences({
   };
 
   return (
-    <div className="w-[500px] h-full border-r border-gray-200/50 flex flex-col justify-between p-4">
+    <div className="w-full h-full border-r border-gray-200/50 flex flex-col justify-between p-4">
       <Link to={"/"}>
         <h1 className="text-white text-center font-figtree font-bold text-[24px] gradient-text">
           Readme AI
