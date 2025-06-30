@@ -70,8 +70,8 @@ export function MarkdownViewer({
         </div>
       )}
       {!firstGenerate && (
-        <div className=" text-white/20 w-full select-none h-full font-semibold text-center flex justify-center items-center">
-          <div>
+        <div className=" text-white/20 w-full select-none h-full  font-semibold text-center flex justify-center items-center">
+          <div className=" ">
             <h4>Click "Generate" to create your AI README!</h4>
             <h4> Not happy with the result? Just click Regenerate anytime!</h4>
           </div>

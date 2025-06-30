@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export function HomePage() {
   return (
     <SlidePageWrapper>
-      <div className="min-h-screen bg-[#030617] w-full relative flex flex-col items-center justify-start overflow-hidden">
+      <div className="min-h-full bg-[#030617] w-full relative flex flex-col items-center justify-start overflow-hidden">
         <Header />
         <Title />
         <LinkTextBox />

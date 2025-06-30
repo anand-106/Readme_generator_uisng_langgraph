@@ -17,7 +17,7 @@ export function ReadMePage() {
 
   return (
     <SlidePageWrapper>
-      <div className="h-full bg-[#030617] flex relative selection:bg-white/30">
+      <div className="w-full h-full min-h-0 bg-[#030617] flex relative selection:bg-white/30">
         <div className="absolute overflow-hidden h-fit top-3 block md:hidden left-4 z-50 ">
           <Hamburger
             color="white"
@@ -28,11 +28,11 @@ export function ReadMePage() {
         </div>
 
         <div
-          className={`fixed top-0 left-0 max-w-[400px] w-full h-screen  min-h-[100dvh] z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
+          className={`fixed top-0 left-0 max-w-[400px] w-full h-full   z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           } `}
         >
-          <div className="w-full h-full overflow-y-auto flex flex-col">
+          <div className="w-full h-full overflow-y-auto scrollbar-none flex flex-col">
             <Preferences
               repoUrl={repoUrl}
               setReadmeData={setReadmeData}
@@ -43,7 +43,7 @@ export function ReadMePage() {
             />
           </div>
         </div>
-        <div className="hidden md:block w-full max-w-[400px]">
+        <div className="hidden md:block h-full w-full max-w-[400px] min-h-0 overflow-hidden">
           <Preferences
             repoUrl={repoUrl}
             setReadmeData={setReadmeData}

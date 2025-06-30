@@ -96,7 +96,7 @@ export function Preferences({
   };
 
   return (
-    <div className="w-full h-full border-r border-gray-200/50 flex flex-col justify-between p-4">
+    <div className="w-full h-full border-r border-gray-200/50 flex flex-col overflow-hidden p-4">
       <div className=" w-full flex justify-center">
         <Link to={"/"}>
           <h1 className="text-white  w-fit min-w-fit text-center font-figtree font-bold text-[24px] gradient-text">
@@ -105,14 +105,15 @@ export function Preferences({
         </Link>
       </div>
 
-      <Description
-        setDescription={setDescription}
-        proj_description={proj_description}
-      />
+      <div className="flex-grow overflow-y-auto scrollbar-none mt-2 space-y-6 pr-1">
+        <Description
+          setDescription={setDescription}
+          proj_description={proj_description}
+        />
 
-      <CheckList preferences={preferences} setPreferences={setPreferences} />
-
-      <div className="w-full mt-auto">
+        <CheckList preferences={preferences} setPreferences={setPreferences} />
+      </div>
+      <div className="pt-4">
         <div className=" rounded-lg p-[3px] bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-out shadow-[0_0_10px_3px_rgba(0,128,255,0.5)]">
           {isRegenerate ? (
             <button
@@ -203,7 +204,7 @@ function CheckListItem({ text, checked, onChange }) {
 function Description({ proj_description, setDescription }) {
   const maxChars = 200;
   return (
-    <div className="w-full h-72  rounded-lg  mt-2 relative">
+    <div className="w-full h-40  rounded-lg  mt-0 relative">
       <textarea
         maxLength={maxChars}
         className="h-full w-full rounded-lg bg-white/10 backdrop-blur-md text-white p-2 resize-none focus:border-none focus:ring-0 outline-none scrollbar-none"
