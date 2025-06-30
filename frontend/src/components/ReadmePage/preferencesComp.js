@@ -189,7 +189,7 @@ function CheckListItem({ text, checked, onChange }) {
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="w-5 h-5 bg-transparent accent-white/10 opacity-75 focus:opacity-50 rounded-lg  transition duration-500 ease-in-out"
+        className="w-5 h-5 accent-white appearance-auto"
       />
       <span className="text-white font-figtree text-base font-medium">
         {text}
