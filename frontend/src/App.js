@@ -7,7 +7,7 @@ function App() {
   const location = useLocation();
 
   return (
-    <div className="w-screen h-screen min-h-[100dvh] overflow-hidden relative bg-[#030617]">
+    <div className="w-screen height-issue overflow-hidden relative bg-[#030617]">
       <AnimatePresence mode="wait" initial={false}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />

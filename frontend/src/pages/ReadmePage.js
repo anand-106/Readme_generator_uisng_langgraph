@@ -17,8 +17,8 @@ export function ReadMePage() {
 
   return (
     <SlidePageWrapper>
-      <div className="h-screen bg-[#030617] flex relative selection:bg-white/30">
-        <div className="absolute top-3 block md:hidden left-4 z-50 ">
+      <div className="h-full bg-[#030617] flex relative selection:bg-white/30">
+        <div className="absolute overflow-hidden h-fit top-3 block md:hidden left-4 z-50 ">
           <Hamburger
             color="white"
             toggled={menuOpen}
