@@ -4,6 +4,7 @@ from tqdm import tqdm
 import json
 from pathlib import Path
 from dotenv import load_dotenv
+import re
 load_dotenv()
 
 
@@ -172,6 +173,7 @@ Use the provided code chunk summaries and project structure to:
     <a href="#"><img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI"></a>
     <a href="#"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
   </p>
+- Use only supported logos from Shields.io. **Do not embed base64 images** in the badge `logo=` fields. If no logo exists, omit the logo field entirely.
 
 **Content Requirements**:
 {content_requirements}
@@ -201,6 +203,8 @@ Now, generate the entire `README.md` as **raw Markdown**.
         
         print("Succesfully generated readme.md")
         content = response.text.strip()
+        content = re.sub(r'logo=data:image/[^&"\')>]+', '', content)
+
 
         if content.startswith("```markdown"):
            content = content[len("```markdown"):].lstrip()
