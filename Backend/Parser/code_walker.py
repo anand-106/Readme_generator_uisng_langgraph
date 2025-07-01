@@ -5,7 +5,8 @@ from pprint import pprint
 # Supported language extensions
 SUPPORTED_EXTENSIONS = {
     ".py": "python",
-    ".js":"javascript"
+    ".js":"javascript",
+    ".jsx":"javascript"
 }
 
 # Directories to exclude

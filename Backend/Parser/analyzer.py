@@ -62,7 +62,7 @@ def analyze_codebase(root_dir):
 
 if __name__ == "__main__":
     # 🔧 Change this to your target project directory
-    root = "C:/Users/gamin/Documents/projects/Ticket_classifier_using_LangGraph/"
+    root = "C:/Users/gamin/Documents/Harkirat/Code_Class/day-9/todo-fe/src"
     result = analyze_codebase(root)
 
     print(type(result))
