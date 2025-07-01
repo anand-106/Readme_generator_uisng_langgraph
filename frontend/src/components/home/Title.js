@@ -7,12 +7,12 @@ export function Title() {
         colors={["#FBFBFB", "#ffffff", "#F6F5F2"]}
         animationSpeed={6}
         showBorder={false}
-        className=" text-center text-6xl font-bold pt-2 min-w-full mb-6 relative overflow-visible"
+        className=" text-center text-4xl lg:text-6xl font-bold pt-2 min-w-full mb-6 relative overflow-visible"
       >
         <h1 className="title hover:glow">AI Readme Generator</h1>
       </GradientText>
       <div className="w-full max-w-xl text-center">
-        <p className="text-white font-figtree font-medium mb-14 px-5 ">
+        <p className="text-white font-figtree font-medium mb-6 lg:mb-14 px-5 ">
           Instantly create professional, well-structured README files for your
           GitHub projects using the power of AI.
         </p>

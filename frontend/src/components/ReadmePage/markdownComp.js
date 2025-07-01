@@ -159,7 +159,7 @@ function CopyDownload({ readmeData }) {
 
 function Loader() {
   return (
-    <div className="absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-50">
+    <div className="absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-[60]">
       <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-purple-500 bg-[length:300%_100%] animate-shimmer leading-[1.4] pb-1">
         Generating Readme...
       </h1>

@@ -28,7 +28,7 @@ function Header() {
         amplitude={1.0}
         speed={0.5}
       />
-      <div className="absolute top-0 text-white right-0 z-20 mt-7 mr-5 lg:mr-12">
+      <div className="absolute top-0 text-white right-0 z-20 mt-6 lg:mt-7 mr-5 lg:mr-12">
         <a
           href="https://github.com/anand-106/Readme_generator_uisng_langgraph"
           target="_blank"
@@ -44,7 +44,9 @@ function Header() {
         <Link to={"/"}>
           <div className="flex justify-center items-center gap-2">
             <img src="assets/logo160.png" alt="logo" className="w-7" />
-            <h1 className="font-semibold font-figtree text-2xl">Readme AI</h1>
+            <h1 className="font-semibold font-figtree text-xl lg:text-2xl">
+              Readme AI
+            </h1>
           </div>
         </Link>
       </div>
@@ -55,7 +57,7 @@ function Header() {
 function Footer() {
   return (
     <div className="absolute bottom-0 mb-3">
-      <p className="text-white/40">
+      <p className="text-white/40 text-sm lg:text-base">
         © 2025 Readme AI · Built by{" "}
         {<a href="https://github.com/anand-106">@anand-106</a>} · v1.0
       </p>

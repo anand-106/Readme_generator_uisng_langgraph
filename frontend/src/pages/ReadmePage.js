@@ -13,7 +13,7 @@ export function ReadMePage() {
   const [firstGenerate, setFirstGenerate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [generateError, setGenerateError] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(true);
 
   return (
     <SlidePageWrapper>
@@ -40,6 +40,7 @@ export function ReadMePage() {
               isLoading={isLoading}
               setIsLoading={setIsLoading}
               setGenerateError={setGenerateError}
+              setMenuOpen={setMenuOpen}
             />
           </div>
         </div>
@@ -51,6 +52,7 @@ export function ReadMePage() {
             isLoading={isLoading}
             setIsLoading={setIsLoading}
             setGenerateError={setGenerateError}
+            setMenuOpen={setMenuOpen}
           />
         </div>
 

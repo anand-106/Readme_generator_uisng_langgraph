@@ -10,6 +10,7 @@ export function Preferences({
   isLoading,
   setIsLoading,
   setGenerateError,
+  setMenuOpen,
 }) {
   const [proj_description, setDescription] = useState("");
   const [isRegenerate, setIsRegenerate] = useState(false);
@@ -70,6 +71,7 @@ export function Preferences({
     setIsLoading(false);
     setIsRegenerate(true);
     setFirstGenerate(true);
+    setMenuOpen(false);
   };
 
   const reGenerateRequest = async () => {
@@ -93,6 +95,7 @@ export function Preferences({
     });
     setReadmeData(readmeResponse);
     setIsLoading(false);
+    setMenuOpen(false);
   };
 
   return (
@@ -113,8 +116,8 @@ export function Preferences({
 
         <CheckList preferences={preferences} setPreferences={setPreferences} />
       </div>
-      <div className="pt-4">
-        <div className=" rounded-lg p-[3px] bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-out shadow-[0_0_10px_3px_rgba(0,128,255,0.5)]">
+      <div className="pt-0 bg-transparent">
+        <div className=" rounded-lg p-[3px]  bg-gradient-to-r from-[#02c6ff] via-[#0066ff] to-[#da00ff] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_10px_rgba(0,128,255,0.3)] ease-out shadow-[0_0_10px_3px_rgba(0,128,255,0.5)]">
           {isRegenerate ? (
             <button
               onClick={reGenerateRequest}
