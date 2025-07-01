@@ -16,7 +16,7 @@ export function MarkdownViewer({
   const [activeTab, setActiveTab] = useState("preview");
 
   return (
-    <div className="h-full w-full overflow-y-auto px-12 py-10 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
+    <div className="h-full w-full overflow-y-auto px-4 lg:px-12 pt-10 pb-16 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
       {/* <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff6ec4] via-white to-[#7873f5] bg-[length:300%_100%] animate-shimmer">
         Generating Readme...
       </h1> */}
