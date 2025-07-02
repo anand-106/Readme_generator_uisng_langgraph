@@ -205,7 +205,7 @@ function CheckListItem({ text, checked, onChange }) {
 }
 
 function Description({ proj_description, setDescription }) {
-  const maxChars = 200;
+  const maxChars = 400;
   return (
     <div className="w-full h-40  rounded-lg  mt-0 relative">
       <textarea

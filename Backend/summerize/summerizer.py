@@ -142,7 +142,7 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
     if preferences["project_structure"]:
         section_blocks.append(f"""
 ### 10. Project Structure
-- Include the project's file structure for context. The structure is: {full_file_structure}""")
+- Include the project's file structure for context. The structure is: {full_file_structure}. remove any unecessary files or folders if needed.""")
     if preferences["tech_used"]:
         section_blocks.append("""
 ### 11. Technologies Used
@@ -181,9 +181,9 @@ Use the provided code chunk summaries and project structure to:
 **Content Requirements**:
 {content_requirements}
 
-do not add or remove extra sections other than these.
+do not add or remove extra sections other than these if not mentioned below.
 
-also take into account : {project_description}
+also take into account this very carefully: {project_description} , this is of high importance and must be followed very well.
 
 ---
 

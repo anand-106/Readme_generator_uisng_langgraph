@@ -136,7 +136,7 @@ SUPPORTED_EXTENSIONS = {
 
 
 # Directories to exclude
-EXCLUDED_DIRS = {".git", ".venv", "__pycache__", "node_modules", "dist", "build", ".mypy_cache"}
+EXCLUDED_DIRS = {".git", ".venv", "__pycache__", "node_modules", "dist","public", "build", ".mypy_cache"}
 
 def walk_codebase(root_dir):
 

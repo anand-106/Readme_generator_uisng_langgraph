@@ -16,7 +16,11 @@ export function MarkdownViewer({
   const [activeTab, setActiveTab] = useState("preview");
 
   return (
-    <div className="h-full w-full overflow-y-auto px-4 lg:px-12 pt-10 pb-16 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300">
+    <div
+      className={`h-full w-full ${
+        isLoading ? "overflow-y-hidden" : "overflow-y-auto"
+      } px-4 lg:px-12 pt-10 pb-16 bg-[#030617] text-white font-sans relative scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-gray-300`}
+    >
       {/* <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff6ec4] via-white to-[#7873f5] bg-[length:300%_100%] animate-shimmer">
         Generating Readme...
       </h1> */}
@@ -159,7 +163,7 @@ function CopyDownload({ readmeData }) {
 
 function Loader() {
   return (
-    <div className="absolute top-0 left-0 h-full w-full flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-[60]">
+    <div className="absolute top-0 left-0 h-full w-full overflow-hidden flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-[60]">
       <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-purple-500 bg-[length:300%_100%] animate-shimmer leading-[1.4] pb-1">
         Generating Readme...
       </h1>
