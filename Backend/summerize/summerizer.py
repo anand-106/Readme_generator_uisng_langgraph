@@ -68,7 +68,7 @@ def summerize_chunks(chunks):
     
     return summaries
 
-def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description=""):
+def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description="",full_structure=None):
 
     preferences = preferences.dict()
 
@@ -83,6 +83,9 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
 
     converted_structure = convert_paths(project_structure)
     file_structure = json.dumps(converted_structure, indent=2)
+
+    full_converted_structure = convert_paths(full_structure)
+    full_file_structure = json.dumps(full_converted_structure, indent=2)
 
 
     section_blocks = []
@@ -139,7 +142,7 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
     if preferences["project_structure"]:
         section_blocks.append(f"""
 ### 10. Project Structure
-- Include the project's file structure for context. The structure is: {file_structure}""")
+- Include the project's file structure for context. The structure is: {full_file_structure}""")
     if preferences["tech_used"]:
         section_blocks.append("""
 ### 11. Technologies Used

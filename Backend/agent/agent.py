@@ -9,6 +9,7 @@ import shutil
 class ReadmeState(TypedDict, total=False):
     codebase_path: str
     structure: List[Any]
+    full_structure: List[Any]
     ast: Dict[str, Any]
     chunks: List[Any]
     summary: List[Any]
@@ -18,8 +19,9 @@ class ReadmeState(TypedDict, total=False):
     action: Literal["regenerate", "end"]
 
 def walk_codebase_node(state: ReadmeState):
-    from Parser.code_walker import walk_codebase
+    from Parser.code_walker import walk_codebase,walk_full_codebase
     state["structure"] = walk_codebase(state["codebase_path"])
+    state["full_structure"]=walk_full_codebase(state["codebase_path"])
     return state
 
 def parser_node(state: ReadmeState):
@@ -39,7 +41,7 @@ def summarizer_node(state: ReadmeState):
 
 def readme_node(state: ReadmeState):
     from summerize.summerizer import generate_final_summary
-    state["readme"] = generate_final_summary(state["summary"], preferences=state["preferences"], project_description=state["project_description"],project_structure=state["structure"])
+    state["readme"] = generate_final_summary(state["summary"], preferences=state["preferences"], project_description=state["project_description"],project_structure=state["structure"],full_structure=state["full_structure"])
     return state
 
 def user_feedback_node(state: ReadmeState):
