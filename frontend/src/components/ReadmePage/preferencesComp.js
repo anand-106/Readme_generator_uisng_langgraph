@@ -11,8 +11,9 @@ export function Preferences({
   setIsLoading,
   setGenerateError,
   setMenuOpen,
+  proj_description,
+  setDescription,
 }) {
-  const [proj_description, setDescription] = useState("");
   const [isRegenerate, setIsRegenerate] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
 
@@ -205,17 +206,18 @@ function CheckListItem({ text, checked, onChange }) {
 }
 
 function Description({ proj_description, setDescription }) {
-  const maxChars = 400;
+  const maxChars = 500;
   return (
-    <div className="w-full h-40  rounded-lg  mt-0 relative">
+    <div className="w-full h-[170px]  rounded-lg backdrop-blur-md bg-white/10  mt-0 relative">
       <textarea
         maxLength={maxChars}
-        className="h-full w-full rounded-lg bg-white/10 backdrop-blur-md text-white p-2 resize-none focus:border-none focus:ring-0 outline-none scrollbar-none"
+        className="h-36 w-full rounded-lg bg-transparent   text-white p-2 resize-none focus:border-none focus:ring-0 outline-none scrollbar-none"
         onChange={(e) => {
           setDescription(e.target.value);
         }}
         placeholder="Any preferences or extra context? (optional)"
       ></textarea>
+
       <p className="absolute bottom-0 right-0 text-white/40 text-sm mb-2 mr-2">
         {maxChars - (maxChars - proj_description.length)}/{maxChars}
       </p>

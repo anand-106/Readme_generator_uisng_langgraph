@@ -14,6 +14,7 @@ export function ReadMePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [generateError, setGenerateError] = useState("");
   const [menuOpen, setMenuOpen] = useState(true);
+  const [proj_description, setDescription] = useState("");
 
   return (
     <SlidePageWrapper>
@@ -28,9 +29,13 @@ export function ReadMePage() {
         </div>
 
         <div
-          className={`fixed top-0 left-0 max-w-[400px] w-full h-full   z-40 block md:hidden transition-transform duration-300 bg-[#030617]/60 backdrop-blur-md  ease-in-out ${
-            menuOpen ? "translate-x-0" : "-translate-x-full"
-          } `}
+          className={`
+    h-full max-w-[400px] min-h-0 overflow-hidden z-40
+    transition-transform duration-300 ease-in-out
+    bg-[#030617]/60 backdrop-blur-md
+    ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+    fixed top-0 left-0 w-full md:relative md:translate-x-0
+  `}
         >
           <div className="w-full h-full overflow-y-auto scrollbar-none flex flex-col">
             <Preferences
@@ -41,19 +46,10 @@ export function ReadMePage() {
               setIsLoading={setIsLoading}
               setGenerateError={setGenerateError}
               setMenuOpen={setMenuOpen}
+              proj_description={proj_description}
+              setDescription={setDescription}
             />
           </div>
-        </div>
-        <div className="hidden md:block h-full w-full max-w-[400px] min-h-0 overflow-hidden">
-          <Preferences
-            repoUrl={repoUrl}
-            setReadmeData={setReadmeData}
-            setFirstGenerate={setFirstGenerate}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            setGenerateError={setGenerateError}
-            setMenuOpen={setMenuOpen}
-          />
         </div>
 
         <MarkdownViewer

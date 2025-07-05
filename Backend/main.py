@@ -4,6 +4,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI
 from api.router import router
+from api.git_router import git_router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,22 +17,23 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",
       "https://readme-generator-uisng-langgraph.vercel.app" ,
-      "https://readmeai.anand106.me" # React dev server
-    # Add more origins here if needed
+      "https://readmeai.anand106.me" 
+    
 ]
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,              # Or ["*"] to allow all
+    allow_origins=origins,              
     allow_credentials=True,
-    allow_methods=["*"],                # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],                # Allow all headers
+    allow_methods=["*"],                
+    allow_headers=["*"],                
 )
 
 
 
 app.include_router(router)
+app.include_router(git_router)
 
 
 if __name__ == "__main__":

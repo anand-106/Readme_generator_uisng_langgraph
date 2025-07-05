@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict,Any,List
 
 class ReadPreferences(BaseModel):
     title: bool
@@ -28,3 +28,13 @@ class ResumeRequest(BaseModel):
 
 class ReadmeResponse(BaseModel):
     readme: str
+
+class GithubUserResponse(BaseModel):
+    avatar: str
+    username: str
+    name: str
+    public_repos_count: int
+    public_repos: List
+    private_repos_count: int
+    private_repos: List
+

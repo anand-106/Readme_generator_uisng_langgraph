@@ -2,6 +2,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { ReadMePage } from "./pages/ReadmePage";
 import { AnimatePresence } from "framer-motion";
+import { GitLogin } from "./pages/githubLogin";
+import { GithubDashboard } from "./pages/githubDashboard";
 
 function App() {
   const location = useLocation();
@@ -12,6 +14,8 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/readme" element={<ReadMePage />} />
+          <Route path="/github" element={<GitLogin />} />
+          <Route path="/github/user" element={<GithubDashboard />} />
         </Routes>
       </AnimatePresence>
     </div>
