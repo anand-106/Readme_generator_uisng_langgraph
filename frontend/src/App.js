@@ -15,7 +15,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/readme" element={<ReadMePage />} />
           <Route path="/github" element={<GitLogin />} />
-          <Route path="/github/user" element={<GithubDashboard />} />
+          <Route path="/github/:username" element={<GithubDashboard />} />
         </Routes>
       </AnimatePresence>
     </div>

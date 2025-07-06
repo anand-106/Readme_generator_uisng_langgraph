@@ -1,5 +1,6 @@
 from chunker.token_estimator import estimate_token
 import json
+from fastapi import HTTPException
 
 def extract_symbols_from_ast(ast):
     symbols = []
@@ -56,6 +57,9 @@ def prepare_chunks(ast, max_call=13, max_tokens_per_call=6000):
     #     print(f'Successfully created {len(chunks)} chunks')
     # except Exception as e:
     #     print(e)
+    
+    if len(chunks) == 0:
+        raise HTTPException(status_code=500,detail="Not enough data to summerize")
 
     print(f'Successfully created {len(chunks)} chunks')
 

@@ -65,12 +65,16 @@ def summerize_chunks(chunks):
                 "chunk_index": idx,
                 "summary": f"[ERROR summarizing chunk {idx}]: {str(e)}"
             })
-    
+    print("Succesfully Summerized chunks");
     return summaries
 
 def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description="",full_structure=None):
+    
+    print("entered final summary node")
 
-    preferences = preferences.dict()
+    if hasattr(preferences, "dict"):
+        preferences = preferences.dict()
+
 
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))  
     model = genai.GenerativeModel(model_name='gemini-2.0-flash')
@@ -156,6 +160,7 @@ def generate_final_summary(chunk_summaries, project_structure=None,preferences={
 
     # Combine everything
     content_requirements = "\n".join(section_blocks)
+    
 
     # Final prompt
     prompt = f"""
@@ -194,13 +199,14 @@ Below are the code chunk summaries for the project:
 Now, generate the entire `README.md` as **raw Markdown**.
 
 """
-
+    print(f"Prompt length (chars): {len(prompt)}")
 
 
     # print(f'the prompt is : {prompt}')
     
 
     try:
+        
         print("Started generating readme.md")
         response = model.generate_content(prompt)
         

@@ -2,8 +2,10 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import interrupt, Command
 from typing import TypedDict, List, Any, Dict, Literal
-from api.utils.github_utils import clone_repo
+from api.utils.github_utils import clone_repo,webhook_clone_repo
 from pprint import pprint
+import os
+from dotenv import load_dotenv
 import shutil
 
 class ReadmeState(TypedDict, total=False):
@@ -17,6 +19,18 @@ class ReadmeState(TypedDict, total=False):
     preferences: Dict[str, Any]
     project_description: str
     action: Literal["regenerate", "end"]
+    
+class WebhookReadmeState(TypedDict, total=False):
+    codebase_path: str
+    structure: List[Any]
+    full_structure: List[Any]
+    ast: Dict[str, Any]
+    chunks: List[Any]
+    summary: List[Any]
+    readme: str
+    preferences: Dict[str, Any]
+    project_description: str
+
 
 def walk_codebase_node(state: ReadmeState):
     from Parser.code_walker import walk_codebase,walk_full_codebase
@@ -76,6 +90,54 @@ def readme_graph():
     })
 
     return builder.compile(checkpointer=InMemorySaver())
+
+def webhook_graph():
+    builder = StateGraph(WebhookReadmeState)
+    builder.add_node("WalkCodebase", walk_codebase_node)
+    builder.add_node("ASTParser", parser_node)
+    builder.add_node("Chunker", chunker_node)
+    builder.add_node("Summarizer", summarizer_node)
+    builder.add_node("ReadmeGenerator", readme_node)
+
+    builder.set_entry_point("WalkCodebase")
+    builder.add_edge("WalkCodebase", "ASTParser")
+    builder.add_edge("ASTParser", "Chunker")
+    builder.add_edge("Chunker", "Summarizer")
+    builder.add_edge("Summarizer", "ReadmeGenerator")
+    builder.add_edge("ReadmeGenerator",END)
+    
+    return builder.compile()
+
+
+
+def webhook_pipeline(url:str, description: str, preferences: dict):
+    
+    load_dotenv()
+    token = os.getenv("TOKEN")
+    codebase_path = webhook_clone_repo(url=url,token=token)
+    
+    graph = webhook_graph()
+    
+    input_state = {
+        "codebase_path": codebase_path,
+        "project_description": description,
+        "preferences": preferences,
+    }
+    
+    state = graph.invoke(input_state)
+    
+    
+    try:
+        shutil.rmtree(codebase_path)
+        print("Successfully removed the temp repo")
+    except Exception as e:
+        print(f"error removing tree: {e}")
+        
+    
+    pprint(state.keys())
+    return state
+    
+    
 
 SESSION_CACHE: Dict[str, Any] = {}
 
