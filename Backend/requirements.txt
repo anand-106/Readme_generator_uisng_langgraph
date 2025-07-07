@@ -27,5 +27,15 @@ tqdm>=4.66.0
 # Environment variables
 python-dotenv>=1.0.0
 
+# Database
+sqlalchemy>=2.0.0
+
+# HTTP client
+httpx>=0.25.0
+requests>=2.31.0
+
+# JWT authentication
+python-jose[cryptography]>=3.3.0
+
 # Standard library dependencies (usually included with Python)
 # os, pathlib, json, re, collections, typing, tempfile, shutil, pprint 

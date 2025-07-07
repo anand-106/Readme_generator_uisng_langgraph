@@ -1,7 +1,9 @@
 import httpx
+import uuid
 import os
 from pprint import pprint
 from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, HTTPException,Request,Cookie
 from fastapi.responses import RedirectResponse
 from .model import GithubUserResponse,WebHookRequest
@@ -9,6 +11,8 @@ from agent.agent import webhook_pipeline
 from .utils.github_utils import get_existing_readme_filename,update_github_readme
 from .utils.jwt import create_jwt_token,verify_jwt_token
 from fastapi.concurrency import run_in_threadpool
+from sqlalchemy.future import select  # ✅ New import
+from sqlalchemy.exc import IntegrityError  # ✅ New import
 import secrets
 from fastapi import Depends
 from sqlalchemy.future import select
@@ -22,7 +26,7 @@ load_dotenv()
 
 
 @git_router.get("/auth/callback")
-async def github_callback(code:str):
+async def github_callback(code:str,db: AsyncSession = Depends(get_db)):
 
     GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
     GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
@@ -43,17 +47,47 @@ async def github_callback(code:str):
         token_data = token_res.json()
         
         access_token = token_data["access_token"]
+        
+        
 
         if not access_token:
             raise HTTPException(status_code=400, detail="GitHub OAuth failed")
         
         async with httpx.AsyncClient() as client:
             
-            user_data = await client.get("https://api.github.com/user",
+            user_res = await client.get("https://api.github.com/user",
             headers={"Authorization": f"Bearer {access_token}"})
-            user_res=user_data.json()
-            jwt_token = create_jwt_token({"username":user_res["login"]})
-            response = RedirectResponse(f'http://localhost:3000/github/{user_res["login"]}')
+            user_data=user_res.json()
+            # ✅ Insert user into DB
+            username = user_data["login"]
+            avatar_url = user_data.get("avatar_url")
+            name = user_data.get("name")
+
+            # Check if user already exists
+            result = await db.execute(select(User).where(User.username == username))
+            existing_user = result.scalar_one_or_none()
+
+            if not existing_user:
+                new_user = User(
+                    id=str(uuid.uuid4()),  # ✅ UUID assigned here
+                    username=username,
+                    name=name,
+                    avatarUrl=avatar_url,
+                    githubToken=access_token
+                )
+                db.add(new_user)
+            else:
+                # ✅ Optional: update token & avatar
+                existing_user.githubToken = access_token
+                existing_user.avatarUrl = avatar_url
+
+            try:
+                await db.commit()
+            except IntegrityError:
+                await db.rollback()
+                raise HTTPException(status_code=500, detail="Failed to save user to DB")
+            jwt_token = create_jwt_token({"username":user_data["login"]})
+            response = RedirectResponse(f'http://localhost:3000/github/{user_data["login"]}')
             response.set_cookie(
                 key="access_token",
                 value=jwt_token,
