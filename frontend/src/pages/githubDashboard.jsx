@@ -5,26 +5,30 @@ export function GithubDashboard() {
   const [userData, setUserData] = useState({});
 
   const handleGithubUser = () => {
-    axios.get("http://localhost:8000/api/github/user").then((res) => {
-      const {
-        avatar,
-        username,
-        name,
-        public_repos,
-        public_repos_count,
-        private_repos,
-        private_repos_count,
-      } = res.data;
-      setUserData({
-        avatar,
-        username,
-        name,
-        public_repos_count,
-        public_repos,
-        private_repos_count,
-        private_repos,
+    axios
+      .get("http://localhost:8000/api/github/user", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const {
+          avatar,
+          username,
+          name,
+          public_repos,
+          public_repos_count,
+          private_repos,
+          private_repos_count,
+        } = res.data;
+        setUserData({
+          avatar,
+          username,
+          name,
+          public_repos_count,
+          public_repos,
+          private_repos_count,
+          private_repos,
+        });
       });
-    });
   };
 
   useEffect(handleGithubUser, []);

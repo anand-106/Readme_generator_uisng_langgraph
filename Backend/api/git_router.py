@@ -2,12 +2,18 @@ import httpx
 import os
 from pprint import pprint
 from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException,Request
+from fastapi import APIRouter, HTTPException,Request,Cookie
 from fastapi.responses import RedirectResponse
 from .model import GithubUserResponse,WebHookRequest
 from agent.agent import webhook_pipeline
 from .utils.github_utils import get_existing_readme_filename,update_github_readme
+from .utils.jwt import create_jwt_token,verify_jwt_token
 from fastapi.concurrency import run_in_threadpool
+import secrets
+from fastapi import Depends
+from sqlalchemy.future import select
+from database.db import get_db
+from database.models import User,Webhook,Repository
 
 
 git_router = APIRouter(prefix="/api/github",tags=["Github"])
@@ -42,16 +48,29 @@ async def github_callback(code:str):
             raise HTTPException(status_code=400, detail="GitHub OAuth failed")
         
         async with httpx.AsyncClient() as client:
+            
             user_data = await client.get("https://api.github.com/user",
             headers={"Authorization": f"Bearer {access_token}"})
             user_res=user_data.json()
+            jwt_token = create_jwt_token({"username":user_res["login"]})
+            response = RedirectResponse(f'http://localhost:3000/github/{user_res["login"]}')
+            response.set_cookie(
+                key="access_token",
+                value=jwt_token,
+                httponly=True,
+                secure=False,
+                max_age=86000,
+                path='/'
+            )
             # pprint(user_data.json())
-            return RedirectResponse(f'http://localhost:3000/github/{user_res["login"]}')
+            return response
 
 
 @git_router.get("/user",response_model=GithubUserResponse)
-async def get_user_info():
+async def get_user_info(access_token:str = Cookie(None)):
     token = os.getenv("TOKEN")
+    payload = verify_jwt_token(access_token)
+    print(f"the token from cookie is : {payload}")
 
     async with httpx.AsyncClient() as client:
         user_res = await client.get("https://api.github.com/user",
@@ -110,10 +129,12 @@ async def get_user_info():
     
 
 @git_router.post("/create-webhook")
-async def create_webhook(request:WebHookRequest):
+async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None)):
     
-    webhook_secret = os.getenv("WEBHOOK_SECRET")
-    access_token = os.getenv("TOKEN")
+    webhook_secret = secrets.token_hex(32)
+    jwt_payload= verify_jwt_token(access_token)
+    token = os.getenv("TOKEN")
+    
     
     payload={
         "name":"web",
@@ -128,7 +149,7 @@ async def create_webhook(request:WebHookRequest):
     }
     
     headers = {
-        "Authorization": f"Bearer {access_token}",
+        "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json"
     }
     
@@ -144,7 +165,9 @@ async def create_webhook(request:WebHookRequest):
 
 @git_router.post("/generate")
 async def webhook_readme_generate(request:Request):
-    
+    '''
+    get the webseceret from the secret and look for the payload with the username and with that username we take the github oauth token from the database
+    '''
     body = await request.json()
     
     modified_files = []
