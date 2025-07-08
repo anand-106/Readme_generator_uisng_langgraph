@@ -36,6 +36,7 @@ requests>=2.31.0
 
 # JWT authentication
 python-jose[cryptography]>=3.3.0
-
+fastapi[all]
+motor
 # Standard library dependencies (usually included with Python)
 # os, pathlib, json, re, collections, typing, tempfile, shutil, pprint 

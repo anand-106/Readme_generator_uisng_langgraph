@@ -1,37 +1,49 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function GithubDashboard() {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handleGithubUser = () => {
-    axios
-      .get("http://localhost:8000/api/github/user", {
+  const navigator = useNavigate();
+
+  const handleGithubUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/github/user", {
         withCredentials: true,
-      })
-      .then((res) => {
-        const {
-          avatar,
-          username,
-          name,
-          public_repos,
-          public_repos_count,
-          private_repos,
-          private_repos_count,
-        } = res.data;
-        setUserData({
-          avatar,
-          username,
-          name,
-          public_repos_count,
-          public_repos,
-          private_repos_count,
-          private_repos,
-        });
       });
+      const { avatar, username, name, repos } = res.data;
+      setUserData({
+        avatar,
+        username,
+        name,
+        repos,
+      });
+    } catch (err) {
+      console.error("Error fetching GitHub user:", err);
+      setError("Failed to fetch GitHub user info.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(handleGithubUser, []);
+  useEffect(() => {
+    handleGithubUser();
+  }, []);
+
+  if (loading) {
+    return <p className="text-white p-4">Loading GitHub data...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500 p-4">{error}</p>;
+  }
+
+  if (!userData) {
+    return <p className="text-yellow-400 p-4">No user data available.</p>;
+  }
 
   return (
     <div className="w-full h-full text-white p-4 overflow-y-auto">
@@ -45,41 +57,37 @@ export function GithubDashboard() {
           <h1 className="text-xl font-semibold">
             {userData.name} (@{userData.username})
           </h1>
-          <p>
-            Public Repos: {userData.public_repos_count} | Private Repos:{" "}
-            {userData.private_repos_count}
-          </p>
         </div>
       </div>
 
       <div className="mt-6">
-        <h2 className="text-lg font-semibold">Public Repositories:</h2>
-        <ul className="list-disc ml-6">
-          {userData.public_repos?.map((repo, idx) => (
-            <li key={idx}>
-              <a
-                href={repo.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 underline"
+        <h2 className="text-lg font-semibold">Repositories:</h2>
+        {userData.repos?.length > 0 ? (
+          <ul className="list-disc ml-6">
+            {userData.repos.map((repo, idx) => (
+              <li
+                key={idx}
+                onClick={() => {
+                  navigator("/github/repo", {
+                    state: {
+                      username: userData.username,
+                      repo_name: repo.repo_fullname,
+                      repo_url: repo.html_url,
+                      repo_id: repo.repo_id,
+                    },
+                  });
+                }}
               >
-                {repo.full_name}
-              </a>{" "}
-              ⭐ {repo.stars} | 🍴 {repo.forks}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Private Repositories:</h2>
-        <ul className="list-disc ml-6">
-          {userData.private_repos?.map((repo, idx) => (
-            <li key={idx}>
-              <span>{repo.full_name}</span> ⭐ {repo.stars} | 🍴 {repo.forks}
-            </li>
-          ))}
-        </ul>
+                <div className="text-blue-400 underline">
+                  {repo.repo_fullname}
+                </div>{" "}
+                ⭐ {repo.stars} | 🍴 {repo.forks}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-400 ml-2">No repositories found.</p>
+        )}
       </div>
     </div>
   );

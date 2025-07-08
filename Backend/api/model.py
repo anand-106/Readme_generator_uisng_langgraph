@@ -33,14 +33,11 @@ class GithubUserResponse(BaseModel):
     avatar: str
     username: str
     name: str
-    public_repos_count: int
-    public_repos: List
-    private_repos_count: int
-    private_repos: List
+    repos:List
     
 class WebHookRequest(BaseModel):
     username:str
     repo_name:str
-    events:List[str]
     repo_url:str
+    repo_id:str
 

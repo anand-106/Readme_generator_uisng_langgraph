@@ -4,6 +4,7 @@ import { ReadMePage } from "./pages/ReadmePage";
 import { AnimatePresence } from "framer-motion";
 import { GitLogin } from "./pages/githubLogin";
 import { GithubDashboard } from "./pages/githubDashboard";
+import { RepoPage } from "./pages/repoPage";
 
 function App() {
   const location = useLocation();
@@ -16,6 +17,7 @@ function App() {
           <Route path="/readme" element={<ReadMePage />} />
           <Route path="/github" element={<GitLogin />} />
           <Route path="/github/:username" element={<GithubDashboard />} />
+          <Route path="/github/repo" element={<RepoPage />} />
         </Routes>
       </AnimatePresence>
     </div>
