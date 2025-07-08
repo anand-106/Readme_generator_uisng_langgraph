@@ -7,8 +7,6 @@ export function GithubDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const navigator = useNavigate();
-
   const handleGithubUser = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/github/user", {
@@ -46,49 +44,60 @@ export function GithubDashboard() {
   }
 
   return (
-    <div className="w-full h-full text-white p-4 overflow-y-auto">
-      <div className="flex items-center space-x-4">
+    <div className="w-full h-full text-red-500">
+      <div className="">
         <img
           src={userData.avatar}
           alt="Avatar"
           className="w-16 h-16 rounded-full"
         />
         <div>
-          <h1 className="text-xl font-semibold">
+          <h1 className="">
             {userData.name} (@{userData.username})
           </h1>
         </div>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Repositories:</h2>
-        {userData.repos?.length > 0 ? (
-          <ul className="list-disc ml-6">
-            {userData.repos.map((repo, idx) => (
-              <li
-                key={idx}
-                onClick={() => {
-                  navigator("/github/repo", {
-                    state: {
-                      username: userData.username,
-                      repo_name: repo.repo_fullname,
-                      repo_url: repo.html_url,
-                      repo_id: repo.repo_id,
-                    },
-                  });
-                }}
-              >
-                <div className="text-blue-400 underline">
-                  {repo.repo_fullname}
-                </div>{" "}
-                ⭐ {repo.stars} | 🍴 {repo.forks}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-400 ml-2">No repositories found.</p>
-        )}
+      <div className="">
+        <h2 className="">Repositories:</h2>
+        <RepoList userData={userData} />
       </div>
     </div>
+  );
+}
+
+function RepoList({ userData }) {
+  return userData.repos?.length > 0 ? (
+    <ul className="">
+      {userData.repos.map((repo, idx) => (
+        <RepoItem idx={idx} userData={userData} repo={repo} />
+      ))}
+    </ul>
+  ) : (
+    <p className="text-gray-400 ml-2">No repositories found.</p>
+  );
+}
+
+function RepoItem({ idx, userData, repo }) {
+  const navigator = useNavigate();
+  return (
+    <li
+      key={idx}
+      onClick={() => {
+        navigator("/github/repo", {
+          state: {
+            username: userData.username,
+            repo_name: repo.repo_fullname,
+            repo_url: repo.html_url,
+            repo_id: repo.repo_id,
+          },
+        });
+      }}
+    >
+      <div className="">
+        <div className="">{repo.repo_fullname}</div> Stars : {repo.stars} |
+        Forks : {repo.forks}
+      </div>
+    </li>
   );
 }

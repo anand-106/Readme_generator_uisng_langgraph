@@ -120,6 +120,32 @@ async def get_github_user_repo_info(token:str,user_id:str):
         
         final_repos = public_repos_res + private_repos_res
         return final_repos
+    
+async def disable_webhook_github(hook_url:str,access_token:str,isActive:bool):
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    payload = {
+        "active": isActive
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.patch(hook_url, headers=headers, json=payload)
+        return response.status_code, response.json()
+
+async def delete_webhook_github(hook_url:str,access_token:str):
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(hook_url, headers=headers)
+        if response.status_code == 204:
+            print("Webhook deleted successfully on GitHub")
+            return {"status": "success", "message": "Webhook deleted"}
+        else:
+            print("Failed to delete webhook:", response.text)
+            return {"status": "error", "details": response.json()}
 
         
 

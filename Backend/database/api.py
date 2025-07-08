@@ -1,6 +1,7 @@
 from .database import user_collection,repository_collection,webhook_collection
 import uuid
 import secrets
+from api.utils.github_api import disable_webhook_github,delete_webhook_github
 
 
 async def register_user_db(user_data:dict,repo_data:dict):
@@ -46,15 +47,18 @@ async def get_github_user_data(username:str):
          print(f'error getting token from db : {e}')
          return
 
-async def set_webhook_db(user_id:str,repo_id:str):
+async def set_webhook_db(user_id:str,repo_id:str,hook_url:str,hook_id,secret,):
     
     try:
         webhook_data = {
                 "user_id":user_id,
                 "repo_id":repo_id,
                 "webhook_id":str(uuid.uuid4()),
-                "secret":secrets.token_hex(32),
-                "webhook_url":"https://30b8-106-219-160-120.ngrok-free.app/api/github/generate"
+                "secret":secret,
+                "webhook_url":"https://30b8-106-219-160-120.ngrok-free.app/api/github/generate",
+                "hook_url":hook_url,
+                "hook_id":hook_id,
+                "isActive":True
             }
         await webhook_collection.insert_one(
             webhook_data
@@ -63,3 +67,49 @@ async def set_webhook_db(user_id:str,repo_id:str):
         return webhook_data
     except Exception as e:
         print(f'error creating webhook {e}')
+
+async def get_webhook_data_db(repo_id:str):
+    
+    try:
+        webhook =  await webhook_collection.find_one({"repo_id":repo_id})
+        
+        if not webhook:
+            print("Webhook not found on db")
+            return
+        webhook_data = dict(webhook)
+        
+        return webhook_data
+        
+    except Exception as e:
+        print(f'error getting webhook {e}')
+
+async def set_status_webhook_be(repo_id:str,access_token:str,isActive:bool):
+    try:
+        webhook =  await webhook_collection.update_one({"repo_id":repo_id},{'$set':{"isActive":isActive}})
+        print("webhook disabled on db")
+        
+        webhook_data = await get_webhook_data_db(repo_id)
+        
+        await disable_webhook_github(hook_url=webhook_data["hook_url"],access_token=access_token,isActive=isActive)
+        print("webhook disabled on github")  
+        
+    except Exception as e:
+        print(f'error disabling webhook {e}')
+
+async def delete_webhook_be(repo_id:str,access_token:str):
+    try:
+        webhook_data = await get_webhook_data_db(repo_id)
+        
+        webhook = await webhook_collection.delete_one({"repo_id":repo_id})
+        print("webhook deleted on db")
+        
+        
+        
+        await delete_webhook_github(hook_url=webhook_data["hook_url"],access_token=access_token)
+        print("webhook deleted on github")
+        
+        
+    except Exception as e:
+        print(f'error deleting webhook {e}')
+
+

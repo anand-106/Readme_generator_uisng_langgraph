@@ -12,7 +12,7 @@ from .utils.jwt import create_jwt_token,verify_jwt_token
 from fastapi.concurrency import run_in_threadpool
 import secrets
 from .utils.github_api import get_github_user_info,get_github_user_repo_info
-from database.api import register_user_db,get_github_user_data,set_webhook_db
+from database.api import register_user_db,get_github_user_data,set_webhook_db,set_status_webhook_be,delete_webhook_be
 
 
 git_router = APIRouter(prefix="/api/github",tags=["Github"])
@@ -106,17 +106,16 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
         print(" No user found in DB for", payload["username"])
         raise HTTPException(status_code=404, detail="User not found in DB")
     
-    
-    webhook_data = await set_webhook_db(user_data["user_id"],request.repo_id)
+    secret = secrets.token_hex(32)
     
     payload={
         "name":"web",
         "active":True,
         "events":["push"],
         "config":{
-            "url":webhook_data["webhook_url"],
+            "url":"https://30b8-106-219-160-120.ngrok-free.app/api/github/generate",
             "content_type":"json",
-            "secret":webhook_data["secret"],
+            "secret":secret,
             "insecure_ssl":"0"
         }
     }
@@ -129,12 +128,53 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
     async with httpx.AsyncClient() as client:
         response = await client.post("https://api.github.com/repos/"+request.repo_name+"/hooks",headers=headers,json=payload)
         
-        if response.status_code > 400:
-            raise HTTPException(status_code=response.status_code,detail=response.json())
+        res_data = response.json()
         
-        return ({"message":"Webhook Set Successfully","webhook_data":response.json()})
+        pprint(res_data)
+        
+        webhook_data = await set_webhook_db(user_data["user_id"],request.repo_id,res_data["url"],res_data["id"],secret)
+        
+        if response.status_code > 400:
+            raise HTTPException(status_code=response.status_code,detail=res_data)
+        
+        return ({"message":"Webhook Set Successfully","webhook_data":res_data})
+    
 
+@git_router.post("/disable-webhook")
+async def disable_webhook(request:Request,access_token:str = Cookie(None)):
+    
+    body = await request.json()
 
+    repo_id = body.get("repo_id")
+    isActive = body.get("isActive")
+    
+    payload = verify_jwt_token(access_token)
+    print(f"the token from cookie is : {payload}")
+    
+    user_data = await get_github_user_data(payload["username"])
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found in DB")
+    
+    await set_status_webhook_be(repo_id=repo_id,access_token=user_data["github_token"],isActive=isActive)
+    
+    print("webhook diabled fully")
+
+@git_router.post("/delete-webhook")
+async def delete_webhook(request:Request,access_token:str = Cookie(None)):
+    body = await request.json()
+
+    repo_id = body.get("repo_id")
+    payload = verify_jwt_token(access_token)
+    print(f"the token from cookie is : {payload}")
+    
+    user_data = await get_github_user_data(payload["username"])
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found in DB")
+    
+    await delete_webhook_be(repo_id=repo_id,access_token=user_data["github_token"])
+    print("webhook deleted fully")
+    
+    
 
 @git_router.post("/generate")
 async def webhook_readme_generate(request:Request):
