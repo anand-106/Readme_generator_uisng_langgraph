@@ -34,24 +34,38 @@ export function Preferences({
 
   useEffect(() => {
     const wakeAndStart = async () => {
+      let healthy = false;
+      let retries = 0;
+      const maxRetries = 10;
+
+      while (!healthy && retries < maxRetries) {
+        try {
+          console.log(`🌐 Checking health... Attempt ${retries + 1}`);
+          await axios.get(
+            "https://readme-generator-uisng-langgraph.onrender.com/api/readme/health",
+            { timeout: 5000 }
+          );
+          console.log("✅ Server is healthy!");
+          healthy = true;
+        } catch (err) {
+          retries++;
+          console.warn("⚠️ Server not ready yet. Retrying in 5 seconds...");
+          await new Promise((res) => setTimeout(res, 5000));
+        }
+      }
+
+      if (!healthy) {
+        console.error("❌ Could not reach server after retries.");
+        return;
+      }
+
       try {
-        // Wake up the server
-        await axios.get(
-          "https://readme-generator-uisng-langgraph.onrender.com/api/readme/health"
-        );
-        console.log("✅ Server wake-up ping sent");
-
-        // Wait for 5–8 seconds
-        await new Promise((res) => setTimeout(res, 8000));
-
-        // Start session with credentials
         const res = await axios.post(
           "https://readme-generator-uisng-langgraph.onrender.com/api/readme/start",
           {},
           { withCredentials: true }
         );
-
-        console.log("✅ Session started", res.data);
+        console.log("✅ Session started:", res.data);
         setSessionReady(true);
       } catch (err) {
         console.error("❌ Error starting session:", err);
