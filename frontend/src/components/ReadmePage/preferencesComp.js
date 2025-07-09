@@ -33,19 +33,32 @@ export function Preferences({
   });
 
   useEffect(() => {
-    axios
-      .post(
-        "https://readme-generator-uisng-langgraph.onrender.com/api/readme/start",
-        {},
-        { withCredentials: true }
-      )
-      .then((res) => {
+    const wakeAndStart = async () => {
+      try {
+        // Wake up the server
+        await axios.get(
+          "https://readme-generator-uisng-langgraph.onrender.com/api/readme/health"
+        );
+        console.log("✅ Server wake-up ping sent");
+
+        // Wait for 5–8 seconds
+        await new Promise((res) => setTimeout(res, 8000));
+
+        // Start session with credentials
+        const res = await axios.post(
+          "https://readme-generator-uisng-langgraph.onrender.com/api/readme/start",
+          {},
+          { withCredentials: true }
+        );
+
+        console.log("✅ Session started", res.data);
         setSessionReady(true);
-        console.log("Session Started");
-      })
-      .catch((err) => {
-        console.log("Error starting session", err);
-      });
+      } catch (err) {
+        console.error("❌ Error starting session:", err);
+      }
+    };
+
+    wakeAndStart();
   }, []);
 
   const GenerateRequest = async () => {

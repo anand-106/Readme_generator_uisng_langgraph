@@ -4,6 +4,7 @@ from .model import ReadmeRequest, ReadmeResponse, ResumeRequest
 from agent.agent import run_readme_pipeline, resume_readme_pipeline
 from pprint import pprint
 from dotenv import load_dotenv
+from fastapi.responses import JSONResponse
 import secrets
 
 load_dotenv()
@@ -11,6 +12,10 @@ load_dotenv()
 router = APIRouter(prefix="/api/readme", tags=["Readme Generator"])
 
 sessions = {}
+
+@router.get("/health")
+async def health_check():
+    return JSONResponse(content={"status": "ok"})
 
 
 @router.post("/start")

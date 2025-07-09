@@ -85,9 +85,11 @@ export function RepoPage() {
   };
 
   return (
-    <div className="text-white flex-col">
-      <h1>{repo_name}</h1>
-      <button onClick={handleWebhook}>Create Webhook</button>
+    <div className="text-white  flex-col">
+      <h1 className="font-bold">{repo_name}</h1>
+      <button className="" onClick={handleWebhook}>
+        Create Webhook
+      </button>
       <button
         onClick={() => {
           disable_webhook(false);
