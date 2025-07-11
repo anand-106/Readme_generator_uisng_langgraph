@@ -30,7 +30,14 @@ app.add_middleware(
     allow_headers=["*"],                
 )
 
+# Add root-level health endpoints for server wake-up
+@app.get("/")
+async def root_health():
+    return {"status": "ok", "message": "Server is running"}
 
+@app.get("/health") 
+async def health():
+    return {"status": "ok"}
 
 app.include_router(router)
 app.include_router(git_router)

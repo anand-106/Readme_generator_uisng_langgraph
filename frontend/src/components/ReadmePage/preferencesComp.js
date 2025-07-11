@@ -35,26 +35,29 @@ export function Preferences({
   useEffect(() => {
     const wakeAndStart = async () => {
       try {
-        // Wake up the server
-        await axios.get(
-          "https://readme-generator-uisng-langgraph.onrender.com/api/readme/health"
+        // Wake up the server and wait for response
+        console.log("🔄 Waking up server...");
+        const healthResponse = await axios.get(
+          "https://readme-generator-uisng-langgraph.onrender.com/health"
         );
-        console.log("✅ Server wake-up ping sent");
+        console.log("✅ Server is awake:", healthResponse.data);
 
-        // Wait for 5–8 seconds
-        await new Promise((res) => setTimeout(res, 8000));
+        // Optional: Add a small buffer after health check responds
+        await new Promise((res) => setTimeout(res, 2000));
 
-        // Start session with credentials
-        const res = await axios.post(
+        // Start session with credentials - only after health check succeeds
+        console.log("🔄 Starting session...");
+        const sessionResponse = await axios.post(
           "https://readme-generator-uisng-langgraph.onrender.com/api/readme/start",
           {},
           { withCredentials: true }
         );
 
-        console.log("✅ Session started", res.data);
+        console.log("✅ Session started:", sessionResponse.data);
         setSessionReady(true);
       } catch (err) {
-        console.error("❌ Error starting session:", err);
+        console.error("❌ Error during server wake-up or session start:", err);
+        // Optional: Retry logic or user notification could go here
       }
     };
 

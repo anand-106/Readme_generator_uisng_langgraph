@@ -1,8 +1,12 @@
 import axios from "axios";
+import Beams from "../Beams/Beams";
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import { FaCodeFork } from "react-icons/fa6";
+import Aurora from "../src/pages/Aurora/Aurora";
+import SlidePageWrapper from "../animations/SlidePageWrapper";
 
 export function GithubDashboard() {
   const [userData, setUserData] = useState(null);
@@ -50,30 +54,32 @@ export function GithubDashboard() {
   }
 
   return (
-    <div className="w-full h-full font-figtree overflow-y-auto text-white">
-      {/* <div className="">
-        <img
-          src={userData.avatar}
-          alt="Avatar"
-          className="w-16 h-16 rounded-full"
-        />
+    <SlidePageWrapper>
+      <div className="w-full h-full font-figtree  text-white relative">
         <div>
-          <h1 className="">
-            {userData.name} (@{userData.username})
-          </h1>
+          <Aurora
+            className=""
+            colorStops={["#02c6ff", "#0066ff", "#da00ff"]}
+            blend={1}
+            amplitude={1.0}
+            speed={0.5}
+          />
         </div>
-      </div> */}
-      <Header userData={userData} />
 
-      <div className="p-6">
-        <div>
-          <h2 className="">Active Repositories:</h2>
-          <WebhookList userData={userData} />
+        <div className="absolute z-40 overflow-y-auto  inset-0 scrollbar-none">
+          <Header userData={userData} />
+
+          <div className="p-6">
+            <div>
+              <h2 className="">Active Repositories:</h2>
+              <WebhookList userData={userData} />
+            </div>
+            <h2 className="">All Repositories:</h2>
+            <RepoList userData={userData} />
+          </div>
         </div>
-        <h2 className="">All Repositories:</h2>
-        <RepoList userData={userData} />
       </div>
-    </div>
+    </SlidePageWrapper>
   );
 }
 
@@ -122,7 +128,7 @@ function WhRepoItem({ idx, userData, repo }) {
         });
       }}
     >
-      <div className="p- w-[300px] h-24 backdrop:blur-md bg-transparent border-white border-solid border-2 p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out hover:shadow-[0_0_15px_3px_rgba(255,255,255,0.3)]">
+      <div className="p- w-[300px] h-24 backdrop-blur-md bg-white/10 border-white/20 border-solid border p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out">
         <h1 className="truncate">{repo.repo_fullname}</h1>
         <div className="flex gap-3">
           <div className="flex justify-center items-center gap-1">
@@ -167,7 +173,7 @@ function RepoItem({ idx, userData, repo }) {
         });
       }}
     >
-      <div className="p- w-[300px] h-24 backdrop:blur-md bg-transparent border-white border-solid border-2 p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out hover:shadow-[0_0_15px_3px_rgba(255,255,255,0.3)]">
+      <div className="p- w-[300px] h-24 backdrop-blur-md bg-white/10 border-white/20 border-solid border p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out shadow-[0_0_15px_3px_rgba(0,0,0,0.3)] ">
         <h1 className="truncate">{repo.repo_fullname}</h1>
         <div className="flex gap-3">
           <div className="flex justify-center items-center gap-1">
