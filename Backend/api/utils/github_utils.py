@@ -7,6 +7,22 @@ import tempfile
 import requests
 import base64
 
+
+from bson import ObjectId
+
+def clean_mongo_doc(doc: dict) -> dict:
+    """
+    Convert MongoDB doc to safe dict (ObjectId -> str).
+    """
+    out = {}
+    for k, v in doc.items():
+        if isinstance(v, ObjectId):
+            out[k] = str(v)
+        else:
+            out[k] = v
+    return out
+
+
 def clone_repo(url: str)->str:
 
 

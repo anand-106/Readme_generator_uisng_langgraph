@@ -1,5 +1,8 @@
 import httpx
 import uuid
+from database.database import user_collection,repository_collection
+from database.database import get_repos
+from api.utils.github_utils import clean_mongo_doc
 
 
 async def get_github_user_info(token:str):
@@ -13,6 +16,15 @@ async def get_github_user_info(token:str):
         
         user_data =  user_res.json()
         
+        user = await user_collection.find_one({"username":user_data["login"]})
+        
+        if user:
+            print("user already exists")
+            final_user_data=clean_mongo_doc(dict(user))
+            
+            repo_data = await get_repos(final_user_data["user_id"])
+            return [final_user_data,repo_data]
+        
         final_user_data={
                             "user_id":str(uuid.uuid4()),
                             "name":user_data.get("name",""),
@@ -23,7 +35,7 @@ async def get_github_user_info(token:str):
         
         
         
-        repo_res =  await client.get("https://api.github.com/user/repos",
+        repo_res =  await client.get("https://api.github.com/user/repos?per_page=100&affiliation=owner",
                                     headers={
                                         "Authorization":f"Bearer {token}",
                                         "Accept":"application/vnd.github+json"
@@ -66,6 +78,9 @@ async def get_github_user_info(token:str):
         ]
         
         final_repos = public_repos_res + private_repos_res
+        
+        await user_collection.insert_one(final_user_data)
+        await repository_collection.insert_many(final_repos)
         return [final_user_data,final_repos]
     
 
@@ -76,7 +91,7 @@ async def get_github_user_repo_info(token:str,user_id:str):
         
         
         
-        repo_res =  await client.get("https://api.github.com/user/repos",
+        repo_res =  await client.get("https://api.github.com/user/repos?per_page=100&affiliation=owner",
                                     headers={
                                         "Authorization":f"Bearer {token}",
                                         "Accept":"application/vnd.github+json"

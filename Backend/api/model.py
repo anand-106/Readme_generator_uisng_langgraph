@@ -34,6 +34,7 @@ class GithubUserResponse(BaseModel):
     username: str
     name: str
     repos:List
+    whrepos:Any 
     
 class WebHookRequest(BaseModel):
     username:str

@@ -12,7 +12,8 @@ from .utils.jwt import create_jwt_token,verify_jwt_token
 from fastapi.concurrency import run_in_threadpool
 import secrets
 from .utils.github_api import get_github_user_info,get_github_user_repo_info
-from database.api import register_user_db,get_github_user_data,set_webhook_db,set_status_webhook_be,delete_webhook_be
+from database.api import register_user_db,get_github_user_data,set_webhook_db,set_status_webhook_be,delete_webhook_be,get_webhook_repos
+from database.database import get_repos
 
 
 git_router = APIRouter(prefix="/api/github",tags=["Github"])
@@ -67,6 +68,10 @@ async def github_callback(code:str):
         )
         # pprint(user_data.json())
         return response
+    
+
+    
+    
 
 
 @git_router.get("/user",response_model=GithubUserResponse)
@@ -77,23 +82,39 @@ async def get_user_info(access_token:str = Cookie(None)):
     # token = os.getenv("TOKEN")
     payload = verify_jwt_token(access_token)
     print(f"the token from cookie is : {payload}")
+    
+    # repo_data = await get_webhook_repos(payload["username"])
 
     user_data = await get_github_user_data(payload["username"])
+    
     if not user_data:
         print(" No user found in DB for", payload["username"])
         raise HTTPException(status_code=404, detail="User not found in DB")
     
     
-    repodata = await get_github_user_repo_info(user_data["github_token"],user_data["user_id"])
+    # repodata = await get_github_user_repo_info(user_data["github_token"],user_data["user_id"])
     
+    repodata = await get_repos(user_id=user_data["user_id"])
+    
+    
+    webhooks = await get_webhook_repos(user_id=user_data["user_id"])
+    
+    webhook_repoids = [repo["repo_id"] for repo in webhooks]
+    
+    filtered_repos = [repo for repo in repodata if repo["repo_id"] not in webhook_repoids]
     
 
     return GithubUserResponse(
                                         avatar=user_data["avatar_url"],
                                         username=user_data["username"],
                                         name=user_data["name"],
-                                        repos=repodata
+                                        repos=filtered_repos,
+                                        whrepos=webhooks
                                     )
+
+
+
+    
     
 
 @git_router.post("/create-webhook")

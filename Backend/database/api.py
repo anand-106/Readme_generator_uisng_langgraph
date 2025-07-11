@@ -2,6 +2,7 @@ from .database import user_collection,repository_collection,webhook_collection
 import uuid
 import secrets
 from api.utils.github_api import disable_webhook_github,delete_webhook_github
+from api.utils.github_utils import clean_mongo_doc
 
 
 async def register_user_db(user_data:dict,repo_data:dict):
@@ -10,20 +11,30 @@ async def register_user_db(user_data:dict,repo_data:dict):
         
         existing_user = await user_collection.find_one({"username":user_data["username"]})
         
+        
+        
         if existing_user:
             print("User already exists in db")
             result = await user_collection.update_one(
                                                         {"username": user_data["username"]},
                                                         {"$set": {"github_token": user_data["github_token"]}}
                                                     )
+            await repository_collection.delete_many({"user_id": user_data["user_id"]})
+            print("Old repos deleted")
+            
+            if repo_data:
+                await repository_collection.insert_many(repo_data)
+                print("New repos inserted")
+            
             print("token updated")
-            return "user exists"
+            return "user exists and updated"
         
+        if repo_data:
+                await repository_collection.insert_many(repo_data)
         
         await user_collection.insert_one(user_data)
         
-        if repo_data:
-            await repository_collection.insert_many(repo_data)
+        
         
         print("user and repo data inserted")
         return "Inserted"
@@ -40,7 +51,7 @@ async def get_github_user_data(username:str):
             print("user not found in db")
             return
             
-        user_data = dict(user)
+        user_data = clean_mongo_doc(dict(user))
         return user_data
         
     except Exception as e:
@@ -76,7 +87,7 @@ async def get_webhook_data_db(repo_id:str):
         if not webhook:
             print("Webhook not found on db")
             return
-        webhook_data = dict(webhook)
+        webhook_data = clean_mongo_doc(dict(webhook))
         
         return webhook_data
         
@@ -112,4 +123,29 @@ async def delete_webhook_be(repo_id:str,access_token:str):
     except Exception as e:
         print(f'error deleting webhook {e}')
 
+
+async def get_repos_by_ids(repo_ids: list[str]):
+    cursor = repository_collection.find({"repo_id": {"$in": repo_ids}})
+    repos = await cursor.to_list(length=None)
+    return [clean_mongo_doc(r) for r in repos]
+
+        
+async def get_webhook_repos(user_id:str):
+    
+    cursor = webhook_collection.find({"user_id":user_id})
+    
+    raw_webhooks = await cursor.to_list(length=None)
+
+    cleaned_webhooks = [clean_mongo_doc(r) for r in raw_webhooks]
+    
+    repo_ids = [w["repo_id"] for w in cleaned_webhooks]
+    
+    repos = await get_repos_by_ids(repo_ids)
+    
+    return repos
+    
+
+
+
+        
 
