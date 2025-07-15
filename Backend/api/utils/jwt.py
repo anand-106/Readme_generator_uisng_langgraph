@@ -12,6 +12,11 @@ def create_jwt_token(data:dict):
     return jwt.encode(data,token)
 
 def verify_jwt_token(token:str):
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No token provided",
+        )
     try:
         secret = os.getenv("JWT_SECRET")
         payload = jwt.decode(token,secret)
