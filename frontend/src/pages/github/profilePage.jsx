@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbLogout } from "react-icons/tb";
 import axios from "axios";
+import { IoArrowBackSharp } from "react-icons/io5";
 
 export function Profile() {
   const { state } = useLocation();
@@ -24,6 +25,9 @@ export function Profile() {
 
   return (
     <div className="w-full h-full flex items-center justify-center text-white">
+      <div className="absolute top-0 z-10  left-0 m-4 text-lg font-semibold">
+        <Header />
+      </div>
       <div className="w-[400px] h-[450px] mx-6 flex justify-center bg-white/5 backdrop-blur-md rounded-xl border border-white/20 p-6">
         <div className="flex flex-col gap-3 h-full w-full items-center ">
           <div className="bg-white/10 border border-white/50 backdrop-blur-md w-[88px] h-[88px] rounded-full items-center justify-center flex">
@@ -58,6 +62,23 @@ export function Profile() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Header() {
+  const navigator = useNavigate();
+  return (
+    <div className="flex justify-center items-center gap-2">
+      <div
+        className="cursor-pointer text-2xl"
+        onClick={() => {
+          navigator(-1);
+        }}
+      >
+        <IoArrowBackSharp />
+      </div>
+      <h1>Profile</h1>
     </div>
   );
 }

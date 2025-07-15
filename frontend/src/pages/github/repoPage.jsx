@@ -48,11 +48,11 @@ export function RepoPage() {
       )
       .then((res) => {
         console.log(res);
-        toast.success("✅ Settings applied!", { id: toastId });
+        toast.success("Settings applied!", { id: toastId });
       })
       .catch((err) => {
         console.log(err);
-        toast.error("❌ Failed to apply settings.", { id: toastId });
+        toast.error("Failed to apply settings.", { id: toastId });
       });
   };
 
@@ -90,9 +90,14 @@ export function RepoPage() {
           reverseOrder={false}
           toastOptions={{
             style: {
-              border: "1px solid #713200",
+              border: "1px solid #ffffff",
               padding: "16px",
-              color: "#030617",
+              color: "#ffffff",
+              background: "#030617",
+            },
+            iconTheme: {
+              primary: "#ffffff",
+              secondary: "#030617",
             },
           }}
         />
@@ -288,14 +293,20 @@ function WebhookButtons({
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 w-full mt-4">
-      <ActionButton onClick={handleWebhook} Icon={<FaPlusCircle />}>
+    <div className="flex flex-wrap justify-center gap-4 w-full mt-4 ">
+      <ActionButton
+        disabled={isWhCreated}
+        onClick={handleWebhook}
+        Icon={<FaPlusCircle />}
+        customCss={`${isWhCreated ? "cursor-not-allowed" : ""}`}
+      >
         Create Webhook
       </ActionButton>
       <ActionButton
         disabled={!isWhCreated}
         onClick={() => disable_webhook(false)}
         Icon={<FaCircleStop />}
+        customCss={`${!isWhCreated ? "cursor-not-allowed" : ""}`}
       >
         Disable Webhook
       </ActionButton>
@@ -303,6 +314,7 @@ function WebhookButtons({
         disabled={!isWhCreated}
         onClick={() => disable_webhook(true)}
         Icon={<MdElectricBolt />}
+        customCss={`${!isWhCreated ? "cursor-not-allowed" : ""}`}
       >
         Enable Webhook
       </ActionButton>
@@ -310,6 +322,7 @@ function WebhookButtons({
         disabled={!isWhCreated}
         onClick={delete_webhook}
         Icon={<MdDelete />}
+        customCss={`${!isWhCreated ? "cursor-not-allowed" : ""}`}
       >
         Delete Webhook
       </ActionButton>
@@ -317,10 +330,10 @@ function WebhookButtons({
   );
 }
 
-function ActionButton({ disabled, onClick, children, Icon }) {
+function ActionButton({ disabled, onClick, children, Icon, customCss }) {
   return (
     <button
-      className="flex-shrink-0 flex justify-center items-center gap-2 bg-white/10 border border-white/50 rounded-lg h-10 w-[250px] hover:bg-white/20 transition"
+      className={`${customCss} flex-shrink-0 flex justify-center items-center gap-2 bg-white/10 border border-white/50 rounded-lg h-10 w-[250px] hover:bg-white/20 transition`}
       onClick={onClick}
       disabled={disabled}
     >
