@@ -1,6 +1,6 @@
 import httpx
 import uuid
-from database.database import user_collection,repository_collection
+from database.database import user_collection,repository_collection,webhook_collection
 from database.database import get_repos
 from api.utils.github_utils import clean_mongo_doc
 
@@ -82,7 +82,27 @@ async def get_github_user_info(token:str):
         await user_collection.insert_one(final_user_data)
         await repository_collection.insert_many(final_repos)
         return [final_user_data,final_repos]
+
+
+async def webhook_data(repo_id:str):
     
+    wb_res =await webhook_collection.find_one({"repo_id":repo_id})
+    
+    if wb_res :
+        wb_data  = dict(wb_res)
+        return {
+    "available": True,
+    "isActive": wb_data["isActive"],
+    "preferences": wb_data["preferences"],
+    "description": wb_data["description"]
+}
+
+    
+    else:
+        return {"available":False}
+    
+        
+     
 
 
 async def get_github_user_repo_info(token:str,user_id:str):

@@ -2,8 +2,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["src/*"]
+      "*": ["src/*"],
+      "@/*": ["./*"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "lib"
+  ]
 }

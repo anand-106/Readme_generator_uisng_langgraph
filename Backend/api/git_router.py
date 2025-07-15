@@ -3,7 +3,7 @@ import os
 from pprint import pprint
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, HTTPException,Request,Cookie
+from fastapi import APIRouter, HTTPException,Request,Cookie,Response
 from fastapi.responses import RedirectResponse
 from .model import GithubUserResponse,WebHookRequest
 from agent.agent import webhook_pipeline
@@ -11,8 +11,8 @@ from .utils.github_utils import get_existing_readme_filename,update_github_readm
 from .utils.jwt import create_jwt_token,verify_jwt_token
 from fastapi.concurrency import run_in_threadpool
 import secrets
-from .utils.github_api import get_github_user_info,get_github_user_repo_info
-from database.api import register_user_db,get_github_user_data,set_webhook_db,set_status_webhook_be,delete_webhook_be,get_webhook_repos
+from .utils.github_api import get_github_user_info,get_github_user_repo_info,webhook_data
+from database.api import register_user_db,get_github_user_data,set_webhook_db,set_status_webhook_be,delete_webhook_be,get_webhook_repos,update_webhook_db,get_webhook_data_db,get_repo_by_url
 from database.database import get_repos
 
 
@@ -70,7 +70,29 @@ async def github_callback(code:str):
         return response
     
 
+@git_router.get("/login")
+async def check_login(access_token:str = Cookie(None)):
     
+    if access_token:
+        payload = verify_jwt_token(access_token)
+        return {
+            "authenticated":True,
+            "username":payload["username"]
+        }
+    else:
+        return {
+            "authenticated":False
+        }
+        
+        
+@git_router.post('/logout')
+async def logout(response:Response):
+    response.delete_cookie(
+        key="access_token"
+    )
+    
+    return {"message": "Logged out successfully"}
+        
     
 
 
@@ -114,7 +136,32 @@ async def get_user_info(access_token:str = Cookie(None)):
 
 
 
+@git_router.post('/update-webhook')
+async def update_webhook(request:Request,access_token:str = Cookie(None)):
     
+    payload= verify_jwt_token(access_token)
+    
+    body = await request.json()
+    
+    
+    await update_webhook_db(repo_id=body["repo_id"],preferences=body["preferences"],description=body["description"])
+    
+    return {"message":"updated"}
+    
+    
+@git_router.post('/webhook')
+async def get_webhook(request:Request,access_token:str = Cookie(None)):
+    
+    payload= verify_jwt_token(access_token)
+    
+    body = await request.json()
+    
+    wh_data= await webhook_data(repo_id=body["repo_id"])
+    
+    return wh_data
+    
+    
+       
     
 
 @git_router.post("/create-webhook")
@@ -134,7 +181,7 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
         "active":True,
         "events":["push"],
         "config":{
-            "url":"https://30b8-106-219-160-120.ngrok-free.app/api/github/generate",
+            "url":"https://c9066ee33181.ngrok-free.app/api/github/generate",
             "content_type":"json",
             "secret":secret,
             "insecure_ssl":"0"
@@ -153,7 +200,7 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
         
         pprint(res_data)
         
-        webhook_data = await set_webhook_db(user_data["user_id"],request.repo_id,res_data["url"],res_data["id"],secret)
+        webhook_data = await set_webhook_db(user_data["user_id"],request.repo_id,res_data["url"],res_data["id"],secret,request.preferences,request.description)
         
         if response.status_code > 400:
             raise HTTPException(status_code=response.status_code,detail=res_data)
@@ -215,33 +262,33 @@ async def webhook_readme_generate(request:Request):
     
     ref= body.get("ref").replace("refs/heads/",'')
     name = body["repository"]["name"]
+    username=body["repository"]["owner"]["login"]
     full_name = body["repository"]["full_name"]
     url = body["repository"]["html_url"]
     clone_url = body["repository"]["clone_url"]
     
+    repo_data = await get_repo_by_url(html_url=url)
+    
+    pprint(f"repo data received is ${repo_data}")
+    
+    wh_data = await get_webhook_data_db(repo_id=repo_data['repo_id'])
+    
+    
+    user_data = await get_github_user_data(username)
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found in DB")
+    
+    print(f"the user data is ${user_data}")
     
     try:
         
         state = await run_in_threadpool(
             webhook_pipeline,
             url=clone_url,
-            description="",
-            preferences={
-                            "title": True,
-                            "badge": True,
-                            "introduction": True,
-                            "table_of_contents": True,
-                            "key_features": True,
-                            "install_guide": True,
-                            "usage": True,
-                            "api_ref": True,
-                            "env_var": True,
-                            "project_structure": True,
-                            "tech_used": True,
-                            "licenses": True
-                        }
+            description=wh_data["description"],
+            preferences=wh_data["preferences"]
                 )
-        token = os.getenv("TOKEN")
+        token = user_data["github_token"]
         readme_name = await get_existing_readme_filename(repo=full_name,token=token)
         webhook_response = await update_github_readme(file_name=readme_name,readme_text=state.get("readme"),repo_full_name=full_name,access_token=token)
         

@@ -41,4 +41,6 @@ class WebHookRequest(BaseModel):
     repo_name:str
     repo_url:str
     repo_id:str
+    description:str
+    preferences:dict
 

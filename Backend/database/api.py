@@ -58,7 +58,7 @@ async def get_github_user_data(username:str):
          print(f'error getting token from db : {e}')
          return
 
-async def set_webhook_db(user_id:str,repo_id:str,hook_url:str,hook_id,secret,):
+async def set_webhook_db(user_id:str,repo_id:str,hook_url:str,hook_id,secret,preferences:dict,description:str):
     
     try:
         webhook_data = {
@@ -69,7 +69,9 @@ async def set_webhook_db(user_id:str,repo_id:str,hook_url:str,hook_id,secret,):
                 "webhook_url":"https://30b8-106-219-160-120.ngrok-free.app/api/github/generate",
                 "hook_url":hook_url,
                 "hook_id":hook_id,
-                "isActive":True
+                "isActive":True,
+                "preferences":preferences,
+                "description":description
             }
         await webhook_collection.insert_one(
             webhook_data
@@ -101,7 +103,7 @@ async def set_status_webhook_be(repo_id:str,access_token:str,isActive:bool):
         
         webhook_data = await get_webhook_data_db(repo_id)
         
-        await disable_webhook_github(hook_url=webhook_data["hook_url"],access_token=access_token,isActive=isActive)
+        await disable_webhook_github(hook_url=webhook_data["hook_url"],access_token=access_token,isActive=isActive,)
         print("webhook disabled on github")  
         
     except Exception as e:
@@ -143,6 +145,18 @@ async def get_webhook_repos(user_id:str):
     repos = await get_repos_by_ids(repo_ids)
     
     return repos
+
+async def update_webhook_db(repo_id:str,preferences:dict,description:str):
+    
+    wh_res = webhook_collection.update_one({"repo_id":repo_id},{"$set":{"preferences":preferences,"description":description}})
+    
+    return wh_res
+
+async def get_repo_by_url(html_url:str):
+    
+    wh_res  = await repository_collection.find_one({"html_url":html_url})
+    
+    return dict(wh_res)
     
 
 

@@ -1,17 +1,17 @@
 import axios from "axios";
-import Beams from "../Beams/Beams";
+// import Beams from "../../Beams/Beams";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import { FaCodeFork } from "react-icons/fa6";
-import Aurora from "../src/pages/Aurora/Aurora";
-import SlidePageWrapper from "../animations/SlidePageWrapper";
+import Aurora from "../../src/pages/Aurora/Aurora";
+import SlidePageWrapper from "../../animations/SlidePageWrapper";
+import { RiRadioButtonLine } from "react-icons/ri";
 
 export function GithubDashboard() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [reposData, setReposData] = useState(null);
   const [error, setError] = useState("");
 
   const handleGithubUser = async () => {
@@ -21,7 +21,6 @@ export function GithubDashboard() {
       });
       console.log(res.data);
       const { avatar, username, name, repos, whrepos } = res.data;
-      setReposData(whrepos);
       setUserData({
         avatar,
         username,
@@ -71,7 +70,7 @@ export function GithubDashboard() {
 
           <div className="p-6">
             <div>
-              <h2 className="">Active Repositories:</h2>
+              <h2 className="">Auto Readme Repositories:</h2>
               <WebhookList userData={userData} />
             </div>
             <h2 className="">All Repositories:</h2>
@@ -90,14 +89,34 @@ function Header({ userData }) {
       <div
         className="flex gap-2 cursor-pointer"
         onClick={() => {
-          navigator("/");
+          // navigator("/");
         }}
       >
         <img src="/assets/logo160.png" alt="logo" className="w-7 h-7" />
         <h1 className="font-semibold text-2xl">Dashboard</h1>
       </div>
-      <img src={userData.avatar} alt="Avatar" className="w-10 rounded-full" />
+      {userData && (
+        <div className="bg-white/10 border border-white/50 backdrop-blur-md w-12 h-12 rounded-full items-center mt-[-7px] cursor-pointer justify-center flex">
+          <ProfileIcon userData={userData} />
+        </div>
+      )}
     </div>
+  );
+}
+
+function ProfileIcon({ userData }) {
+  const navigator = useNavigate();
+  return (
+    <img
+      src={userData.avatar}
+      onClick={() => {
+        navigator(`/github/${userData.username}/profile`, {
+          state: userData,
+        });
+      }}
+      alt="Avatar"
+      className="w-10 rounded-full"
+    />
   );
 }
 
@@ -118,7 +137,7 @@ function WhRepoItem({ idx, userData, repo }) {
     <li
       key={idx}
       onClick={() => {
-        navigator("/github/repo", {
+        navigator(`/github/${repo.repo_fullname}`, {
           state: {
             username: userData.username,
             repo_name: repo.repo_fullname,
@@ -130,14 +149,19 @@ function WhRepoItem({ idx, userData, repo }) {
     >
       <div className="p- w-[300px] h-24 backdrop-blur-md bg-white/10 border-white/20 border-solid border p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out">
         <h1 className="truncate">{repo.repo_fullname}</h1>
-        <div className="flex gap-3">
-          <div className="flex justify-center items-center gap-1">
-            <FaRegStar />
-            <h1>{repo.stars}</h1>
+        <div className="flex justify-between">
+          <div className="flex gap-3">
+            <div className="flex justify-center items-center gap-1">
+              <FaRegStar />
+              <h1>{repo.stars}</h1>
+            </div>
+            <div className="flex justify-center items-center gap-1">
+              <FaCodeFork />
+              <h1>{repo.forks}</h1>
+            </div>
           </div>
-          <div className="flex justify-center items-center gap-1">
-            <FaCodeFork />
-            <h1>{repo.forks}</h1>
+          <div className="flex text-green-400  items-end">
+            <RiRadioButtonLine />
           </div>
         </div>
       </div>
@@ -163,7 +187,7 @@ function RepoItem({ idx, userData, repo }) {
     <li
       key={idx}
       onClick={() => {
-        navigator("/github/repo", {
+        navigator(`/github/${repo.repo_fullname}`, {
           state: {
             username: userData.username,
             repo_name: repo.repo_fullname,
@@ -173,7 +197,7 @@ function RepoItem({ idx, userData, repo }) {
         });
       }}
     >
-      <div className="p- w-[300px] h-24 backdrop-blur-md bg-white/10 border-white/20 border-solid border p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out shadow-[0_0_15px_3px_rgba(0,0,0,0.3)] ">
+      <div className="p- w-[300px] h-24 backdrop-blur-md bg-white/10 border-white/20 border-solid border p-3 rounded-lg flex flex-col justify-between  m-5 cursor-pointer hover:scale-105 transition-all duration-300 ease-out  ">
         <h1 className="truncate">{repo.repo_fullname}</h1>
         <div className="flex gap-3">
           <div className="flex justify-center items-center gap-1">

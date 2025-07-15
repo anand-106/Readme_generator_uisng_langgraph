@@ -134,7 +134,8 @@ def webhook_pipeline(url:str, description: str, preferences: dict):
         print(f"error removing tree: {e}")
         
     
-    pprint(state.keys())
+    
+    
     return state
     
     

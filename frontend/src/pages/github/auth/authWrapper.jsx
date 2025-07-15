@@ -1,0 +1,21 @@
+import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+export function AuthWrapper() {
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/github/login", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.username) {
+          navigator(`/github/${res.data.username}`);
+        } else {
+          navigator("/github/login");
+        }
+      });
+  });
+}
