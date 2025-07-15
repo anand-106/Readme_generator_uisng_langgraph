@@ -182,7 +182,7 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
         "active":True,
         "events":["push"],
         "config":{
-            "url":"https://github.com/anand-106/Readme_generator_uisng_langgraph/api/github/generate",
+            "url":"https://readme-generator-uisng-langgraph.onrender.com/api/github/generate",
             "content_type":"json",
             "secret":secret,
             "insecure_ssl":"0"
