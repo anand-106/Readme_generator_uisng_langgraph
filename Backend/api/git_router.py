@@ -63,7 +63,7 @@ async def github_callback(code:str):
             value=jwt_token,
             httponly=True,
             secure=True,
-            samesite=None,
+            samesite="None",
             domain=".anand106.me",
             max_age=86000,
             path='/'
