@@ -9,7 +9,7 @@ export function Profile() {
   const handleLogout = () => {
     axios
       .post(
-        "http://localhost:8000/api/github/logout",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/logout",
         {},
         {
           withCredentials: true,

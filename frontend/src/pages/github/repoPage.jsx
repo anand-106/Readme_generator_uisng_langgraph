@@ -36,7 +36,7 @@ export function RepoPage() {
     const toastId = toast.loading("Applying settings...");
     axios
       .post(
-        "http://localhost:8000/api/github/update-webhook",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/update-webhook",
         {
           repo_id,
           preferences,
@@ -59,7 +59,7 @@ export function RepoPage() {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:8000/api/github/webhook",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/webhook",
         {
           repo_id,
         },
@@ -246,7 +246,7 @@ function WebhookButtons({
     });
     axios
       .post(
-        "http://localhost:8000/api/github/create-webhook",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/create-webhook",
         {
           username,
           repo_name,
@@ -267,7 +267,7 @@ function WebhookButtons({
   const disable_webhook = (isActive) => {
     axios
       .post(
-        "http://localhost:8000/api/github/disable-webhook",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/disable-webhook",
         { repo_id, isActive },
         {
           withCredentials: true,
@@ -281,7 +281,7 @@ function WebhookButtons({
   const delete_webhook = () => {
     axios
       .post(
-        "http://localhost:8000/api/github/delete-webhook",
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/delete-webhook",
         { repo_id },
         {
           withCredentials: true,

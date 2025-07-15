@@ -57,7 +57,7 @@ async def github_callback(code:str):
         
             
         jwt_token = create_jwt_token({"username":user_data["username"]})
-        response = RedirectResponse(f'http://localhost:3000/github/{user_data["username"]}')
+        response = RedirectResponse(f'https://readmeai.anand106.me/github/{user_data["username"]}')
         response.set_cookie(
             key="access_token",
             value=jwt_token,

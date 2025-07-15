@@ -7,9 +7,12 @@ export function AuthWrapper() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/github/login", {
-        withCredentials: true,
-      })
+      .get(
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/login",
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         if (res.data.username) {
           navigator(`/github/${res.data.username}`);

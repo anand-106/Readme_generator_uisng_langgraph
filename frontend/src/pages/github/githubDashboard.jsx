@@ -16,9 +16,12 @@ export function GithubDashboard() {
 
   const handleGithubUser = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/github/user", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "https://readme-generator-uisng-langgraph.onrender.com/api/github/user",
+        {
+          withCredentials: true,
+        }
+      );
       console.log(res.data);
       const { avatar, username, name, repos, whrepos } = res.data;
       setUserData({
@@ -41,7 +44,11 @@ export function GithubDashboard() {
   }, []);
 
   if (loading) {
-    return <p className="text-white p-4">Loading GitHub data...</p>;
+    return (
+      <div className="flex w-full h-full justify-center items-center">
+        <p className="text-white/50 p-4">Loading GitHub data...</p>;
+      </div>
+    );
   }
 
   if (error) {

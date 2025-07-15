@@ -1,4 +1,5 @@
 import SlidePageWrapper from "../animations/SlidePageWrapper";
+import { AutomateSec } from "../components/home/AutomateSec";
 import { LinkTextBox } from "../components/home/LinkTextBox";
 import { Title } from "../components/home/Title";
 import Aurora from "../src/pages/Aurora/Aurora";
@@ -12,7 +13,8 @@ export function HomePage() {
         <Header />
         <Title />
         <LinkTextBox />
-        <ProductHunt />
+        <AutomateSec />
+        {/* <ProductHunt /> */}
         <Footer />
       </div>
     </SlidePageWrapper>
@@ -80,7 +82,7 @@ function Footer() {
     <div className="absolute bottom-0 mb-3">
       <p className="text-white/40 text-sm lg:text-base">
         © 2025 Readme AI · Built by{" "}
-        {<a href="https://github.com/anand-106">@anand-106</a>} · v1.0
+        {<a href="https://github.com/anand-106">@anand-106</a>} · v1.1
       </p>
     </div>
   );

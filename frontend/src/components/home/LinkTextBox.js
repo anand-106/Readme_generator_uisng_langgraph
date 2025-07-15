@@ -18,7 +18,7 @@ export function LinkTextBox() {
   };
 
   return (
-    <div className="w-full max-w-2xl bg-[#030617] p-7 rounded-lg shadow-2xl">
+    <div className="w-full max-w-2xl bg-[#030617] px-7 rounded-lg shadow-2xl">
       <p className="text-white font-figtree mb-2">Enter your GitHub Repo Url</p>
       <form
         onSubmit={(e) => {
