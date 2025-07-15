@@ -62,7 +62,8 @@ async def github_callback(code:str):
             key="access_token",
             value=jwt_token,
             httponly=True,
-            secure=False,
+            secure=True,
+            domain=".anand106.me",
             max_age=86000,
             path='/'
         )
@@ -181,7 +182,7 @@ async def create_webhook(request:WebHookRequest,access_token:str = Cookie(None))
         "active":True,
         "events":["push"],
         "config":{
-            "url":"https://c9066ee33181.ngrok-free.app/api/github/generate",
+            "url":"https://github.com/anand-106/Readme_generator_uisng_langgraph/api/github/generate",
             "content_type":"json",
             "secret":secret,
             "insecure_ssl":"0"
