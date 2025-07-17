@@ -83,7 +83,7 @@ export function RepoPage() {
   }, []);
 
   return (
-    <div className="text-white w-full h-full flex justify-center items-center relative">
+    <div className="text-white w-full h-full flex justify-center lg:items-center relative overflow-y-auto">
       <div className="absolute top-0 z-10  left-0 m-4 text-lg font-semibold">
         <Toaster
           position="top-center"
@@ -103,10 +103,10 @@ export function RepoPage() {
         />
         <Header />
       </div>
-      <div className="w-[1200px] h-[500px] bg-white/5 rounded-2xl p-5 border border-white/50">
+      <div className="w-[1200px] h-fit bg-white/5 rounded-2xl p-5 border border-white/50 max-lg:mt-14">
         <h1 className="font-semibold text-lg">{repo_name}</h1>
-        <div className="flex">
-          <div className="w-1/2 h-[300px] m-5 flex flex-col gap-2">
+        <div className="flex justify-center items-center max-sm:flex-col w-full">
+          <div className="sm:max-w-[600px] sm:min-w-[400px] h-[300px] max-sm:w-full m-5 flex flex-col gap-2">
             <Description
               description={description}
               setDescription={setDescription}
@@ -125,6 +125,7 @@ export function RepoPage() {
               <h1>Apply Settings</h1>
             </button>
           </div>
+
           <Preferences
             preferences={preferences}
             setPreferences={setPreferences}
@@ -186,7 +187,7 @@ function Preferences({ preferences, setPreferences }) {
   };
 
   return (
-    <div className="mt-4 pl-1 pb-4 max-h-[300px] scrollbar-none w-full flex flex-wrap gap-4 overflow-y-auto">
+    <div className="mt-4 pl-1 pb-4 max-h-[300px] scrollbar-none w-full justify-center items-center flex flex-wrap gap-4 overflow-y-auto">
       {[
         ["title", "Title"],
         ["badge", "Badge"],
@@ -214,7 +215,7 @@ function Preferences({ preferences, setPreferences }) {
 
 function PreferenceItem({ text, checked, onChange }) {
   return (
-    <label className="flex items-center gap-3 p-3 w-56 shadow-md rounded-lg bg-white/10 backdrop-blur-md hover:bg-white/15 transition-all duration-300 ease-in-out cursor-pointer">
+    <label className="flex items-center gap-3 p-3 sm:w-56 max-sm:w-full shadow-md rounded-lg bg-white/10 backdrop-blur-md hover:bg-white/15 transition-all duration-300 ease-in-out cursor-pointer">
       <input
         type="checkbox"
         checked={checked}

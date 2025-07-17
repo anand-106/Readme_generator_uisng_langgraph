@@ -21,4 +21,12 @@ export function AuthWrapper() {
         }
       });
   });
+
+  return (
+    <div className="h-full w-full items-center justify-center">
+      <h1 className="text-white/50">
+        Please Wait...The sever may be Booting Up...
+      </h1>
+    </div>
+  );
 }

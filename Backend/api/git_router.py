@@ -89,7 +89,11 @@ async def check_login(access_token:str = Cookie(None)):
 @git_router.post('/logout')
 async def logout(response:Response):
     response.delete_cookie(
-        key="access_token"
+        key="access_token",
+        path="/",
+        secure=True,
+        httponly=True,
+        samesite="none"
     )
     
     return {"message": "Logged out successfully"}
