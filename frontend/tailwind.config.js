@@ -17,6 +17,7 @@ module.exports = {
       animation: {
         gradient: "gradient 8s linear infinite",
         shimmer: "shimmer 1s ease-out",
+        shimmer2: "shimmer 1s  ease-in-out infinite",
       },
       fontFamily: {
         sans: [
