@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from dotenv import load_dotenv
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 load_dotenv()
 
 
@@ -20,19 +22,19 @@ def convert_paths(obj):
 
 
 
-def summerize_chunks(chunks):
-
-
-
+def summerize_chunks(chunks, max_workers=5):
+    """
+    Summarize chunks in parallel using ThreadPoolExecutor
+    """
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-
     model = genai.GenerativeModel(model_name='gemini-2.0-flash')
-    summaries=[]
-
-    for idx,chunk in tqdm(enumerate(chunks),total=len(chunks),desc="summerizing chunks"):
-
+    summaries = []
+    
+    def summarize_single_chunk(chunk_data_tuple):
+        """Summarize a single chunk - this function runs in a separate thread"""
+        idx, chunk = chunk_data_tuple
+        
         chunk_data = json.dumps(chunk)
-
         prompt = f"""
                 You are an AI code summarizer.
 
@@ -54,18 +56,49 @@ def summerize_chunks(chunks):
                 """
         
         try:
-            respone = model.generate_content(prompt)
-            summaries.append({
-                'index':idx,
-                'summary':respone.text.strip()
-            })
+           
+            time.sleep(0.1)
+            response = model.generate_content(prompt)
+            return {
+                'index': idx,
+                'summary': response.text.strip()
+            }
         except Exception as e:
-
-            summaries.append({
-                "chunk_index": idx,
-                "summary": f"[ERROR summarizing chunk {idx}]: {str(e)}"
-            })
-    print("Succesfully Summerized chunks");
+            return {
+                'index': idx,
+                'summary': f"[ERROR summarizing chunk {idx}]: {str(e)}"
+            }
+    
+    
+    chunk_data = [(idx, chunk) for idx, chunk in enumerate(chunks)]
+    
+    
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all tasks
+        future_to_idx = {
+            executor.submit(summarize_single_chunk, chunk_tuple): chunk_tuple[0] 
+            for chunk_tuple in chunk_data
+        }
+        
+        
+        with tqdm(total=len(chunks), desc="Summarizing chunks") as pbar:
+            for future in as_completed(future_to_idx):
+                try:
+                    result = future.result()
+                    summaries.append(result)
+                    pbar.update(1)
+                except Exception as e:
+                    idx = future_to_idx[future]
+                    summaries.append({
+                        'index': idx,
+                        'summary': f"[ERROR processing chunk {idx}]: {str(e)}"
+                    })
+                    pbar.update(1)
+    
+   
+    summaries.sort(key=lambda x: x['index'])
+    
+    print("Successfully summarized chunks")
     return summaries
 
 def generate_final_summary(chunk_summaries, project_structure=None,preferences={},project_description="",full_structure=None):
