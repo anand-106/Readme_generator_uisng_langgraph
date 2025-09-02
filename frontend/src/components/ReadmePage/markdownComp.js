@@ -163,12 +163,10 @@ function CopyDownload({ readmeData }) {
 
 function Loader() {
   return (
-    <div className="absolute top-0 left-0 h-full w-full overflow-hidden flex justify-center items-center bg-gradient-to-r from-pink-400 via-purple-500 via-blue-500 via-green-400 via-yellow-400 via-red-400 to-pink-400 bg-[length:400%_100%] animate-gradient z-[60]">
-      <div className="bg-[#0d1017] bg-opacity-90 rounded-2xl px-8 py-6 backdrop-blur-sm">
-        <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-purple-500 bg-[length:300%_100%] animate-shimmer2 leading-[1.4] pb-1">
-          Generating Readme...
-        </h1>
-      </div>
+    <div className="absolute top-0 left-0 h-full w-full overflow-hidden flex justify-center items-center bg-[#0d1017] bg-opacity-90 z-[60]">
+      <h1 className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-purple-500 bg-[length:300%_100%] animate-gradient leading-[1.4] pb-1">
+        Generating Readme...
+      </h1>
     </div>
   );
 }
