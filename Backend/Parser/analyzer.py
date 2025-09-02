@@ -6,6 +6,7 @@ import re
 from .code_walker import walk_codebase
 from .js_parser import extract_symbols_from_js_file as extract_js
 from .python_parser import extract_symbols_from_file as extract_py
+from .ts_parser import extract_symbols_from_ts_file, extract_symbols_from_tsx_file
 
 def analyze_codebase(root_dir):
     files = walk_codebase(root_dir)
@@ -28,6 +29,12 @@ def analyze_codebase(root_dir):
             symbols,_ = extract_py(file_path)
         elif language == "javascript":
             symbols,_ = extract_js(file_path)
+        elif language == "typescript":
+            suffix = file_path.suffix.lower()
+            if suffix == ".tsx":
+                symbols,_ = extract_symbols_from_tsx_file(file_path)
+            else:
+                symbols,_ = extract_symbols_from_ts_file(file_path)
         
         total_functions += sum(1 for s in symbols if s["type"] == "function")
         total_classes += sum(1 for s in symbols if s["type"] == "class")
