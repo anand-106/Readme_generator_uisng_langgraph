@@ -7,9 +7,8 @@ import tempfile
 import requests
 import base64
 import httpx
-import asyncio
 import time
-from typing import Optional
+import subprocess
 
 from bson import ObjectId
 
@@ -33,99 +32,99 @@ def get_directory_size(directory_path: str) -> int:
         return 0
     return total_size
 
-async def check_repo_size_with_retry(url: str, token: str = None, max_retries: int = 3) -> Optional[int]:
+def safe_clone_with_size_monitoring(url: str, tmp_dir: str, token: str = None, timeout: int = 300) -> bool:
     """
-    Check repository size with retry logic for rate limiting.
-    Returns None if rate limited and should skip size check.
+    Clone repository with real-time size monitoring.
+    Returns True if successful, raises HTTPException if size limit exceeded.
     """
     try:
-        url_parts = url.replace("https://github.com/", "").replace(".git", "").split("/")
-        if len(url_parts) < 2:
-            raise HTTPException(status_code=400, detail="Invalid GitHub repository URL")
-        
-        owner, repo = url_parts[0], url_parts[1]
-        api_url = f"https://api.github.com/repos/{owner}/{repo}"
-        
-        headers = {"Accept": "application/vnd.github+json"}
+        # Prepare git command
         if token:
-            headers["Authorization"] = f"Bearer {token}"
+            url_parsed = urlparse(url)
+            authenticated_url = f"https://{token}@{url_parsed.netloc}{url_parsed.path}"
+        else:
+            authenticated_url = url
+            
+        # Use git command directly for better control
+        git_cmd = [
+            "git", "clone", "--depth", "1", "--progress",
+            authenticated_url, tmp_dir
+        ]
         
-        for attempt in range(max_retries):
-            try:
-                async with httpx.AsyncClient(timeout=10.0) as client:
-                    response = await client.get(api_url, headers=headers)
-                    
-                    # Handle rate limiting
-                    if response.status_code == 403:
-                        error_data = response.json()
-                        if "rate limit" in error_data.get("message", "").lower():
-                            if attempt < max_retries - 1:
-                                # Exponential backoff: 2, 4, 8 seconds
-                                wait_time = 2 ** (attempt + 1)
-                                print(f"Rate limited. Retrying in {wait_time} seconds... (attempt {attempt + 1}/{max_retries})")
-                                await asyncio.sleep(wait_time)
-                                continue
-                            else:
-                                # After all retries, return None to skip size check
-                                print("⚠️ Rate limited after all retries. Skipping size check and proceeding with clone.")
-                                return None
-                        else:
-                            raise HTTPException(status_code=403, detail=error_data.get("message", "Access forbidden"))
-                    
-                    if response.status_code == 404:
-                        raise HTTPException(status_code=404, detail="Repository not found")
-                    elif response.status_code != 200:
-                        raise HTTPException(status_code=response.status_code, detail=f"Failed to fetch repository info: {response.text}")
-                    
-                    repo_data = response.json()
-                    repo_size_kb = repo_data.get("size", 0)
-                    repo_size_bytes = repo_size_kb * 1024
-                    
-                    if repo_size_bytes > REPO_SIZE_LIMIT:
-                        size_mb = repo_size_bytes / (1024 * 1024)
+        print(f"🔄 Starting monitored clone of repository...")
+        
+        # Start the git clone process
+        process = subprocess.Popen(
+            git_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            bufsize=1
+        )
+        
+        # Monitor the process and directory size
+        start_time = time.time()
+        last_size_check = 0
+        
+        while process.poll() is None:  # While process is running
+            current_time = time.time()
+            
+            # Check timeout
+            if current_time - start_time > timeout:
+                process.terminate()
+                process.wait()
+                raise HTTPException(status_code=408, detail=f"Repository clone timed out after {timeout} seconds")
+            
+            # Check size every 2 seconds
+            if current_time - last_size_check > 2:
+                if os.path.exists(tmp_dir):
+                    current_size = get_directory_size(tmp_dir)
+                    if current_size > REPO_SIZE_LIMIT:
+                        # Terminate the clone process
+                        process.terminate()
+                        process.wait()
+                        
+                        size_mb = current_size / (1024 * 1024)
                         limit_mb = REPO_SIZE_LIMIT / (1024 * 1024)
                         raise HTTPException(
-                            status_code=413, 
+                            status_code=413,
                             detail=f"Repository size ({size_mb:.1f}MB) exceeds the maximum allowed size ({limit_mb:.1f}MB)"
                         )
                     
-                    print(f"✅ Repository size check passed: {repo_size_bytes / (1024 * 1024):.1f}MB")
-                    return repo_size_bytes
-                    
-            except httpx.TimeoutException:
-                if attempt < max_retries - 1:
-                    print(f"Timeout occurred. Retrying... (attempt {attempt + 1}/{max_retries})")
-                    await asyncio.sleep(1)
-                    continue
-                else:
-                    print("⚠️ Timeout after all retries. Skipping size check and proceeding with clone.")
-                    return None
-            except httpx.RequestError as e:
-                if attempt < max_retries - 1:
-                    print(f"Network error: {e}. Retrying... (attempt {attempt + 1}/{max_retries})")
-                    await asyncio.sleep(1)
-                    continue
-                else:
-                    print(f"⚠️ Network error after all retries: {e}. Skipping size check and proceeding with clone.")
-                    return None
-                    
+                    if current_size > 0:  # Only print if we have some data
+                        print(f"📊 Clone progress: {current_size / (1024 * 1024):.1f}MB")
+                
+                last_size_check = current_time
+            
+            time.sleep(0.5)  # Small delay to prevent excessive CPU usage
+        
+        # Check final return code
+        return_code = process.returncode
+        if return_code != 0:
+            raise Exception(f"Git clone failed with return code {return_code}")
+        
+        # Final size check
+        final_size = get_directory_size(tmp_dir)
+        if final_size > REPO_SIZE_LIMIT:
+            size_mb = final_size / (1024 * 1024)
+            limit_mb = REPO_SIZE_LIMIT / (1024 * 1024)
+            raise HTTPException(
+                status_code=413,
+                detail=f"Repository size ({size_mb:.1f}MB) exceeds the maximum allowed size ({limit_mb:.1f}MB)"
+            )
+        
+        print(f"✅ Clone completed successfully: {final_size / (1024 * 1024):.1f}MB")
+        return True
+        
     except HTTPException:
         raise
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=408, detail="Repository clone timed out")
     except Exception as e:
-        print(f"⚠️ Unexpected error during size check: {e}. Skipping size check and proceeding with clone.")
-        return None
+        raise Exception(f"Failed to clone repository: {str(e)}")
 
-# Backwards compatibility wrapper
-async def check_repo_size(url: str, token: str = None) -> int:
-    """
-    Backwards compatible wrapper that either checks size or proceeds if rate limited.
-    """
-    result = await check_repo_size_with_retry(url, token)
-    if result is None:
-        # Size check was skipped due to rate limiting - proceed with clone
-        print("📋 Size check skipped due to API limitations. Repository will be cloned directly.")
-        return 0  # Return 0 to indicate size check was skipped but proceed
-    return result
+# Old API-based size checking removed due to GitHub rate limiting issues
+# Now using real-time monitoring during clone process instead
 
 def clean_mongo_doc(doc: dict) -> dict:
     """
@@ -140,10 +139,10 @@ def clean_mongo_doc(doc: dict) -> dict:
     return out
 
 
-async def clone_repo(url: str, token: str = None)->str:
-    # Check repository size before cloning (with rate limit handling)
-    size_check_result = await check_repo_size(url, token)
-    
+async def clone_repo(url: str, token: str = None) -> str:
+    """
+    Clone repository with real-time size monitoring (no API dependency).
+    """
     try:
         requests.get("https://github.com", timeout=5)
         print("Network access to GitHub is OK")
@@ -153,35 +152,22 @@ async def clone_repo(url: str, token: str = None)->str:
     tmp_dir = tempfile.mkdtemp(prefix="repo_")
 
     try:
-        # Clone with shallow depth for efficiency
-        Repo.clone_from(url, tmp_dir, depth=1)
-        
-        # If size check was skipped due to rate limiting, do a post-clone size check
-        if size_check_result == 0:  # Size check was skipped
-            repo_size = get_directory_size(tmp_dir)
-            if repo_size > REPO_SIZE_LIMIT:
-                shutil.rmtree(tmp_dir, ignore_errors=True)
-                size_mb = repo_size / (1024 * 1024)
-                limit_mb = REPO_SIZE_LIMIT / (1024 * 1024)
-                raise HTTPException(
-                    status_code=413,
-                    detail=f"Repository size ({size_mb:.1f}MB) exceeds the maximum allowed size ({limit_mb:.1f}MB)"
-                )
-            print(f"✅ Post-clone size check passed: {repo_size / (1024 * 1024):.1f}MB")
-        
-        print(f"Repo cloned successfully at {tmp_dir} (shallow clone)")
+        # Use our safe clone method with size monitoring
+        safe_clone_with_size_monitoring(url, tmp_dir, token)
+        print(f"✅ Repo cloned successfully at {tmp_dir} (shallow clone)")
         return tmp_dir
     except HTTPException:
-        # Re-raise HTTP exceptions (size limit exceeded)
+        # Re-raise HTTP exceptions (size limit exceeded, timeout)
+        shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
     except Exception as e:
         shutil.rmtree(tmp_dir, ignore_errors=True)
         raise Exception(f"Failed to clone repo: {e}")
     
-async def webhook_clone_repo(url:str,token:str)->str:
-    # Check repository size before cloning (with rate limit handling)
-    size_check_result = await check_repo_size(url, token)
-    
+async def webhook_clone_repo(url: str, token: str) -> str:
+    """
+    Clone repository with real-time size monitoring (no API dependency).
+    """
     try:
         requests.get("https://github.com", timeout=5)
         print("Network access to GitHub is OK")
@@ -191,29 +177,13 @@ async def webhook_clone_repo(url:str,token:str)->str:
     tmp_dir = tempfile.mkdtemp(prefix="repo_")
     
     try:
-        url_parsed = urlparse(url)
-        authenticated_url = f"https://{token}@{url_parsed.netloc}{url_parsed.path}"
-        
-        # Clone with shallow depth for efficiency
-        Repo.clone_from(authenticated_url, tmp_dir, depth=1)
-        
-        # If size check was skipped due to rate limiting, do a post-clone size check
-        if size_check_result == 0:  # Size check was skipped
-            repo_size = get_directory_size(tmp_dir)
-            if repo_size > REPO_SIZE_LIMIT:
-                shutil.rmtree(tmp_dir, ignore_errors=True)
-                size_mb = repo_size / (1024 * 1024)
-                limit_mb = REPO_SIZE_LIMIT / (1024 * 1024)
-                raise HTTPException(
-                    status_code=413,
-                    detail=f"Repository size ({size_mb:.1f}MB) exceeds the maximum allowed size ({limit_mb:.1f}MB)"
-                )
-            print(f"✅ Post-clone size check passed: {repo_size / (1024 * 1024):.1f}MB")
-        
+        # Use our safe clone method with size monitoring
+        safe_clone_with_size_monitoring(url, tmp_dir, token)
         print(f"✅ Repo cloned successfully at {tmp_dir} (shallow clone)")
         return tmp_dir
     except HTTPException:
-        # Re-raise HTTP exceptions (size limit exceeded)
+        # Re-raise HTTP exceptions (size limit exceeded, timeout)
+        shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
     except Exception as e:
         shutil.rmtree(tmp_dir, ignore_errors=True)
