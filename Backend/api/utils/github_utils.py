@@ -83,6 +83,7 @@ def safe_clone_with_size_monitoring(url: str, tmp_dir: str, token: str = None, t
                         # Terminate the clone process
                         process.terminate()
                         process.wait()
+                        shutil.rmtree(tmp_dir, ignore_errors=True)
                         
                         size_mb = current_size / (1024 * 1024)
                         limit_mb = REPO_SIZE_LIMIT / (1024 * 1024)
