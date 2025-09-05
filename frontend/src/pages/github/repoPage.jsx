@@ -52,7 +52,8 @@ export function RepoPage() {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Failed to apply settings.", { id: toastId });
+        const errorMessage = err.response?.data?.detail || err.message || "Failed to apply settings.";
+        toast.error(errorMessage, { id: toastId });
       });
   };
 
@@ -80,7 +81,7 @@ export function RepoPage() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [repo_id]);
 
   return (
     <div className="text-white w-full h-full flex justify-center lg:items-center relative overflow-y-auto">
@@ -245,6 +246,7 @@ function WebhookButtons({
       repo_url,
       repo_id,
     });
+    const toastId = toast.loading("Creating webhook...");
     axios
       .post(
         "https://readme-generator-uisng-langgraph.onrender.com/api/github/create-webhook",
@@ -261,11 +263,20 @@ function WebhookButtons({
           headers: { "Content-Type": "application/json" },
         }
       )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res);
+        toast.success("Webhook created successfully!", { id: toastId });
+      })
+      .catch((err) => {
+        console.log(err);
+        const errorMessage = err.response?.data?.detail || err.message || "Failed to create webhook.";
+        toast.error(errorMessage, { id: toastId });
+      });
   };
 
   const disable_webhook = (isActive) => {
+    const actionText = isActive ? "Enabling" : "Disabling";
+    const toastId = toast.loading(`${actionText} webhook...`);
     axios
       .post(
         "https://readme-generator-uisng-langgraph.onrender.com/api/github/disable-webhook",
@@ -275,11 +286,19 @@ function WebhookButtons({
           headers: { "Content-Type": "application/json" },
         }
       )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res);
+        toast.success(`Webhook ${isActive ? 'enabled' : 'disabled'} successfully!`, { id: toastId });
+      })
+      .catch((err) => {
+        console.log(err);
+        const errorMessage = err.response?.data?.detail || err.message || `Failed to ${isActive ? 'enable' : 'disable'} webhook.`;
+        toast.error(errorMessage, { id: toastId });
+      });
   };
 
   const delete_webhook = () => {
+    const toastId = toast.loading("Deleting webhook...");
     axios
       .post(
         "https://readme-generator-uisng-langgraph.onrender.com/api/github/delete-webhook",
@@ -289,8 +308,15 @@ function WebhookButtons({
           headers: { "Content-Type": "application/json" },
         }
       )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res);
+        toast.success("Webhook deleted successfully!", { id: toastId });
+      })
+      .catch((err) => {
+        console.log(err);
+        const errorMessage = err.response?.data?.detail || err.message || "Failed to delete webhook.";
+        toast.error(errorMessage, { id: toastId });
+      });
   };
 
   return (

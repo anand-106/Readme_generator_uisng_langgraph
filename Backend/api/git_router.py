@@ -287,8 +287,7 @@ async def webhook_readme_generate(request:Request):
     
     try:
         
-        state = await run_in_threadpool(
-            webhook_pipeline,
+        state = await webhook_pipeline(
             url=clone_url,
             description=wh_data["description"],
             preferences=wh_data["preferences"]

@@ -45,8 +45,7 @@ async def generate_readme(request: ReadmeRequest,session_id:str = Cookie(None) )
 
 
     try:
-        state = await run_in_threadpool(
-            run_readme_pipeline,
+        state = await run_readme_pipeline(
             url=request.github_url,
             description=request.project_description,
             preferences=request.preferences,

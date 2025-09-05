@@ -110,11 +110,11 @@ def webhook_graph():
 
 
 
-def webhook_pipeline(url:str, description: str, preferences: dict):
+async def webhook_pipeline(url:str, description: str, preferences: dict):
     
     load_dotenv()
     token = os.getenv("TOKEN")
-    codebase_path = webhook_clone_repo(url=url,token=token)
+    codebase_path = await webhook_clone_repo(url=url,token=token)
     
     graph = webhook_graph()
     
@@ -142,8 +142,8 @@ def webhook_pipeline(url:str, description: str, preferences: dict):
 
 SESSION_CACHE: Dict[str, Any] = {}
 
-def run_readme_pipeline(url: str, description: str, preferences: dict, session_id: str):
-    codebase_path = clone_repo(url)
+async def run_readme_pipeline(url: str, description: str, preferences: dict, session_id: str):
+    codebase_path = await clone_repo(url)
     input_state = {
         "codebase_path": codebase_path,
         "project_description": description,

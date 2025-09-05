@@ -70,7 +70,12 @@ export function MarkdownViewer({
         ))}
       {generateError && (
         <div className=" text-red-400 w-full h-full select-none font-semibold text-center flex justify-center items-center">
-          <h4>❌ Failed to generate README. Please try again.</h4>
+          <div className="max-w-2xl px-4">
+            <h4>❌ {generateError.detail || generateError.message || generateError}</h4>
+            {!generateError.detail && !generateError.message && (
+              <p className="text-sm mt-2 text-red-300">Please try again or contact support if the issue persists.</p>
+            )}
+          </div>
         </div>
       )}
       {!firstGenerate && (
